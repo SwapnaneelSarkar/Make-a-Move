@@ -236,3 +236,2174 @@ It can also happen if the client has a browser extension installed which messes 
 [08:37:35.995] Server  LOG      ✓ Compiled in 117ms
 [08:37:54.382] Server  LOG      ✓ Compiled in 55ms
 [08:38:09.321] Server  LOG      ✓ Compiled in 185ms
+[08:39:55.854] Server  LOG      ✓ Compiled in 85ms
+[08:39:58.079] Server  LOG      ✓ Compiled in 99ms
+[08:40:01.596] Server  LOG      ✓ Compiled in 94ms
+[08:40:05.393] Server  LOG      ✓ Compiled in 92ms
+[08:40:07.361] Server  LOG      ✓ Compiled in 113ms
+[08:40:17.427] Server  LOG      ✓ Compiled in 64ms
+[08:40:29.829] Server  LOG      ✓ Compiled in 29ms
+[08:41:01.990] Server  LOG      ✓ Compiled in 4ms
+[08:49:00.806] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:00.806] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:00.806] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:00.806] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:04.722] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:04.722] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:05.981] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:05.981] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:05.981] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:05.981] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:06.646] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:06.646] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:07.577] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:07.577] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:07.577] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:07.577] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:13.860] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:13.860] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:14.525] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:14.525] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:14.525] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:49:14.525] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:50:06.103] Server  LOG      ✓ Compiled in 174ms
+[08:50:15.365] Server  LOG      ✓ Compiled in 120ms
+[08:50:31.395] Server  LOG      ✓ Compiled in 78ms
+[08:50:39.365] Server  LOG      ✓ Compiled in 145ms
+[08:50:48.445] Server  LOG      ✓ Compiled in 161ms
+[08:50:51.224] Server  LOG      ✓ Compiled in 48ms
+[08:50:57.120] Server  LOG      ✓ Compiled in 175ms
+[08:51:02.124] Server  LOG      ✓ Compiled in 64ms
+[08:51:16.451] Server  LOG      ✓ Compiled in 202ms
+[08:51:37.364] Server  LOG      ✓ Compiled in 578ms
+[08:51:37.870] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:51:40.451] Server  LOG      ✓ Compiled in 146ms
+[08:51:40.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:51:43.859] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:51:48.866] Server  LOG      ✓ Compiled in 110ms
+[08:51:49.858] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:51:51.560] Server  LOG      ✓ Compiled in 108ms
+[08:51:51.858] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:51:59.986] Server  LOG      ✓ Compiled in 162ms
+[08:52:00.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:933:13
+Parsing ecmascript source code failed
+  931 |           </Table>
+  932 |         </div>
+> 933 |       </div>
+      |             ^
+> 934 |
+      | ^
+> 935 |       {/* Budget Setting Dialog */}
+      | ^^^^^^^
+  936 |       <Dialog open={budgetDialogOpen} onOpenChange={setBudgetDialogOpen}>
+  937 |         <DialogContent>
+  938 |           <DialogHeader>
+
+Expected '</', got 'jsx text (
+
+      )'
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:52:12.654] Server  LOG      ✓ Compiled in 216ms
+[08:52:12.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:52:42.660] Server  LOG      ✓ Compiled in 266ms
+[08:52:42.858] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:52:56.156] Server  LOG      ✓ Compiled in 316ms
+[08:52:56.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:25:10
+Ecmascript file had an error
+  23 | import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+  24 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+> 25 | import { Eye, CheckCircle2, XCircle } from "lucide-react"
+     |          ^^^
+  26 | import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
+  27 | import { useAppStore } from "@/lib/store"
+  28 | import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+the name `Eye` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:52:58.530] Server  LOG      ✓ Compiled in 166ms
+[08:54:36.539] Server  LOG      ✓ Compiled in 152ms
+[08:54:41.773] Server  LOG      ✓ Compiled in 39ms
+[08:54:54.696] Server  LOG      ✓ Compiled in 138ms
+[08:55:55.634] Server  LOG      ✓ Compiled in 117ms
+[08:55:58.002] Server  LOG      ✓ Compiled in 47ms
+[08:56:04.593] Server  LOG      ✓ Compiled in 62ms
+[08:56:11.550] Server  LOG      ✓ Compiled in 71ms
+[08:56:14.895] Server  LOG      ✓ Compiled in 73ms
+[08:57:34.951] Server  LOG      ✓ Compiled in 143ms
+[08:58:41.178] Server  LOG      ✓ Compiled in 299ms
+[09:01:08.095] Server  LOG      ✓ Compiled in 248ms
+[09:02:56.976] Server  LOG      ✓ Compiled in 100ms
+[09:02:59.098] Server  LOG      ✓ Compiled in 47ms
+[09:03:11.606] Server  LOG      ✓ Compiled in 101ms
+[09:03:11.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx:468:1
+Parsing ecmascript source code failed
+  466 |     </div>
+  467 |   )
+> 468 | }
+      | ^
+  469 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Server Component]
+[09:03:24.479] Server  LOG      ✓ Compiled in 200ms
+[09:03:24.573] Server  LOG      ✓ Compiled in 0ms
+[09:03:24.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx:468:1
+Parsing ecmascript source code failed
+  466 |     </div>
+  467 |   )
+> 468 | }
+      | ^
+  469 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/disputes/page.tsx [Server Component]
+[09:03:30.807] Server  LOG      ✓ Compiled in 99ms
+[09:03:45.749] Server  LOG      ✓ Compiled in 72ms
+[09:03:57.701] Server  LOG      ✓ Compiled in 56ms
+[09:04:05.012] Server  LOG      ✓ Compiled in 546ms
+[09:04:07.085] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[09:04:07.882] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} segmentPath={[...]} ...>
+      <SegmentViewNode type="page" pagePath="/Downloads...">
+        <SegmentTrieNode>
+        <ClientPageRoot Component={function DashboardPage} serverProvidedParams={{...}}>
+          <DashboardPage params={Promise} searchParams={Promise}>
+            <div className="flex flex-...">
+              <div>
+              <UrgentAlertsPanel>
+              <PromotionalBanners>
+              <div className="grid grid-...">
+                <WalletBalanceWidget>
+                  <_c className="bg-primary...">
+                    <div ref={null} className="glass-card...">
+                      <_c2>
+                      <_c8>
+                        <div ref={null} className="px-6 pt-0">
+                          <div className="flex items...">
+                            <Wallet>
+                            <div className="text-4xl f...">
++                             -1,05,000
+-                             0
+                          ...
+              ...
+      ...
+
+[09:04:07.882] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:04:07.882] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:04:07.882] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:04:07.882] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:05:31.105] Server  LOG      ✓ Compiled in 114ms
+[09:08:40.924] Server  LOG      ✓ Compiled in 177ms
+[09:26:04.063] Server  LOG      ✓ Compiled in 457ms
+[09:26:06.308] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[09:26:58.945] Server  LOG      ✓ Compiled in 0ms
+[09:37:12.717] Server  LOG      ✓ Compiled in 78ms
+[09:37:24.667] Server  LOG      ✓ Compiled in 87ms
+[09:38:34.423] Server  LOG      ✓ Compiled in 232ms
+[09:38:47.919] Server  LOG      ✓ Compiled in 68ms
+[09:40:28.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx:1338:21
+Parsing ecmascript source code failed
+  1336 |                       description: "Your hotel voucher has been downloaded as PDF.",
+  1337 |                     })
+> 1338 |                   } else {
+       |                     ^^^^
+  1339 |                     toast.error("Voucher data not available")
+  1340 |                   }
+  1341 |                 }}
+
+Expected '</', got 'else'
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx [Server Component]
+[09:40:41.909] Server  LOG      ✓ Compiled in 233ms
+[09:45:10.273] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[09:45:15.738] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:45:15.738] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:45:15.738] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:45:15.738] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:45:19.542] Browser ERROR   uncaughtError: Error: Rendered fewer hooks than expected. This may be caused by an accidental early return statement.
+[09:46:06.189] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[09:46:06.198] Server  LOG      ✓ Compiled in 326ms
+[09:46:08.398] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[09:46:09.426] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:46:09.428] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:46:09.433] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:46:09.435] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[09:46:40.864] Server  LOG      ✓ Compiled in 77ms
+[10:08:05.405] Server  LOG      ✓ Compiled in 210ms
+[10:08:29.976] Server  LOG      ✓ Compiled in 201ms
+[10:08:41.382] Server  LOG      ✓ Compiled in 217ms
+[10:09:16.619] Server  LOG      ✓ Compiled in 228ms
+[10:10:46.067] Server  LOG      ✓ Compiled in 262ms
+[10:11:18.402] Server  LOG      ✓ Compiled in 102ms
+[10:13:30.102] Server  LOG      ✓ Compiled in 182ms
+[10:14:30.849] Server  LOG      ✓ Compiled in 147ms
+[10:15:29.825] Server  LOG      ✓ Compiled in 35ms
+[10:16:22.152] Server  LOG      ✓ Compiled in 11ms
+[10:16:36.680] Server  LOG      ✓ Compiled in 178ms
+[10:16:36.789] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page.tsx:375:17
+Parsing ecmascript source code failed
+  373 |                   </TableCell>
+  374 |                 </TableRow>
+> 375 |               ))}
+      |                 ^
+  376 |             </TableBody>
+  377 |           </Table>
+  378 |         </CardContent>
+
+Expected '</', got '}'
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page.tsx [Server Component]
+[10:18:12.140] Server  LOG      ✓ Compiled in 134ms
+[10:20:15.977] Server  LOG      ✓ Compiled in 121ms
+[10:20:16.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:16.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:29.285] Server  LOG      ✓ Compiled in 45ms
+[10:20:29.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:29.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:29.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:29.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:20:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:21:07.564] Server  LOG      ✓ Compiled in 74ms
+[10:21:07.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:21:07.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:21:07.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:21:07.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:22:00.053] Server  LOG      ✓ Compiled in 94ms
+[10:22:00.860] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:22:00.860] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:22:00.860] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:22:00.860] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:23:30.574] Server  LOG      ✓ Compiled in 127ms
+[10:23:30.868] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:23:30.868] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:23:30.869] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:23:30.869] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:24:55.460] Server  LOG      ✓ Compiled in 62ms
+[10:24:55.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:24:55.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:24:55.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:24:55.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:31.863] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:31.864] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:31.865] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:31.865] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:43.633] Server  LOG      ✓ Compiled in 103ms
+[10:25:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:43.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:57.367] Server  LOG      ✓ Compiled in 31ms
+[10:25:57.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:57.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:57.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:25:57.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:07.855] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:07.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:07.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:07.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:47.812] Server  LOG      ✓ Compiled in 8ms
+[10:27:47.914] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:47.914] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:47.914] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:111:9
+Ecmascript file had an error
+  109 |
+  110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  112 |
+  113 |   return (
+  114 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:27:47.914] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |   }
+  109 |
+> 110 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  111 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  112 |
+  113 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:27.859] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:27.859] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:27.859] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:72:3
+Ecmascript file had an error
+  70 |   })
+  71 |
+> 72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |   ^^^^^^^^^^^^^^^
+  73 |
+  74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+
+cannot reassign to a variable declared with `const`
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:27.859] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:74:9
+Ecmascript file had an error
+  72 |   filteredEntries = filteredEntries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+  73 |
+> 74 |   const filteredEntries = entries.filter((e) => filterStatus === "all" || e.status === filterStatus)
+     |         ^^^^^^^^^^^^^^^
+  75 |   const unmatchedCount = entries.filter((e) => e.status === "Unmatched").length
+  76 |   const pendingCount = entries.filter((e) => e.status === "Pending").length
+  77 |
+
+the name `filteredEntries` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:40.100] Server  LOG      ✓ Compiled in 3ms
+[10:28:40.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:28:40.856] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.613] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.613] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.613] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.613] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:11.857] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.909] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.909] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.910] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.910] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.910] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:13.910] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:15.379] Browser ERROR   uncaughtError: Error: ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+
+[10:29:15.525] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:15.525] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:15.627] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:15.627] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:17.486] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:110:9
+Ecmascript file had an error
+  108 |
+  109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+> 110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+      |         ^^^^^^^^^^^^
+  111 |
+  112 |   return (
+  113 |     <div className="space-y-6">
+
+the name `pendingCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:17.486] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx:109:9
+Ecmascript file had an error
+  107 |   }
+  108 |
+> 109 |   const unmatchedCount = filteredEntries.filter((e) => e.status === "Unmatched").length
+      |         ^^^^^^^^^^^^^^
+  110 |   const pendingCount = filteredEntries.filter((e) => e.status === "Pending").length
+  111 |
+  112 |   return (
+
+the name `unmatchedCount` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/financial-management/page.tsx [Server Component]
+[10:29:49.947] Server  LOG      ✓ Compiled in 146ms
+[10:29:51.146] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[10:29:51.632] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:29:51.632] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:29:51.632] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:29:51.632] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:05.700] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:05.700] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:05.700] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:05.700] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:15.520] Browser ERROR   Failed to load deposit requests: {}
+[10:30:15.521] Browser ERROR   Failed to load deposit requests: {}
+[10:30:16.373] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:16.374] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:16.374] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:16.374] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:22.054] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:22.054] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:22.054] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:22.054] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:26.283] Browser ERROR   unhandledRejection: NotFoundError: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.
+[10:30:26.283] Browser ERROR   unhandledRejection: NotFoundError: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.
+[10:30:29.131] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:29.131] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:29.131] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[10:30:29.131] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.

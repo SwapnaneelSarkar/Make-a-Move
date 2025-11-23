@@ -16,7 +16,15 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/contracts/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
     "[project]/Downloads/travel-booking-platform/app/dashboard/corporates/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/credit-control/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
@@ -28,6 +36,14 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/erp-integration/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
     "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
@@ -36,11 +52,19 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/invoice-reconciliation/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
     "[project]/Downloads/travel-booking-platform/app/dashboard/kyc/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
     "[project]/Downloads/travel-booking-platform/app/dashboard/kyc/review/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/ledger-reconciliation/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
@@ -60,7 +84,15 @@
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/schedule-escalations/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
     "[project]/Downloads/travel-booking-platform/app/dashboard/settings/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
+    "[project]/Downloads/travel-booking-platform/app/dashboard/support-tickets/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
@@ -69,6 +101,10 @@
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ],
     "[project]/Downloads/travel-booking-platform/app/login/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
+      "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
+    ],
+    "[project]/Downloads/travel-booking-platform/app/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2",
       "static/media/2a65768255d6b625-s.p.d19752fb.woff2"
     ]

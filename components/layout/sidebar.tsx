@@ -17,6 +17,13 @@ import {
   MessageSquare,
   FileCheck,
   CreditCard,
+  FileSpreadsheet,
+  Database,
+  TrendingUp,
+  Calendar,
+  Ticket,
+  Ban,
+  Receipt,
 } from "lucide-react"
 import { useAppStore } from "@/lib/store"
 import { getPermissions } from "@/lib/permissions"
@@ -113,6 +120,20 @@ export function Sidebar() {
     if (permissions.systemSettings.view) {
       items.push({ name: "Corporates", href: "/dashboard/corporates", icon: Briefcase })
       items.push({ name: "Master Settings", href: "/dashboard/settings", icon: Settings })
+      // Combined Financial Management page for Super Admin
+      items.push({ name: "Financial Management", href: "/dashboard/financial-management", icon: FileSpreadsheet })
+    }
+
+    // Financial Management for Agency Admin (limited access)
+    if (permissions.financialReports?.view && !permissions.systemSettings.view) {
+      items.push({ name: "Ledger Reconciliation", href: "/dashboard/ledger-reconciliation", icon: FileSpreadsheet })
+      items.push({ name: "Invoice Reconciliation", href: "/dashboard/invoice-reconciliation", icon: Receipt })
+    }
+
+    // Support & Escalations
+    if (permissions.disputes.view) {
+      items.push({ name: "Support Tickets", href: "/dashboard/support-tickets", icon: Ticket })
+      items.push({ name: "Schedule Escalations", href: "/dashboard/schedule-escalations", icon: Calendar })
     }
 
     // Audit Logs

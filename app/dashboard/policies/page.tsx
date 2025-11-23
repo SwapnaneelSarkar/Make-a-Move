@@ -182,8 +182,8 @@ export default function PoliciesPage() {
           </h1>
           <p className="text-muted-foreground">
             {isSuperAdmin
-              ? "Manage platform-wide policies, fees, and system configurations."
-              : "Configure agency-specific travel policies and approval workflows."}
+              ? "Manage platform-wide travel policies. All amounts are in Indian Rupees (₹ INR)."
+              : "Configure agency-specific travel policies and approval workflows. All amounts are in Indian Rupees (₹ INR)."}
           </p>
         </div>
         {canEdit("policies") && (
@@ -530,15 +530,15 @@ function PolicyDetails({ policy }: { policy: GlobalPolicy | AgencyPolicy }) {
   if ("flightPolicy" in policy && policy.flightPolicy) {
     return (
       <div className="space-y-4">
-        <div>
-          <h4 className="font-semibold mb-2">Flight Policy</h4>
-          <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-muted-foreground">Max Domestic:</span> ₹{policy.flightPolicy.maxDomesticPrice}
-            </div>
-            <div>
-              <span className="text-muted-foreground">Max International:</span> ₹{policy.flightPolicy.maxInternationalPrice}
-            </div>
+              <h4 className="font-semibold mb-2">Flight Policy</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Max Domestic:</span> ₹{policy.flightPolicy.maxDomesticPrice.toLocaleString('en-IN')} (INR)
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Max International:</span> ₹{policy.flightPolicy.maxInternationalPrice.toLocaleString('en-IN')} (INR)
+                </div>
             <div>
               <span className="text-muted-foreground">Cabin Class:</span> {policy.flightPolicy.allowedCabinClass}
             </div>
@@ -552,10 +552,10 @@ function PolicyDetails({ policy }: { policy: GlobalPolicy | AgencyPolicy }) {
             <h4 className="font-semibold mb-2">Hotel Policy</h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-muted-foreground">Max Metro Rate:</span> ₹{policy.hotelPolicy.maxRatePerNightMetro}/night
+                <span className="text-muted-foreground">Max Metro Rate:</span> ₹{policy.hotelPolicy.maxRatePerNightMetro.toLocaleString('en-IN')}/night (INR)
               </div>
               <div>
-                <span className="text-muted-foreground">Max Other Rate:</span> ₹{policy.hotelPolicy.maxRatePerNightOther}/night
+                <span className="text-muted-foreground">Max Other Rate:</span> ₹{policy.hotelPolicy.maxRatePerNightOther.toLocaleString('en-IN')}/night (INR)
                   </div>
               {policy.hotelPolicy.minStarRating && (
                 <div>
@@ -592,7 +592,7 @@ function PolicyDetails({ policy }: { policy: GlobalPolicy | AgencyPolicy }) {
           </Badge>
         </div>
         <div>
-          <span className="text-muted-foreground">Approval Threshold:</span> ₹{policy.approvalWorkflow.approvalThreshold}
+          <span className="text-muted-foreground">Approval Threshold:</span> ₹{policy.approvalWorkflow.approvalThreshold.toLocaleString('en-IN')} (INR)
         </div>
         <div>
           <span className="text-muted-foreground">Escalation Days:</span> {policy.approvalWorkflow.escalationDays} days
@@ -760,8 +760,8 @@ function PolicyDialog({
           <DialogTitle>{policy ? "Edit Policy" : "Create New Policy"}</DialogTitle>
           <DialogDescription>
             {isSuperAdmin
-              ? "Configure global platform-wide policies"
-              : "Configure agency-specific policies"}
+              ? "Configure global platform-wide policies. All amounts are in Indian Rupees (₹ INR)."
+              : "Configure agency-specific policies. All amounts are in Indian Rupees (₹ INR)."}
           </DialogDescription>
         </DialogHeader>
 
@@ -803,19 +803,21 @@ function PolicyDialog({
                 <h4 className="font-semibold mb-4">Flight Policy</h4>
                 <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                    <Label>Max Domestic Flight Price (₹)</Label>
+                    <Label>Max Domestic Flight Price (₹ INR)</Label>
                     <Input
                       type="number"
                       value={maxDomesticPrice}
                       onChange={(e) => setMaxDomesticPrice(e.target.value)}
+                      placeholder="15000"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Max International Flight Price (₹)</Label>
+                    <Label>Max International Flight Price (₹ INR)</Label>
                     <Input
                       type="number"
                       value={maxInternationalPrice}
                       onChange={(e) => setMaxInternationalPrice(e.target.value)}
+                      placeholder="50000"
                     />
                 </div>
                 <div className="space-y-2">
@@ -854,22 +856,24 @@ function PolicyDialog({
               <div>
                 <h4 className="font-semibold mb-4">Hotel Policy</h4>
                 <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                    <Label>Max Nightly Rate - Metro Cities (₹)</Label>
+                  <div className="space-y-2">
+                    <Label>Max Nightly Rate - Metro Cities (₹ INR)</Label>
                     <Input
                       type="number"
                       value={maxMetroRate}
                       onChange={(e) => setMaxMetroRate(e.target.value)}
+                      placeholder="15000"
                     />
-                </div>
-                <div className="space-y-2">
-                    <Label>Max Nightly Rate - Other Cities (₹)</Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Max Nightly Rate - Other Cities (₹ INR)</Label>
                     <Input
                       type="number"
                       value={maxOtherRate}
                       onChange={(e) => setMaxOtherRate(e.target.value)}
+                      placeholder="10000"
                     />
-                </div>
+                  </div>
                 <div className="space-y-2">
                     <Label>Minimum Star Rating (Optional)</Label>
                     <Select value={minStarRating} onValueChange={setMinStarRating}>
@@ -920,11 +924,12 @@ function PolicyDialog({
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>Approval Threshold (₹)</Label>
+                    <Label>Approval Threshold (₹ INR)</Label>
                     <Input
                       type="number"
                       value={approvalThreshold}
                       onChange={(e) => setApprovalThreshold(e.target.value)}
+                      placeholder="50000"
                     />
                   </div>
                   <div className="space-y-2">

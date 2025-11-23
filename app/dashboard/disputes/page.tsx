@@ -19,6 +19,9 @@ import { audit } from "@/lib/audit-utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { CreditCard, RefreshCw } from "lucide-react"
 
 const STATUS_STAGES = ["Raised", "Acknowledged", "Under Review", "Resolution Proposed", "Closed"]
 
@@ -33,6 +36,7 @@ export default function DisputesPage() {
   const [raiseDisputeOpen, setRaiseDisputeOpen] = useState(false)
   const [disputeForm, setDisputeForm] = useState({ transactionId: "", title: "", category: "" })
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeTab, setActiveTab] = useState("disputes")
 
   useEffect(() => {
     loadData()
@@ -184,12 +188,22 @@ export default function DisputesPage() {
     )
   }
 
+  const MOCK_FAILED_PAYMENTS = [
+    { id: "1", bookingId: "FL-20240115-ABCD", amount: 25000, reason: "Insufficient funds", status: "Pending", createdAt: "2024-01-20T10:00:00" },
+    { id: "2", bookingId: "HT-20240116-EFGH", amount: 15000, reason: "Card declined", status: "Resolved", createdAt: "2024-01-19T14:30:00" },
+  ]
+
+  const MOCK_REFUND_ESCALATIONS = [
+    { id: "1", refundId: "REF-20240118-IJKL", amount: 8000, reason: "Customer requested cancellation", status: "Pending", daysPending: 5, createdAt: "2024-01-18T09:00:00" },
+    { id: "2", refundId: "REF-20240119-MNOP", amount: 12000, reason: "Service not provided", status: "In Review", daysPending: 2, createdAt: "2024-01-19T11:00:00" },
+  ]
+
   return (
     <div className="container max-w-7xl py-6 h-[calc(100vh-4rem)] flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-serif font-bold">Dispute Resolution Center</h1>
-          <p className="text-muted-foreground mt-1">Manage and track booking disputes and payment issues.</p>
+          <p className="text-muted-foreground mt-1">Manage and track booking disputes, failed payments, and refund escalations.</p>
         </div>
         {canView("ownBookings") && (
           <Button onClick={() => setRaiseDisputeOpen(true)}>
@@ -198,7 +212,15 @@ export default function DisputesPage() {
         )}
       </div>
 
-      <div className="flex-1 grid grid-cols-12 gap-6 overflow-hidden">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+        <TabsList>
+          <TabsTrigger value="disputes">Disputes</TabsTrigger>
+          <TabsTrigger value="failed-payments">Failed Payments</TabsTrigger>
+          <TabsTrigger value="refund-escalations">Refund Escalations</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="disputes" className="flex-1 overflow-hidden">
+          <div className="flex-1 grid grid-cols-12 gap-6 overflow-hidden">
         {/* List of Disputes */}
         <Card className="col-span-4 flex flex-col overflow-hidden border-none shadow-lg">
           <div className="p-4 border-b bg-muted/20">
@@ -441,6 +463,104 @@ export default function DisputesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </TabsContent>
+
+        <TabsContent value="failed-payments" className="flex-1 overflow-hidden">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" /> Failed Payments
+              </CardTitle>
+              <CardDescription>Track and resolve failed payment transactions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Booking ID</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>Reason</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MOCK_FAILED_PAYMENTS.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell className="font-medium">{payment.bookingId}</TableCell>
+                      <TableCell className="text-right">₹{payment.amount.toLocaleString("en-IN")}</TableCell>
+                      <TableCell>{payment.reason}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={payment.status === "Resolved" ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
+                          {payment.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{format(new Date(payment.createdAt), "MMM d, yyyy")}</TableCell>
+                      <TableCell className="text-right">
+                        {payment.status === "Pending" && (
+                          <Button variant="outline" size="sm">Resolve</Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="refund-escalations" className="flex-1 overflow-hidden">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <RefreshCw className="h-5 w-5" /> Refund Escalations
+              </CardTitle>
+              <CardDescription>Manage escalated refund requests requiring attention</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Refund ID</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>Reason</TableHead>
+                    <TableHead>Days Pending</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {MOCK_REFUND_ESCALATIONS.map((refund) => (
+                    <TableRow key={refund.id}>
+                      <TableCell className="font-medium">{refund.refundId}</TableCell>
+                      <TableCell className="text-right">₹{refund.amount.toLocaleString("en-IN")}</TableCell>
+                      <TableCell>{refund.reason}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={refund.daysPending > 3 ? "bg-red-50 text-red-700 border-red-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
+                          {refund.daysPending} days
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={refund.status === "Resolved" ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
+                          {refund.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{format(new Date(refund.createdAt), "MMM d, yyyy")}</TableCell>
+                      <TableCell className="text-right">
+                        {refund.status !== "Resolved" && (
+                          <Button variant="outline" size="sm">Process</Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -2,7 +2,7 @@
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
   "static/chunks/Downloads_travel-booking-platform_68b1dc1b._.js",
-  "static/chunks/56a5d_f236f969._.js"
+  "static/chunks/56a5d_23647217._.js"
 ],
     source: "dynamic"
 });

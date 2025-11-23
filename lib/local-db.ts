@@ -16,6 +16,7 @@ export const TABLES = {
   SCHEDULED_REPORTS: "scheduled_reports",
   PROMOTIONAL_BANNERS: "promotional_banners",
   WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
+  AGENT_STATUS: "agent_status",
 } as const
 
 // Types
@@ -172,6 +173,19 @@ export interface WalletDepositRequest {
   updatedAt: string
 }
 
+export interface AgentStatus {
+  id: string
+  agentId: string
+  status: "Active" | "Suspended"
+  reason?: string
+  suspendedBy?: string
+  suspendedAt?: string
+  reactivatedBy?: string
+  reactivatedAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
 // Database initialization
 let dbInstance: IDBDatabase | null = null
 
@@ -263,6 +277,12 @@ export async function initDB(): Promise<IDBDatabase> {
         depositStore.createIndex("requestId", "requestId", { unique: true })
         depositStore.createIndex("agentId", "agentId")
         depositStore.createIndex("status", "status")
+      }
+
+      if (!db.objectStoreNames.contains(TABLES.AGENT_STATUS)) {
+        const statusStore = db.createObjectStore(TABLES.AGENT_STATUS, { keyPath: "id" })
+        statusStore.createIndex("agentId", "agentId", { unique: true })
+        statusStore.createIndex("status", "status")
       }
     }
   })
@@ -582,5 +602,37 @@ export const walletDepositRequestsDB = {
   delete: (id: string) => remove(TABLES.WALLET_DEPOSIT_REQUESTS, id),
   search: (query: (item: WalletDepositRequest) => boolean) => search<WalletDepositRequest>(TABLES.WALLET_DEPOSIT_REQUESTS, query),
   filter: (filters: Record<string, any>) => filter<WalletDepositRequest>(TABLES.WALLET_DEPOSIT_REQUESTS, filters),
+}
+
+// Agent Status CRUD
+export const agentStatusDB = {
+  create: async (data: Omit<AgentStatus, "id" | "createdAt" | "updatedAt">): Promise<AgentStatus> => {
+    const now = new Date().toISOString()
+    return create<AgentStatus>(TABLES.AGENT_STATUS, {
+      ...data,
+      status: data.status || "Active",
+      createdAt: now,
+      updatedAt: now,
+    })
+  },
+  read: (id: string) => read<AgentStatus>(TABLES.AGENT_STATUS, id),
+  readByAgentId: async (agentId: string): Promise<AgentStatus | undefined> => {
+    const all = await readAll<AgentStatus>(TABLES.AGENT_STATUS)
+    return all.find((s) => s.agentId === agentId)
+  },
+  readAll: () => readAll<AgentStatus>(TABLES.AGENT_STATUS),
+  update: (id: string, data: Partial<AgentStatus>) =>
+    update<AgentStatus>(TABLES.AGENT_STATUS, id, { ...data, updatedAt: new Date().toISOString() }),
+  updateByAgentId: async (agentId: string, data: Partial<AgentStatus>): Promise<AgentStatus | undefined> => {
+    const existing = await agentStatusDB.readByAgentId(agentId)
+    if (existing) {
+      return update<AgentStatus>(TABLES.AGENT_STATUS, existing.id, { ...data, updatedAt: new Date().toISOString() })
+    }
+    // Create if doesn't exist
+    return agentStatusDB.create({ agentId, ...data } as Omit<AgentStatus, "id" | "createdAt" | "updatedAt">)
+  },
+  delete: (id: string) => remove(TABLES.AGENT_STATUS, id),
+  search: (query: (item: AgentStatus) => boolean) => search<AgentStatus>(TABLES.AGENT_STATUS, query),
+  filter: (filters: Record<string, any>) => filter<AgentStatus>(TABLES.AGENT_STATUS, filters),
 }
 

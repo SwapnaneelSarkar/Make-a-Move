@@ -738,7 +738,7 @@ function PoliciesPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-muted-foreground",
-                                children: isSuperAdmin ? "Manage platform-wide policies, fees, and system configurations." : "Configure agency-specific travel policies and approval workflows."
+                                children: isSuperAdmin ? "Manage platform-wide travel policies. All amounts are in Indian Rupees (₹ INR)." : "Configure agency-specific travel policies and approval workflows. All amounts are in Indian Rupees (₹ INR)."
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                 lineNumber: 183,
@@ -1379,7 +1379,7 @@ function PolicyDetails({ policy }) {
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                             lineNumber: 534,
-                            columnNumber: 11
+                            columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "grid grid-cols-2 gap-4 text-sm",
@@ -1392,15 +1392,16 @@ function PolicyDetails({ policy }) {
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                             lineNumber: 537,
-                                            columnNumber: 15
+                                            columnNumber: 19
                                         }, this),
                                         " ₹",
-                                        policy.flightPolicy.maxDomesticPrice
+                                        policy.flightPolicy.maxDomesticPrice.toLocaleString('en-IN'),
+                                        " (INR)"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                     lineNumber: 536,
-                                    columnNumber: 13
+                                    columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: [
@@ -1410,15 +1411,16 @@ function PolicyDetails({ policy }) {
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                             lineNumber: 540,
-                                            columnNumber: 15
+                                            columnNumber: 19
                                         }, this),
                                         " ₹",
-                                        policy.flightPolicy.maxInternationalPrice
+                                        policy.flightPolicy.maxInternationalPrice.toLocaleString('en-IN'),
+                                        " (INR)"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                     lineNumber: 539,
-                                    columnNumber: 13
+                                    columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: [
@@ -1461,13 +1463,13 @@ function PolicyDetails({ policy }) {
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                             lineNumber: 535,
-                            columnNumber: 11
+                            columnNumber: 15
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                     lineNumber: 533,
-                    columnNumber: 9
+                    columnNumber: 13
                 }, this),
                 policy.hotelPolicy && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     children: [
@@ -1493,8 +1495,8 @@ function PolicyDetails({ policy }) {
                                             columnNumber: 17
                                         }, this),
                                         " ₹",
-                                        policy.hotelPolicy.maxRatePerNightMetro,
-                                        "/night"
+                                        policy.hotelPolicy.maxRatePerNightMetro.toLocaleString('en-IN'),
+                                        "/night (INR)"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
@@ -1512,8 +1514,8 @@ function PolicyDetails({ policy }) {
                                             columnNumber: 17
                                         }, this),
                                         " ₹",
-                                        policy.hotelPolicy.maxRatePerNightOther,
-                                        "/night"
+                                        policy.hotelPolicy.maxRatePerNightOther.toLocaleString('en-IN'),
+                                        "/night (INR)"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
@@ -1647,7 +1649,8 @@ function PolicyDetails({ policy }) {
                             columnNumber: 11
                         }, this),
                         " ₹",
-                        policy.approvalWorkflow.approvalThreshold
+                        policy.approvalWorkflow.approvalThreshold.toLocaleString('en-IN'),
+                        " (INR)"
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
@@ -1778,7 +1781,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
-                            children: isSuperAdmin ? "Configure global platform-wide policies" : "Configure agency-specific policies"
+                            children: isSuperAdmin ? "Configure global platform-wide policies. All amounts are in Indian Rupees (₹ INR)." : "Configure agency-specific policies. All amounts are in Indian Rupees (₹ INR)."
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                             lineNumber: 761,
@@ -1908,7 +1911,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     className: "space-y-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
-                                                            children: "Max Domestic Flight Price (₹)"
+                                                            children: "Max Domestic Flight Price (₹ INR)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                                             lineNumber: 806,
@@ -1917,7 +1920,8 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             type: "number",
                                                             value: maxDomesticPrice,
-                                                            onChange: (e)=>setMaxDomesticPrice(e.target.value)
+                                                            onChange: (e)=>setMaxDomesticPrice(e.target.value),
+                                                            placeholder: "15000"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
                                                             lineNumber: 807,
@@ -1933,25 +1937,26 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     className: "space-y-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
-                                                            children: "Max International Flight Price (₹)"
+                                                            children: "Max International Flight Price (₹ INR)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 814,
+                                                            lineNumber: 815,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             type: "number",
                                                             value: maxInternationalPrice,
-                                                            onChange: (e)=>setMaxInternationalPrice(e.target.value)
+                                                            onChange: (e)=>setMaxInternationalPrice(e.target.value),
+                                                            placeholder: "50000"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 815,
+                                                            lineNumber: 816,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 813,
+                                                    lineNumber: 814,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1961,7 +1966,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Allowed Cabin Class"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 822,
+                                                            lineNumber: 824,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -1971,12 +1976,12 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {}, void 0, false, {
                                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                        lineNumber: 828,
+                                                                        lineNumber: 830,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 827,
+                                                                    lineNumber: 829,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -1986,7 +1991,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "Economy Only"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 831,
+                                                                            lineNumber: 833,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -1994,7 +1999,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "Premium Economy"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 832,
+                                                                            lineNumber: 834,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2002,7 +2007,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "Business Class"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 833,
+                                                                            lineNumber: 835,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2010,25 +2015,25 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "All Classes"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 834,
+                                                                            lineNumber: 836,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 830,
+                                                                    lineNumber: 832,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 823,
+                                                            lineNumber: 825,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 821,
+                                                    lineNumber: 823,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2038,7 +2043,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Advance Booking Requirement (Days)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 839,
+                                                            lineNumber: 841,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -2048,12 +2053,12 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
                                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {}, void 0, false, {
                                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                        lineNumber: 842,
+                                                                        lineNumber: 844,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 841,
+                                                                    lineNumber: 843,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2063,7 +2068,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "None"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 845,
+                                                                            lineNumber: 847,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2071,7 +2076,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "7 Days"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 846,
+                                                                            lineNumber: 848,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2079,25 +2084,25 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "14 Days"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 847,
+                                                                            lineNumber: 849,
                                                                             columnNumber: 23
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 844,
+                                                                    lineNumber: 846,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 840,
+                                                            lineNumber: 842,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 838,
+                                                    lineNumber: 840,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
@@ -2119,7 +2124,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                             children: "Hotel Policy"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 855,
+                                            lineNumber: 857,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2129,51 +2134,53 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     className: "space-y-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
-                                                            children: "Max Nightly Rate - Metro Cities (₹)"
+                                                            children: "Max Nightly Rate - Metro Cities (₹ INR)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 858,
+                                                            lineNumber: 860,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             type: "number",
                                                             value: maxMetroRate,
-                                                            onChange: (e)=>setMaxMetroRate(e.target.value)
+                                                            onChange: (e)=>setMaxMetroRate(e.target.value),
+                                                            placeholder: "15000"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 859,
+                                                            lineNumber: 861,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 857,
-                                                    columnNumber: 17
+                                                    lineNumber: 859,
+                                                    columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "space-y-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
-                                                            children: "Max Nightly Rate - Other Cities (₹)"
+                                                            children: "Max Nightly Rate - Other Cities (₹ INR)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 866,
+                                                            lineNumber: 869,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             type: "number",
                                                             value: maxOtherRate,
-                                                            onChange: (e)=>setMaxOtherRate(e.target.value)
+                                                            onChange: (e)=>setMaxOtherRate(e.target.value),
+                                                            placeholder: "10000"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 867,
+                                                            lineNumber: 870,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 865,
-                                                    columnNumber: 17
+                                                    lineNumber: 868,
+                                                    columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "space-y-2",
@@ -2182,7 +2189,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Minimum Star Rating (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 874,
+                                                            lineNumber: 878,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -2194,12 +2201,12 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                         placeholder: "Any"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                        lineNumber: 877,
+                                                                        lineNumber: 881,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 876,
+                                                                    lineNumber: 880,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2209,7 +2216,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "Any"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 880,
+                                                                            lineNumber: 884,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2217,7 +2224,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "3 Star"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 881,
+                                                                            lineNumber: 885,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2225,7 +2232,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "4 Star"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 882,
+                                                                            lineNumber: 886,
                                                                             columnNumber: 23
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2233,37 +2240,37 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                                             children: "5 Star"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                            lineNumber: 883,
+                                                                            lineNumber: 887,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                                    lineNumber: 879,
+                                                                    lineNumber: 883,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 875,
+                                                            lineNumber: 879,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 873,
+                                                    lineNumber: 877,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 856,
+                                            lineNumber: 858,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                    lineNumber: 854,
+                                    lineNumber: 856,
                                     columnNumber: 15
                                 }, this)
                             ]
@@ -2280,7 +2287,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                     children: "Approval Workflow Settings"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                    lineNumber: 896,
+                                    lineNumber: 900,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2297,7 +2304,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Auto-approval"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 900,
+                                                            lineNumber: 904,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2305,13 +2312,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Automatically approve bookings within policy limits"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 901,
+                                                            lineNumber: 905,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 899,
+                                                    lineNumber: 903,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -2319,13 +2326,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     onCheckedChange: setAutoApproval
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 905,
+                                                    lineNumber: 909,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 898,
+                                            lineNumber: 902,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2339,7 +2346,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Manager Approval"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 909,
+                                                            lineNumber: 913,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2347,13 +2354,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Require direct manager approval"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 910,
+                                                            lineNumber: 914,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 908,
+                                                    lineNumber: 912,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -2361,13 +2368,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     onCheckedChange: setManagerApproval
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 912,
+                                                    lineNumber: 916,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 907,
+                                            lineNumber: 911,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2381,7 +2388,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Finance Approval"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 916,
+                                                            lineNumber: 920,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2389,13 +2396,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Require finance team approval"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 917,
+                                                            lineNumber: 921,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 915,
+                                                    lineNumber: 919,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -2403,13 +2410,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     onCheckedChange: setFinanceApproval
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 919,
+                                                    lineNumber: 923,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 914,
+                                            lineNumber: 918,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2419,25 +2426,26 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                     className: "space-y-2",
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
-                                                            children: "Approval Threshold (₹)"
+                                                            children: "Approval Threshold (₹ INR)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 923,
+                                                            lineNumber: 927,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             type: "number",
                                                             value: approvalThreshold,
-                                                            onChange: (e)=>setApprovalThreshold(e.target.value)
+                                                            onChange: (e)=>setApprovalThreshold(e.target.value),
+                                                            placeholder: "50000"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 924,
+                                                            lineNumber: 928,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 922,
+                                                    lineNumber: 926,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2447,7 +2455,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             children: "Escalation Days"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 931,
+                                                            lineNumber: 936,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -2456,31 +2464,31 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                                             onChange: (e)=>setEscalationDays(e.target.value)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                            lineNumber: 932,
+                                                            lineNumber: 937,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                    lineNumber: 930,
+                                                    lineNumber: 935,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                            lineNumber: 921,
+                                            lineNumber: 925,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                    lineNumber: 897,
+                                    lineNumber: 901,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 895,
+                            lineNumber: 899,
                             columnNumber: 13
                         }, this)
                     ]
@@ -2497,7 +2505,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                             children: "Cancel"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 945,
+                            lineNumber: 950,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2507,7 +2515,7 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                                     className: "mr-2 h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                    lineNumber: 949,
+                                    lineNumber: 954,
                                     columnNumber: 13
                                 }, this),
                                 " ",
@@ -2516,13 +2524,13 @@ function PolicyDialog({ open, onClose, policy, isSuperAdmin, agencyId, agencyNam
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 948,
+                            lineNumber: 953,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                    lineNumber: 944,
+                    lineNumber: 949,
                     columnNumber: 9
                 }, this)
             ]
@@ -2561,7 +2569,7 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                             children: "Assign Agents to Policy"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 983,
+                            lineNumber: 988,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
@@ -2572,13 +2580,13 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 984,
+                            lineNumber: 989,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                    lineNumber: 982,
+                    lineNumber: 987,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2590,7 +2598,7 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                             children: "No agents available"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 992,
+                            lineNumber: 997,
                             columnNumber: 15
                         }, this) : agents.map((agent)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center space-x-2 rounded-lg border p-3 hover:bg-accent cursor-pointer",
@@ -2601,7 +2609,7 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                                         onCheckedChange: ()=>toggleAgent(agent.id)
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                        lineNumber: 1000,
+                                        lineNumber: 1005,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2612,7 +2620,7 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                                                 children: agent.name
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                lineNumber: 1005,
+                                                lineNumber: 1010,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2620,13 +2628,13 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                                                 children: agent.email
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                                lineNumber: 1006,
+                                                lineNumber: 1011,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                        lineNumber: 1004,
+                                        lineNumber: 1009,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -2634,23 +2642,23 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                                         children: agent.role
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                        lineNumber: 1008,
+                                        lineNumber: 1013,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, agent.id, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                lineNumber: 995,
+                                lineNumber: 1000,
                                 columnNumber: 17
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                        lineNumber: 990,
+                        lineNumber: 995,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                    lineNumber: 989,
+                    lineNumber: 994,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -2661,7 +2669,7 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                             children: "Cancel"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 1016,
+                            lineNumber: 1021,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2673,31 +2681,31 @@ function AgentAssignmentDialog({ open, onClose, policy, agents, onSave }) {
                                     className: "mr-2 h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                                    lineNumber: 1024,
+                                    lineNumber: 1029,
                                     columnNumber: 13
                                 }, this),
                                 " Save Assignments"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                            lineNumber: 1019,
+                            lineNumber: 1024,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-                    lineNumber: 1015,
+                    lineNumber: 1020,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-            lineNumber: 981,
+            lineNumber: 986,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/policies/page.tsx",
-        lineNumber: 980,
+        lineNumber: 985,
         columnNumber: 5
     }, this);
 }

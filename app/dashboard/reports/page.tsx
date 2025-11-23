@@ -6,25 +6,46 @@ import { Download, CalendarClock } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Bar, BarChart, Line, LineChart, Pie, PieChart, Cell, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts"
+import { exportToPDF } from "@/lib/export-utils"
+import { toast } from "sonner"
 
-// Simple chart placeholder since we don't have Recharts installed in the base setup
-// In a real app we would use recharts or similar library
-function BarChartPlaceholder({ height = 200 }: { height?: number }) {
-  return (
-    <div style={{ height }} className="flex w-full items-end gap-2 rounded-lg border bg-muted/20 p-4">
-      {[40, 70, 45, 90, 60, 80, 50].map((h, i) => (
-        <div
-          key={i}
-          className="group relative flex-1 rounded-t bg-primary transition-all hover:opacity-80"
-          style={{ height: `${h}%` }}
-        >
-          <div className="absolute -top-8 left-1/2 hidden -translate-x-1/2 rounded bg-popover px-2 py-1 text-xs shadow-md group-hover:block">
-            ₹{h * 10000}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
+// Monthly spend data
+const monthlySpendData = [
+  { month: "Jul", flights: 450000, hotels: 320000 },
+  { month: "Aug", flights: 520000, hotels: 380000 },
+  { month: "Sep", flights: 480000, hotels: 350000 },
+  { month: "Oct", flights: 610000, hotels: 420000 },
+  { month: "Nov", flights: 550000, hotels: 390000 },
+  { month: "Dec", flights: 680000, hotels: 450000 },
+]
+
+// Category distribution
+const categoryData = [
+  { name: "Flights", value: 55, color: "#3b82f6" },
+  { name: "Hotels", value: 45, color: "#10b981" },
+]
+
+// Booking trends
+const bookingTrendsData = [
+  { month: "Jul", flights: 120, hotels: 85 },
+  { month: "Aug", flights: 145, hotels: 95 },
+  { month: "Sep", flights: 130, hotels: 90 },
+  { month: "Oct", flights: 165, hotels: 110 },
+  { month: "Nov", flights: 150, hotels: 100 },
+  { month: "Dec", flights: 180, hotels: 125 },
+]
+
+const chartConfig = {
+  flights: {
+    label: "Flights",
+    color: "#3b82f6",
+  },
+  hotels: {
+    label: "Hotels",
+    color: "#10b981",
+  },
 }
 
 export default function ReportsPage() {
@@ -43,7 +64,24 @@ export default function ReportsPage() {
             </Link>
           </Button>
           <Button variant="outline">Last 30 Days</Button>
-          <Button>
+          <Button
+            onClick={() => {
+              const reportData = {
+                monthlySpend: monthlySpendData,
+                categoryDistribution: categoryData,
+                bookingTrends: bookingTrendsData,
+                departmentBreakdown: [
+                  { department: "Sales", bookings: 45, totalSpend: 1250000, avgPerTrip: 27700 },
+                  { department: "Engineering", bookings: 12, totalSpend: 420000, avgPerTrip: 35000 },
+                  { department: "Marketing", bookings: 28, totalSpend: 890000, avgPerTrip: 31700 },
+                ],
+              }
+              exportReportsToPDF(reportData)
+              toast.success("Report downloaded", {
+                description: "Your analytics report has been downloaded as PDF.",
+              })
+            }}
+          >
             <Download className="mr-2 h-4 w-4" /> Download PDF
           </Button>
         </div>
@@ -53,6 +91,8 @@ export default function ReportsPage() {
         <TabsList>
           <TabsTrigger value="spending">Spending Reports</TabsTrigger>
           <TabsTrigger value="activity">User Activity</TabsTrigger>
+          <TabsTrigger value="bi">BI Analytics</TabsTrigger>
+          <TabsTrigger value="export">Export Reports</TabsTrigger>
         </TabsList>
 
         <TabsContent value="spending" className="space-y-6">
@@ -63,7 +103,17 @@ export default function ReportsPage() {
             <CardDescription>Travel expenses over the last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
-            <BarChartPlaceholder height={300} />
+            <ChartContainer config={chartConfig} className="h-[300px]">
+              <BarChart data={monthlySpendData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend />
+                <Bar dataKey="flights" fill="#3b82f6" name="Flights" />
+                <Bar dataKey="hotels" fill="#10b981" name="Hotels" />
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
 
@@ -73,22 +123,25 @@ export default function ReportsPage() {
             <CardDescription>Distribution of expenses</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-blue-500"></div>
-                  <span className="text-sm">Flights</span>
-                </div>
-                <span className="font-bold">55%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                  <span className="text-sm">Hotels</span>
-                </div>
-                <span className="font-bold">45%</span>
-              </div>
-            </div>
+            <ChartContainer config={chartConfig} className="h-[300px]">
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <ChartTooltip content={<ChartTooltipContent />} />
+              </PieChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
@@ -134,6 +187,214 @@ export default function ReportsPage() {
 
         <TabsContent value="activity" className="space-y-6">
           <UserActivityAnalytics />
+        </TabsContent>
+
+        <TabsContent value="bi" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">1,234</div>
+                <p className="text-xs text-muted-foreground">+12% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₹45.2L</div>
+                <p className="text-xs text-muted-foreground">+8% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Avg. Booking Value</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₹36,600</div>
+                <p className="text-xs text-muted-foreground">+5% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Active Agents</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">156</div>
+                <p className="text-xs text-muted-foreground">+3 new this month</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Booking Trends</CardTitle>
+                <CardDescription>Bookings over time by type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-[250px]">
+                  <LineChart data={bookingTrendsData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Legend />
+                    <Line type="monotone" dataKey="flights" stroke="#3b82f6" name="Flights" strokeWidth={2} />
+                    <Line type="monotone" dataKey="hotels" stroke="#10b981" name="Hotels" strokeWidth={2} />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue by Supplier</CardTitle>
+                <CardDescription>Top performing suppliers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Air India</span>
+                    <span className="font-bold">₹18.5L</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">IndiGo</span>
+                    <span className="font-bold">₹15.2L</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Taj Hotels</span>
+                    <span className="font-bold">₹11.5L</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="export" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Export Reports</CardTitle>
+              <CardDescription>Generate and download reports in various formats</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Financial Reports</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        exportToPDF(
+                          monthlySpendData.map((m) => ({
+                            Month: m.month,
+                            Flights: `₹${m.flights.toLocaleString("en-IN")}`,
+                            Hotels: `₹${m.hotels.toLocaleString("en-IN")}`,
+                            Total: `₹${(m.flights + m.hotels).toLocaleString("en-IN")}`,
+                          })),
+                          "revenue-report",
+                          "Revenue Report",
+                          [
+                            { header: "Month", dataKey: "Month" },
+                            { header: "Flights", dataKey: "Flights" },
+                            { header: "Hotels", dataKey: "Hotels" },
+                            { header: "Total", dataKey: "Total" },
+                          ],
+                        )
+                        toast.success("Revenue report downloaded")
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Export Revenue Report (PDF)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        exportToPDF(
+                          [
+                            { Category: "Flights", Amount: "₹32,90,000", Percentage: "55%" },
+                            { Category: "Hotels", Amount: "₹26,90,000", Percentage: "45%" },
+                          ],
+                          "expense-report",
+                          "Expense Report",
+                          [
+                            { header: "Category", dataKey: "Category" },
+                            { header: "Amount", dataKey: "Amount" },
+                            { header: "Percentage", dataKey: "Percentage" },
+                          ],
+                        )
+                        toast.success("Expense report downloaded")
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Export Expense Report (PDF)
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Operational Reports</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        exportToPDF(
+                          bookingTrendsData.map((b) => ({
+                            Month: b.month,
+                            Flights: b.flights,
+                            Hotels: b.hotels,
+                            Total: b.flights + b.hotels,
+                          })),
+                          "booking-report",
+                          "Booking Report",
+                          [
+                            { header: "Month", dataKey: "Month" },
+                            { header: "Flights", dataKey: "Flights" },
+                            { header: "Hotels", dataKey: "Hotels" },
+                            { header: "Total", dataKey: "Total" },
+                          ],
+                        )
+                        toast.success("Booking report downloaded")
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Export Booking Report (PDF)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        exportToPDF(
+                          [
+                            { Department: "Sales", Bookings: 45, "Total Spend": "₹12,50,000", "Avg per Trip": "₹27,700" },
+                            { Department: "Engineering", Bookings: 12, "Total Spend": "₹4,20,000", "Avg per Trip": "₹35,000" },
+                            { Department: "Marketing", Bookings: 28, "Total Spend": "₹8,90,000", "Avg per Trip": "₹31,700" },
+                          ],
+                          "agent-performance",
+                          "Agent Performance Report",
+                          [
+                            { header: "Department", dataKey: "Department" },
+                            { header: "Bookings", dataKey: "Bookings" },
+                            { header: "Total Spend", dataKey: "Total Spend" },
+                            { header: "Avg per Trip", dataKey: "Avg per Trip" },
+                          ],
+                        )
+                        toast.success("Agent performance report downloaded")
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Export Agent Performance (PDF)
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
@@ -248,4 +509,84 @@ function UserActivityAnalytics() {
       </Card>
     </div>
   )
+}
+
+// Function to export comprehensive reports to PDF
+function exportReportsToPDF(reportData: any) {
+  const jsPDF = require("jspdf").jsPDF
+  const autoTable = require("jspdf-autotable").default
+
+  const doc = new jsPDF()
+
+  // Title
+  doc.setFontSize(20)
+  doc.text("Analytics & Reports", 14, 20)
+  doc.setFontSize(10)
+  doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28)
+
+  let yPos = 35
+
+  // Monthly Spend Table
+  doc.setFontSize(14)
+  doc.text("Monthly Spend Overview", 14, yPos)
+  yPos += 8
+
+  const monthlyTableData = reportData.monthlySpend.map((m: any) => [
+    m.month,
+    `₹${m.flights.toLocaleString("en-IN")}`,
+    `₹${m.hotels.toLocaleString("en-IN")}`,
+    `₹${(m.flights + m.hotels).toLocaleString("en-IN")}`,
+  ])
+
+  autoTable(doc, {
+    head: [["Month", "Flights", "Hotels", "Total"]],
+    body: monthlyTableData,
+    startY: yPos,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [66, 139, 202] },
+  })
+
+  yPos = (doc as any).lastAutoTable.finalY + 15
+
+  // Category Distribution
+  doc.setFontSize(14)
+  doc.text("Category Distribution", 14, yPos)
+  yPos += 8
+
+  const categoryTableData = reportData.categoryDistribution.map((c: any) => [
+    c.name,
+    `${c.value}%`,
+  ])
+
+  autoTable(doc, {
+    head: [["Category", "Percentage"]],
+    body: categoryTableData,
+    startY: yPos,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [66, 139, 202] },
+  })
+
+  yPos = (doc as any).lastAutoTable.finalY + 15
+
+  // Department Breakdown
+  doc.setFontSize(14)
+  doc.text("Department Breakdown", 14, yPos)
+  yPos += 8
+
+  const deptTableData = reportData.departmentBreakdown.map((d: any) => [
+    d.department,
+    d.bookings.toString(),
+    `₹${d.totalSpend.toLocaleString("en-IN")}`,
+    `₹${d.avgPerTrip.toLocaleString("en-IN")}`,
+  ])
+
+  autoTable(doc, {
+    head: [["Department", "Bookings", "Total Spend", "Avg per Trip"]],
+    body: deptTableData,
+    startY: yPos,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [66, 139, 202] },
+  })
+
+  doc.save(`analytics-report-${new Date().toISOString().slice(0, 10)}.pdf`)
 }

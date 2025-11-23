@@ -49,6 +49,7 @@ export default function SettingsPage() {
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="fees">Platform Fees</TabsTrigger>
+          <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="banners">Promotional Banners</TabsTrigger>
           <TabsTrigger value="permissions">Permission Matrix</TabsTrigger>
         </TabsList>
@@ -76,7 +77,8 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label>Default Currency</Label>
-                <Input defaultValue="INR (₹)" />
+                <Input defaultValue="INR (₹)" readOnly />
+                <p className="text-sm text-muted-foreground">Indian Rupees (₹) is the default currency for all transactions.</p>
               </div>
             </CardContent>
           </Card>
@@ -143,7 +145,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Fee Structure</CardTitle>
-              <CardDescription>Set markup and platform fees for bookings.</CardDescription>
+              <CardDescription>Set markup and platform fees for bookings. All amounts are in Indian Rupees (₹ INR).</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-4 md:grid-cols-2">
@@ -156,8 +158,8 @@ export default function SettingsPage() {
                   <Input defaultValue="5.0" type="number" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Flat Fee per Booking (₹)</Label>
-                  <Input defaultValue="0.00" type="number" />
+                  <Label>Flat Fee per Booking (₹ INR)</Label>
+                  <Input defaultValue="0.00" type="number" placeholder="0.00" />
                 </div>
               </div>
               <div className="flex justify-end">
@@ -165,6 +167,10 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="commissions">
+          <CommissionsManagement />
         </TabsContent>
 
         <TabsContent value="banners">
@@ -402,6 +408,129 @@ function BannerForm({ banner, onSave, onCancel }: { banner?: any; onSave: (banne
           </Button>
           <Button onClick={() => onSave(formData)}>Save</Button>
         </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Commissions Management Component
+function CommissionsManagement() {
+  const [commissions, setCommissions] = useState([
+    { id: "1", agentId: "u3", agentName: "John Agent", flightCommission: 2.5, hotelCommission: 5.0, type: "percentage" },
+    { id: "2", agentId: "u4", agentName: "Jane Sub Agent", flightCommission: 2.0, hotelCommission: 4.5, type: "percentage" },
+  ])
+  const [isAddOpen, setIsAddOpen] = useState(false)
+
+  const handleSave = () => {
+    localStorage.setItem("commissions_config", JSON.stringify(commissions))
+    toast.success("Commissions configuration saved")
+  }
+
+  const handleAdd = (commission: any) => {
+    const newCommission = { ...commission, id: Date.now().toString() }
+    setCommissions([...commissions, newCommission])
+    setIsAddOpen(false)
+    toast.success("Commission rule added")
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Commission Structure</CardTitle>
+            <CardDescription>Configure commission rates for agents. Can be percentage-based or fixed amount.</CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleSave}>Save Changes</Button>
+            <Button onClick={() => setIsAddOpen(true)}>Add Commission Rule</Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Agent</TableHead>
+                <TableHead>Flight Commission</TableHead>
+                <TableHead>Hotel Commission</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {commissions.map((comm) => (
+                <TableRow key={comm.id}>
+                  <TableCell className="font-medium">{comm.agentName}</TableCell>
+                  <TableCell>
+                    {comm.type === "percentage" ? `${comm.flightCommission}%` : `₹${comm.flightCommission}`}
+                  </TableCell>
+                  <TableCell>
+                    {comm.type === "percentage" ? `${comm.hotelCommission}%` : `₹${comm.hotelCommission}`}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{comm.type === "percentage" ? "Percentage" : "Fixed"}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm">Edit</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {isAddOpen && (
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle>Add Commission Rule</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label>Agent</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select agent" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="u3">John Agent</SelectItem>
+                      <SelectItem value="u4">Jane Sub Agent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label>Flight Commission</Label>
+                    <Input type="number" placeholder="2.5" />
+                  </div>
+                  <div>
+                    <Label>Hotel Commission</Label>
+                    <Input type="number" placeholder="5.0" />
+                  </div>
+                </div>
+                <div>
+                  <Label>Commission Type</Label>
+                  <Select defaultValue="percentage">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percentage">Percentage (%)</SelectItem>
+                      <SelectItem value="fixed">Fixed Amount (₹)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                  <Button onClick={() => {
+                    handleAdd({ agentId: "u3", agentName: "John Agent", flightCommission: 2.5, hotelCommission: 5.0, type: "percentage" })
+                  }}>Add Rule</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </CardContent>
     </Card>
   )

@@ -1298,7 +1298,49 @@ export default function HotelsPage() {
             </div>
 
             <div className="flex justify-center gap-4">
-              <Button variant="outline">Download Voucher</Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (selectedHotel && bookingId && voucherNumber && searchData.checkIn && searchData.checkOut) {
+                    const nights = Math.ceil(
+                      (searchData.checkOut.getTime() - searchData.checkIn.getTime()) / (1000 * 60 * 60 * 24),
+                    )
+                    import("@/lib/voucher-generator").then(({ generateHotelVoucherPDF }) => {
+                      generateHotelVoucherPDF({
+                      bookingId,
+                      voucherNumber,
+                      hotel: {
+                        name: selectedHotel.name,
+                        location: selectedHotel.location,
+                        rating: selectedHotel.rating,
+                      },
+                      guest: guestDetails,
+                      checkIn: searchData.checkIn ? format(searchData.checkIn, "yyyy-MM-dd") : "",
+                      checkOut: searchData.checkOut ? format(searchData.checkOut, "yyyy-MM-dd") : "",
+                      nights,
+                      rooms: selectedRooms.map((r) => ({
+                        type: r.roomType,
+                        boardBasis: r.boardBasis,
+                        price: r.price,
+                      })),
+                      addOns,
+                      totalAmount: calculateTotalAmount(),
+                      finalAmount: calculateFinalAmount(),
+                      paymentMode: paymentData.paymentMode,
+                      bookingDate: new Date().toISOString(),
+                      specialRequests: guestDetails.specialRequests || undefined,
+                      })
+                      toast.success("Voucher downloaded", {
+                        description: "Your hotel voucher has been downloaded as PDF.",
+                      })
+                    })
+                  } else {
+                    toast.error("Voucher data not available")
+                  }
+                }}
+              >
+                Download Voucher (PDF)
+              </Button>
               <Button onClick={() => (window.location.href = "/dashboard")}>Return to Dashboard</Button>
             </div>
           </CardContent>

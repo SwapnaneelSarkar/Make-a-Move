@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, Wallet, ArrowUpRight, ArrowDownLeft, Download, X, RefreshCw, Eye, EyeOff, Settings } from "lucide-react"
+import { PlusCircle, Wallet, ArrowUpRight, ArrowDownLeft, Download, X, RefreshCw, EyeOff, Settings } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 import { usePermissions } from "@/hooks/use-permissions"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils"
 import { MFAModal } from "@/components/mfa-modal"
 import { toast } from "sonner"
 import { transactionsDB, walletDepositRequestsDB, type Transaction, type WalletDepositRequest } from "@/lib/local-db"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Eye, CheckCircle2, XCircle } from "lucide-react"
 import { exportWalletStatement, exportTransactions } from "@/lib/export-utils"
 import { useAppStore } from "@/lib/store"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -55,6 +57,10 @@ export default function WalletPage() {
   const [lastUpdated, setLastUpdated] = useState(getLastUpdatedTimestamp())
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [depositRequests, setDepositRequests] = useState<WalletDepositRequest[]>([])
+  const [selectedRequest, setSelectedRequest] = useState<WalletDepositRequest | null>(null)
+  const [approvalDialogOpen, setApprovalDialogOpen] = useState(false)
+  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false)
   
   // Filters - Date range required, default last 30 days
   const [dateFrom, setDateFrom] = useState<Date>(subDays(new Date(), 30))
@@ -84,12 +90,24 @@ export default function WalletPage() {
   useEffect(() => {
     loadTransactions()
     loadBudgetUsage()
+    if (canApprove("walletTopUps")) {
+      loadDepositRequests()
+    }
     // Auto-refresh balance every 30 seconds
     const interval = setInterval(() => {
       refreshBalance()
     }, 30000)
     return () => clearInterval(interval)
   }, [])
+
+  const loadDepositRequests = async () => {
+    try {
+      const all = await walletDepositRequestsDB.readAll()
+      setDepositRequests(all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
+    } catch (error) {
+      console.error("Failed to load deposit requests:", error)
+    }
+  }
 
   const loadTransactions = async () => {
     try {
@@ -255,6 +273,79 @@ export default function WalletPage() {
     await loadBudgetUsage()
     setBudgetDialogOpen(false)
     toast.success(budget ? `Monthly budget set to ₹${budget.toLocaleString("en-IN")}` : "Budget removed")
+  }
+
+  const handleApproveDeposit = async (requestId: string, approvedAmount: number) => {
+    try {
+      const request = depositRequests.find((r) => r.id === requestId)
+      if (!request) return
+
+      const now = new Date().toISOString()
+      await walletDepositRequestsDB.update(requestId, {
+        status: "Approved",
+        requestedAmount: approvedAmount,
+        approvedBy: currentUser.id,
+        approvedAt: now,
+      })
+
+      // Credit the wallet
+      await createTransaction({
+        date: new Date().toISOString().split("T")[0],
+        description: `Deposit Request ${request.requestId} Approved`,
+        amount: approvedAmount,
+        type: "CREDIT",
+        status: "Completed",
+        paymentMethod: "Bank Transfer",
+        productType: "Wallet Top-up",
+      })
+
+      await audit.create("wallet", requestId, {
+        action: "APPROVE_DEPOSIT",
+        amount: approvedAmount,
+        approvedBy: currentUser.name,
+      })
+
+      toast.success("Deposit request approved", {
+        description: `₹${approvedAmount.toLocaleString("en-IN")} has been credited to ${request.agentName}'s wallet.`,
+      })
+
+      await loadDepositRequests()
+      await loadTransactions()
+      setApprovalDialogOpen(false)
+      setSelectedRequest(null)
+    } catch (error) {
+      console.error("Failed to approve deposit:", error)
+      toast.error("Failed to approve deposit request")
+    }
+  }
+
+  const handleRejectDeposit = async (requestId: string, reason: string) => {
+    try {
+      const request = depositRequests.find((r) => r.id === requestId)
+      if (!request) return
+
+      await walletDepositRequestsDB.update(requestId, {
+        status: "Rejected",
+        rejectionReason: reason,
+      })
+
+      await audit.create("wallet", requestId, {
+        action: "REJECT_DEPOSIT",
+        reason,
+        rejectedBy: currentUser.name,
+      })
+
+      toast.success("Deposit request rejected", {
+        description: `Request ${request.requestId} has been rejected.`,
+      })
+
+      await loadDepositRequests()
+      setRejectionDialogOpen(false)
+      setSelectedRequest(null)
+    } catch (error) {
+      console.error("Failed to reject deposit:", error)
+      toast.error("Failed to reject deposit request")
+    }
   }
 
   if (!canView("wallet")) {
@@ -445,6 +536,9 @@ export default function WalletPage() {
   const hasActiveFilters =
     transactionType !== "all" || statusFilter !== "all" || productType !== "all"
 
+  const canApproveDeposits = canApprove("walletTopUps")
+  const pendingDeposits = depositRequests.filter((r) => r.status === "Pending")
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -574,9 +668,83 @@ export default function WalletPage() {
         </Card>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Transaction History</h2>
+      {/* Deposit Request Approvals - Only for Super Admin/Finance Team */}
+      {canApproveDeposits && pendingDeposits.length > 0 && (
+        <Card className="border-yellow-200 bg-yellow-50/50">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Pending Deposit Requests</CardTitle>
+                <CardDescription>
+                  {pendingDeposits.length} request{pendingDeposits.length > 1 ? "s" : ""} awaiting approval
+                </CardDescription>
+              </div>
+              <Badge variant="outline" className="bg-yellow-100 text-yellow-700 border-yellow-300">
+                {pendingDeposits.length} Pending
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingDeposits.slice(0, 3).map((request) => (
+                <div key={request.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                  <div className="flex-1">
+                    <div className="font-medium">{request.requestId}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {request.agentName} • ₹{request.amount.toLocaleString("en-IN")} • {new Date(request.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedRequest(request)
+                        setApprovalDialogOpen(true)
+                      }}
+                    >
+                      <CheckCircle2 className="mr-2 h-4 w-4" /> Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-destructive"
+                      onClick={() => {
+                        setSelectedRequest(request)
+                        setRejectionDialogOpen(true)
+                      }}
+                    >
+                      <XCircle className="mr-2 h-4 w-4" /> Reject
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              {pendingDeposits.length > 3 && (
+                <Button variant="link" className="w-full" onClick={() => {
+                  // Scroll to deposit requests section
+                  document.getElementById("deposit-requests-section")?.scrollIntoView({ behavior: "smooth" })
+                }}>
+                  View all {pendingDeposits.length} pending requests
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Tabs defaultValue="transactions" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="transactions">Transaction History</TabsTrigger>
+          {canApproveDeposits && (
+            <TabsTrigger value="deposits">
+              Deposit Requests {pendingDeposits.length > 0 && `(${pendingDeposits.length})`}
+            </TabsTrigger>
+          )}
+        </TabsList>
+
+        <TabsContent value="transactions" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Transaction History</h2>
           {hasActiveFilters && (
             <Button variant="outline" size="sm" onClick={handleClearFilters}>
               <X className="mr-2 h-4 w-4" />
@@ -762,7 +930,166 @@ export default function WalletPage() {
             </TableBody>
           </Table>
         </div>
-      </div>
+        </TabsContent>
+
+        {canApproveDeposits && (
+          <TabsContent value="deposits" id="deposit-requests-section" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Deposit Requests</h2>
+              <Select defaultValue="all" onValueChange={(v) => {
+                // Filter logic can be added here
+              }}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Requests</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="rounded-md border bg-card">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Request ID</TableHead>
+                    <TableHead>Agent</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Proof Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Requested At</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {depositRequests.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                        No deposit requests found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    depositRequests.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell className="font-medium">{request.requestId}</TableCell>
+                        <TableCell>{request.agentName}</TableCell>
+                        <TableCell>₹{request.amount.toLocaleString("en-IN")}</TableCell>
+                        <TableCell>{request.proofType}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={
+                              request.status === "Approved"
+                                ? "bg-green-50 text-green-700 border-green-200"
+                                : request.status === "Rejected"
+                                  ? "bg-red-50 text-red-700 border-red-200"
+                                  : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                            }
+                          >
+                            {request.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {request.proofFile && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  // Open proof image in new window
+                                  const newWindow = window.open()
+                                  if (newWindow) {
+                                    newWindow.document.write(`<img src="${request.proofFile}" style="max-width: 100%;" />`)
+                                  }
+                                }}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {request.status === "Pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setSelectedRequest(request)
+                                    setApprovalDialogOpen(true)
+                                  }}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-destructive"
+                                  onClick={() => {
+                                    setSelectedRequest(request)
+                                    setRejectionDialogOpen(true)
+                                  }}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </TabsContent>
+        )}
+      </Tabs>
+
+      {/* Approval Dialog */}
+      <Dialog open={approvalDialogOpen} onOpenChange={setApprovalDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Deposit Request</DialogTitle>
+            <DialogDescription>
+              Approve the deposit request for {selectedRequest?.agentName}. You can approve a different amount if needed.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedRequest && (
+            <DepositApprovalDialog
+              request={selectedRequest}
+              onApprove={handleApproveDeposit}
+              onCancel={() => {
+                setApprovalDialogOpen(false)
+                setSelectedRequest(null)
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Rejection Dialog */}
+      <Dialog open={rejectionDialogOpen} onOpenChange={setRejectionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Deposit Request</DialogTitle>
+            <DialogDescription>
+              Reject the deposit request for {selectedRequest?.agentName}. Please provide a reason.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedRequest && (
+            <DepositRejectionDialog
+              request={selectedRequest}
+              onReject={handleRejectDeposit}
+              onCancel={() => {
+                setRejectionDialogOpen(false)
+                setSelectedRequest(null)
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Budget Setting Dialog */}
       <Dialog open={budgetDialogOpen} onOpenChange={setBudgetDialogOpen}>
@@ -1078,6 +1405,135 @@ function RequestDepositButton() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </>
+  )
+}
+
+// Deposit Approval Dialog
+function DepositApprovalDialog({
+  request,
+  onApprove,
+  onCancel,
+}: {
+  request: WalletDepositRequest
+  onApprove: (requestId: string, amount: number) => Promise<void>
+  onCancel: () => void
+}) {
+  const [approvedAmount, setApprovedAmount] = useState(request.amount.toString())
+  const [loading, setLoading] = useState(false)
+
+  const handleApprove = async () => {
+    const amount = parseFloat(approvedAmount)
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid amount")
+      return
+    }
+
+    setLoading(true)
+    try {
+      await onApprove(request.id, amount)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="space-y-4">
+        <div>
+          <Label>Requested Amount</Label>
+          <Input value={`₹${request.amount.toLocaleString("en-IN")}`} readOnly />
+        </div>
+        <div>
+          <Label>Approved Amount (₹) *</Label>
+          <Input
+            type="number"
+            value={approvedAmount}
+            onChange={(e) => setApprovedAmount(e.target.value)}
+            placeholder="Enter approved amount"
+            min={0}
+          />
+          <p className="text-sm text-muted-foreground mt-1">
+            You can approve a different amount if needed.
+          </p>
+        </div>
+        {request.proofFile && (
+          <div>
+            <Label>Proof Document</Label>
+            <div className="mt-2 border rounded-lg p-2">
+              <img src={request.proofFile} alt="Proof" className="max-w-full h-auto rounded" />
+            </div>
+          </div>
+        )}
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={handleApprove} disabled={loading}>
+          {loading ? "Approving..." : "Approve Deposit"}
+        </Button>
+      </DialogFooter>
+    </>
+  )
+}
+
+// Deposit Rejection Dialog
+function DepositRejectionDialog({
+  request,
+  onReject,
+  onCancel,
+}: {
+  request: WalletDepositRequest
+  onReject: (requestId: string, reason: string) => Promise<void>
+  onCancel: () => void
+}) {
+  const [reason, setReason] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleReject = async () => {
+    if (!reason.trim()) {
+      toast.error("Please provide a reason for rejection")
+      return
+    }
+
+    setLoading(true)
+    try {
+      await onReject(request.id, reason.trim())
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="space-y-4">
+        <div>
+          <Label>Request Details</Label>
+          <div className="mt-2 p-3 bg-muted rounded-lg text-sm">
+            <div>Request ID: {request.requestId}</div>
+            <div>Agent: {request.agentName}</div>
+            <div>Amount: ₹{request.amount.toLocaleString("en-IN")}</div>
+          </div>
+        </div>
+        <div>
+          <Label>Rejection Reason *</Label>
+          <Textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Enter the reason for rejecting this deposit request..."
+            rows={4}
+          />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="destructive" onClick={handleReject} disabled={loading || !reason.trim()}>
+          {loading ? "Rejecting..." : "Reject Deposit"}
+        </Button>
+      </DialogFooter>
     </>
   )
 }

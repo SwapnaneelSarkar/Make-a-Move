@@ -10,10 +10,14 @@ import { PromotionalBanners } from "@/components/dashboard/promotional-banners"
 import { UrgentAlertsPanel } from "@/components/dashboard/urgent-alerts-panel"
 import { WalletBalanceWidget } from "@/components/dashboard/wallet-balance-widget"
 import { DashboardPersonalization } from "@/components/dashboard/dashboard-personalization"
+import { AdminUsageInsights } from "@/components/dashboard/admin-usage-insights"
 import { usePermissions } from "@/hooks/use-permissions"
+import { useAppStore } from "@/lib/store"
 
 export default function DashboardPage() {
   const { canView } = usePermissions()
+  const { currentUser } = useAppStore()
+  const isAdmin = currentUser.role === "SUPER_ADMIN" || currentUser.role === "AGENCY_ADMIN"
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,6 +44,13 @@ export default function DashboardPage() {
       {canView("wallet") && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <WalletBalanceWidget />
+        </div>
+      )}
+
+      {/* Admin Usage Insights - Only for admins */}
+      {isAdmin && canView("usageInsights") && (
+        <div className="space-y-4">
+          <AdminUsageInsights />
         </div>
       )}
 

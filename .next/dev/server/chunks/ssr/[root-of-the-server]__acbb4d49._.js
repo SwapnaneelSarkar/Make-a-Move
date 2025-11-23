@@ -220,6 +220,8 @@ function Checkbox({ className, ...props }) {
 __turbopack_context__.s([
     "TABLES",
     ()=>TABLES,
+    "agentStatusDB",
+    ()=>agentStatusDB,
     "auditLogsDB",
     ()=>auditLogsDB,
     "bookingsDB",
@@ -258,7 +260,8 @@ const TABLES = {
     AUDIT_LOGS: "audit_logs",
     SCHEDULED_REPORTS: "scheduled_reports",
     PROMOTIONAL_BANNERS: "promotional_banners",
-    WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests"
+    WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
+    AGENT_STATUS: "agent_status"
 };
 // Database initialization
 let dbInstance = null;
@@ -368,6 +371,15 @@ async function initDB() {
                 });
                 depositStore.createIndex("agentId", "agentId");
                 depositStore.createIndex("status", "status");
+            }
+            if (!db.objectStoreNames.contains(TABLES.AGENT_STATUS)) {
+                const statusStore = db.createObjectStore(TABLES.AGENT_STATUS, {
+                    keyPath: "id"
+                });
+                statusStore.createIndex("agentId", "agentId", {
+                    unique: true
+                });
+                statusStore.createIndex("status", "status");
             }
         };
     });
@@ -674,6 +686,44 @@ const walletDepositRequestsDB = {
     delete: (id)=>remove(TABLES.WALLET_DEPOSIT_REQUESTS, id),
     search: (query)=>search(TABLES.WALLET_DEPOSIT_REQUESTS, query),
     filter: (filters)=>filter(TABLES.WALLET_DEPOSIT_REQUESTS, filters)
+};
+const agentStatusDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        return create(TABLES.AGENT_STATUS, {
+            ...data,
+            status: data.status || "Active",
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.AGENT_STATUS, id),
+    readByAgentId: async (agentId)=>{
+        const all = await readAll(TABLES.AGENT_STATUS);
+        return all.find((s)=>s.agentId === agentId);
+    },
+    readAll: ()=>readAll(TABLES.AGENT_STATUS),
+    update: (id, data)=>update(TABLES.AGENT_STATUS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    updateByAgentId: async (agentId, data)=>{
+        const existing = await agentStatusDB.readByAgentId(agentId);
+        if (existing) {
+            return update(TABLES.AGENT_STATUS, existing.id, {
+                ...data,
+                updatedAt: new Date().toISOString()
+            });
+        }
+        // Create if doesn't exist
+        return agentStatusDB.create({
+            agentId,
+            ...data
+        });
+    },
+    delete: (id)=>remove(TABLES.AGENT_STATUS, id),
+    search: (query)=>search(TABLES.AGENT_STATUS, query),
+    filter: (filters)=>filter(TABLES.AGENT_STATUS, filters)
 };
 }),
 "[externals]/fs [external] (fs, cjs)", ((__turbopack_context__, module, exports) => {

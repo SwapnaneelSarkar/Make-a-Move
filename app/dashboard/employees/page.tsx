@@ -21,7 +21,10 @@ import { usePermissions } from "@/hooks/use-permissions"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { agentStatusDB, type AgentStatus } from "@/lib/local-db"
+import { audit } from "@/lib/audit-utils"
 
 export default function EmployeesPage() {
   const { currentUser } = useAppStore()
@@ -29,13 +32,24 @@ export default function EmployeesPage() {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [employees, setEmployees] = useState<User[]>([])
+  const [agentStatuses, setAgentStatuses] = useState<Record<string, AgentStatus>>({})
+  const [suspendDialogOpen, setSuspendDialogOpen] = useState(false)
+  const [reactivateDialogOpen, setReactivateDialogOpen] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState<User | null>(null)
+  const [blacklistStatuses, setBlacklistStatuses] = useState<Record<string, "Blacklisted" | "Whitelisted" | "Normal">>({})
+  const [blacklistDialogOpen, setBlacklistDialogOpen] = useState(false)
+  const [whitelistDialogOpen, setWhitelistDialogOpen] = useState(false)
 
   // Super Admin sees Agent Admins, Agent Admin sees Agents/Sub Agents
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
   const isAgencyAdmin = currentUser.role === "AGENCY_ADMIN"
 
-  // Load employees on mount and when currentUser changes
+  // Load employees and their statuses on mount and when currentUser changes
   useEffect(() => {
+    loadEmployees()
+  }, [isSuperAdmin, isAgencyAdmin])
+
+  const loadEmployees = async () => {
     const filtered = MOCK_USERS.filter((u) => {
       if (isSuperAdmin) {
         // Super Admin can see and add Agent Admins
@@ -47,7 +61,72 @@ export default function EmployeesPage() {
       return false
     })
     setEmployees(filtered)
-  }, [isSuperAdmin, isAgencyAdmin])
+
+    // Load agent statuses
+    const allStatuses = await agentStatusDB.readAll()
+    const statusMap: Record<string, AgentStatus> = {}
+    allStatuses.forEach((status) => {
+      statusMap[status.agentId] = status
+    })
+    setAgentStatuses(statusMap)
+  }
+
+  const getAgentStatus = (agentId: string): "Active" | "Suspended" => {
+    return agentStatuses[agentId]?.status || "Active"
+  }
+
+  const getAgentListStatus = (agentId: string): "Blacklisted" | "Whitelisted" | "Normal" => {
+    return blacklistStatuses[agentId] || "Normal"
+  }
+
+  useEffect(() => {
+    const saved = localStorage.getItem("agent_blacklist_statuses")
+    if (saved) {
+      try {
+        setBlacklistStatuses(JSON.parse(saved))
+      } catch {}
+    }
+  }, [])
+
+  const handleBlacklist = async (agentId: string, reason: string) => {
+    const updated = { ...blacklistStatuses, [agentId]: "Blacklisted" as const }
+    setBlacklistStatuses(updated)
+    localStorage.setItem("agent_blacklist_statuses", JSON.stringify(updated))
+    await audit.create("agents", agentId, {
+      action: "BLACKLIST",
+      reason,
+      blacklistedBy: currentUser.name,
+    })
+    toast.success("Agent blacklisted successfully")
+    setBlacklistDialogOpen(false)
+    setSelectedEmployee(null)
+  }
+
+  const handleWhitelist = async (agentId: string, reason: string) => {
+    const updated = { ...blacklistStatuses, [agentId]: "Whitelisted" as const }
+    setBlacklistStatuses(updated)
+    localStorage.setItem("agent_blacklist_statuses", JSON.stringify(updated))
+    await audit.create("agents", agentId, {
+      action: "WHITELIST",
+      reason,
+      whitelistedBy: currentUser.name,
+    })
+    toast.success("Agent whitelisted successfully")
+    setWhitelistDialogOpen(false)
+    setSelectedEmployee(null)
+  }
+
+  const handleRemoveFromList = async (agentId: string) => {
+    const updated = { ...blacklistStatuses }
+    delete updated[agentId]
+    setBlacklistStatuses(updated)
+    localStorage.setItem("agent_blacklist_statuses", JSON.stringify(updated))
+    await audit.create("agents", agentId, {
+      action: "REMOVE_FROM_LIST",
+      removedBy: currentUser.name,
+    })
+    toast.success("Agent removed from list")
+  }
 
   const filteredEmployees = employees.filter((u) => {
     if (!searchQuery) return true
@@ -103,7 +182,12 @@ export default function EmployeesPage() {
       <div className="flex items-center gap-4 rounded-lg border bg-card p-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search by name, email, or department..." className="pl-9" />
+          <Input 
+            placeholder="Search by name, email, or department..." 
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </div>
 
@@ -154,7 +238,19 @@ export default function EmployeesPage() {
                 </TableCell>
                 <TableCell>Standard Policy</TableCell>
                 <TableCell>
-                  <Badge className="bg-green-500 hover:bg-green-600">Active</Badge>
+                  <div className="flex flex-col gap-1">
+                    {getAgentStatus(employee.id) === "Suspended" ? (
+                      <Badge className="bg-red-500 hover:bg-red-600">Suspended</Badge>
+                    ) : (
+                      <Badge className="bg-green-500 hover:bg-green-600">Active</Badge>
+                    )}
+                    {getAgentListStatus(employee.id) === "Blacklisted" && (
+                      <Badge variant="destructive" className="text-xs">Blacklisted</Badge>
+                    )}
+                    {getAgentListStatus(employee.id) === "Whitelisted" && (
+                      <Badge className="bg-blue-500 hover:bg-blue-600 text-xs">Whitelisted</Badge>
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
@@ -168,7 +264,55 @@ export default function EmployeesPage() {
                       <DropdownMenuItem>View Profile</DropdownMenuItem>
                       <DropdownMenuItem>Edit Details</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive">Deactivate</DropdownMenuItem>
+                      {getAgentStatus(employee.id) === "Active" ? (
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => {
+                            setSelectedEmployee(employee)
+                            setSuspendDialogOpen(true)
+                          }}
+                        >
+                          Suspend Account
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem 
+                          onClick={() => {
+                            setSelectedEmployee(employee)
+                            setReactivateDialogOpen(true)
+                          }}
+                        >
+                          Reactivate Account
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuSeparator />
+                      {getAgentListStatus(employee.id) !== "Blacklisted" && (
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => {
+                            setSelectedEmployee(employee)
+                            setBlacklistDialogOpen(true)
+                          }}
+                        >
+                          Blacklist Agent
+                        </DropdownMenuItem>
+                      )}
+                      {getAgentListStatus(employee.id) !== "Whitelisted" && (
+                        <DropdownMenuItem 
+                          onClick={() => {
+                            setSelectedEmployee(employee)
+                            setWhitelistDialogOpen(true)
+                          }}
+                        >
+                          Whitelist Agent
+                        </DropdownMenuItem>
+                      )}
+                      {(getAgentListStatus(employee.id) === "Blacklisted" || getAgentListStatus(employee.id) === "Whitelisted") && (
+                        <DropdownMenuItem 
+                          onClick={() => handleRemoveFromList(employee.id)}
+                        >
+                          Remove from List
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -193,6 +337,44 @@ export default function EmployeesPage() {
             return [...prev, newUser]
           })
         }}
+      />
+
+      {/* Suspend Account Dialog */}
+      <SuspendAccountDialog
+        open={suspendDialogOpen}
+        onOpenChange={setSuspendDialogOpen}
+        employee={selectedEmployee}
+        onSuspend={async () => {
+          await loadEmployees()
+          setSelectedEmployee(null)
+        }}
+      />
+
+      {/* Reactivate Account Dialog */}
+      <ReactivateAccountDialog
+        open={reactivateDialogOpen}
+        onOpenChange={setReactivateDialogOpen}
+        employee={selectedEmployee}
+        onReactivate={async () => {
+          await loadEmployees()
+          setSelectedEmployee(null)
+        }}
+      />
+
+      {/* Blacklist Dialog */}
+      <BlacklistDialog
+        open={blacklistDialogOpen}
+        onOpenChange={setBlacklistDialogOpen}
+        employee={selectedEmployee}
+        onBlacklist={handleBlacklist}
+      />
+
+      {/* Whitelist Dialog */}
+      <WhitelistDialog
+        open={whitelistDialogOpen}
+        onOpenChange={setWhitelistDialogOpen}
+        employee={selectedEmployee}
+        onWhitelist={handleWhitelist}
       />
     </div>
   )
@@ -324,6 +506,306 @@ function AddUserDialog({
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
             {loading ? "Adding..." : "Add User"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// Suspend Account Dialog
+function SuspendAccountDialog({
+  open,
+  onOpenChange,
+  employee,
+  onSuspend,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employee: User | null
+  onSuspend: () => Promise<void>
+}) {
+  const { currentUser } = useAppStore()
+  const [reason, setReason] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleSuspend = async () => {
+    if (!employee || !reason.trim()) {
+      toast.error("Please provide a reason for suspension")
+      return
+    }
+
+    setLoading(true)
+    try {
+      const now = new Date().toISOString()
+      await agentStatusDB.updateByAgentId(employee.id, {
+        status: "Suspended",
+        reason: reason.trim(),
+        suspendedBy: currentUser.id,
+        suspendedAt: now,
+      })
+
+      await audit.create("agents", employee.id, {
+        action: "SUSPEND",
+        reason: reason.trim(),
+        suspendedBy: currentUser.name,
+        timestamp: now,
+      })
+
+      toast.success("Account suspended successfully", {
+        description: `${employee.name}'s account has been suspended.`,
+      })
+
+      setReason("")
+      onOpenChange(false)
+      await onSuspend()
+    } catch (error) {
+      console.error("Failed to suspend account:", error)
+      toast.error("Failed to suspend account")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Suspend Account</DialogTitle>
+          <DialogDescription>
+            Suspend {employee?.name}'s account. This action will prevent them from accessing the platform.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Reason for Suspension *</Label>
+            <Textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter the reason for suspending this account..."
+              rows={4}
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              This reason will be logged in the audit trail.
+            </p>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={handleSuspend} disabled={loading || !reason.trim()}>
+            {loading ? "Suspending..." : "Suspend Account"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// Reactivate Account Dialog
+function ReactivateAccountDialog({
+  open,
+  onOpenChange,
+  employee,
+  onReactivate,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employee: User | null
+  onReactivate: () => Promise<void>
+}) {
+  const { currentUser } = useAppStore()
+  const [reason, setReason] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleReactivate = async () => {
+    if (!employee) return
+
+    setLoading(true)
+    try {
+      const now = new Date().toISOString()
+      await agentStatusDB.updateByAgentId(employee.id, {
+        status: "Active",
+        reactivatedBy: currentUser.id,
+        reactivatedAt: now,
+        reason: reason.trim() || undefined,
+      })
+
+      await audit.create("agents", employee.id, {
+        action: "REACTIVATE",
+        reason: reason.trim() || "Account reactivated",
+        reactivatedBy: currentUser.name,
+        timestamp: now,
+      })
+
+      toast.success("Account reactivated successfully", {
+        description: `${employee.name}'s account has been reactivated.`,
+      })
+
+      setReason("")
+      onOpenChange(false)
+      await onReactivate()
+    } catch (error) {
+      console.error("Failed to reactivate account:", error)
+      toast.error("Failed to reactivate account")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Reactivate Account</DialogTitle>
+          <DialogDescription>
+            Reactivate {employee?.name}'s account. They will regain access to the platform.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Reason for Reactivation (Optional)</Label>
+            <Textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter the reason for reactivating this account..."
+              rows={4}
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              This reason will be logged in the audit trail.
+            </p>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleReactivate} disabled={loading}>
+            {loading ? "Reactivating..." : "Reactivate Account"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// Blacklist Dialog
+function BlacklistDialog({
+  open,
+  onOpenChange,
+  employee,
+  onBlacklist,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employee: User | null
+  onBlacklist: (agentId: string, reason: string) => Promise<void>
+}) {
+  const [reason, setReason] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleBlacklist = async () => {
+    if (!employee || !reason.trim()) {
+      toast.error("Please provide a reason for blacklisting")
+      return
+    }
+
+    setLoading(true)
+    try {
+      await onBlacklist(employee.id, reason.trim())
+      setReason("")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Blacklist Agent</DialogTitle>
+          <DialogDescription>
+            Blacklist {employee?.name}. Blacklisted agents will have restricted access to the platform.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Reason for Blacklisting *</Label>
+            <Textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter the reason for blacklisting this agent..."
+              rows={4}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={handleBlacklist} disabled={loading || !reason.trim()}>
+            {loading ? "Blacklisting..." : "Blacklist Agent"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// Whitelist Dialog
+function WhitelistDialog({
+  open,
+  onOpenChange,
+  employee,
+  onWhitelist,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employee: User | null
+  onWhitelist: (agentId: string, reason: string) => Promise<void>
+}) {
+  const [reason, setReason] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleWhitelist = async () => {
+    if (!employee) return
+
+    setLoading(true)
+    try {
+      await onWhitelist(employee.id, reason.trim() || "Agent whitelisted for priority access")
+      setReason("")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Whitelist Agent</DialogTitle>
+          <DialogDescription>
+            Whitelist {employee?.name}. Whitelisted agents will have priority access and benefits.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Reason for Whitelisting (Optional)</Label>
+            <Textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter the reason for whitelisting this agent..."
+              rows={4}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleWhitelist} disabled={loading}>
+            {loading ? "Whitelisting..." : "Whitelist Agent"}
           </Button>
         </DialogFooter>
       </DialogContent>
