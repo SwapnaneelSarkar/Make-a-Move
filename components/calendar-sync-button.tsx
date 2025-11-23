@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, Google, Mail } from "lucide-react"
+import { Calendar, Globe, Mail } from "lucide-react"
 import { toast } from "sonner"
 
 export function CalendarSyncButton() {
@@ -35,7 +35,7 @@ export function CalendarSyncButton() {
             className="w-full justify-start"
             onClick={() => handleSync("google")}
           >
-            <Google className="mr-2 h-5 w-5" />
+            <Globe className="mr-2 h-5 w-5" />
             Google Calendar
           </Button>
           <Button
