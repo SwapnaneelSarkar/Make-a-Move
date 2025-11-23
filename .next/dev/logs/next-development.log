@@ -1,0 +1,238 @@
+[00:00:00.487] Server  LOG      ✓ Ready in 318ms
+[00:00:03.881] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:52.883] Server  LOG      ✓ Compiled in 51ms
+[00:00:52.986] Browser ERROR   uncaughtError: ReferenceError: date is not defined
+[00:01:31.410] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:01:31.542] Server  LOG      ✓ Compiled in 79ms
+[00:01:32.059] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:39.421] Server  LOG      ✓ Compiled in 75ms
+[00:01:50.978] Server  LOG      ✓ Compiled in 129ms
+[00:01:57.058] Server  LOG      ✓ Compiled in 62ms
+[00:02:03.118] Server  LOG      ✓ Compiled in 54ms
+[00:02:13.013] Server  LOG      ✓ Compiled in 33ms
+[00:02:25.406] Server  LOG      ✓ Compiled in 25ms
+[00:02:28.781] Server  LOG      ✓ Compiled in 92ms
+[00:02:59.451] Server  LOG      ✓ Compiled in 69ms
+[00:03:05.914] Server  LOG      ✓ Compiled in 69ms
+[00:03:17.113] Server  LOG      ✓ Compiled in 49ms
+[00:03:20.544] Server  LOG      ✓ Compiled in 27ms
+[00:03:30.378] Server  LOG      ✓ Compiled in 62ms
+[00:03:39.040] Server  LOG      ✓ Compiled in 41ms
+[00:04:20.037] Server  LOG      ✓ Compiled in 50ms
+[00:04:26.586] Server  LOG      ✓ Compiled in 37ms
+[00:04:49.522] Server  LOG      ✓ Compiled in 55ms
+[00:04:57.034] Server  LOG      ✓ Compiled in 56ms
+[00:05:12.531] Server  LOG      ✓ Compiled in 65ms
+[00:05:50.621] Server  LOG      ✓ Compiled in 54ms
+[00:05:53.897] Server  LOG      ✓ Compiled in 88ms
+[00:07:32.499] Server  LOG      ✓ Compiled in 43ms
+[00:07:34.735] Server  LOG      ✓ Compiled in 27ms
+[00:07:41.433] Server  LOG      ✓ Compiled in 22ms
+[00:07:44.745] Server  LOG      ✓ Compiled in 39ms
+[00:07:47.012] Server  LOG      ✓ Compiled in 23ms
+[00:07:56.030] Server  LOG      ✓ Compiled in 35ms
+[00:08:09.620] Server  LOG      ✓ Compiled in 40ms
+[00:10:20.714] Server  LOG      ✓ Compiled in 49ms
+[00:10:26.609] Server  LOG      ✓ Compiled in 37ms
+[00:10:27.823] Server  LOG      ✓ Compiled in 61ms
+[00:10:30.175] Server  LOG      ✓ Compiled in 28ms
+[00:10:41.510] Server  LOG      ✓ Compiled in 75ms
+[00:12:01.926] Server  LOG      ✓ Compiled in 46ms
+[00:12:05.653] Server  LOG      ✓ Compiled in 33ms
+[00:12:23.016] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:20.782] Server  LOG      ✓ Compiled in 113ms
+[00:13:33.851] Server  LOG      ✓ Compiled in 60ms
+[00:13:59.428] Server  LOG      ✓ Compiled in 32ms
+[00:14:19.184] Server  LOG      ✓ Compiled in 77ms
+[00:16:05.711] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:42.118] Server  LOG      ✓ Compiled in 82ms
+[00:17:45.739] Server  LOG      ✓ Compiled in 161ms
+[00:20:08.076] Server  LOG      ✓ Compiled in 36ms
+[00:20:15.610] Server  LOG      ✓ Compiled in 53ms
+[00:20:42.134] Server  LOG      ✓ Compiled in 153ms
+[00:21:09.651] Server  LOG      ✓ Compiled in 129ms
+[00:21:22.989] Server  LOG      ✓ Compiled in 70ms
+[00:21:31.700] Server  LOG      ✓ Compiled in 37ms
+[00:21:43.978] Server  LOG      ✓ Compiled in 29ms
+[00:22:12.534] Server  LOG      ✓ Compiled in 110ms
+[00:41:58.113] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:42:10.304] Server  LOG      ✓ Compiled in 53ms
+[00:42:31.257] Server  LOG      ✓ Compiled in 30ms
+[00:43:17.222] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:44.563] Browser LOG     [Audit] User Alex Super revealed sensitive data: email
+[01:03:45.773] Browser LOG     [Audit] User Alex Super revealed sensitive data: email
+[01:03:46.755] Browser LOG     [Audit] User Alex Super revealed sensitive data: email
+[01:03:47.141] Browser LOG     [Audit] User Alex Super revealed sensitive data: email
+[01:03:47.323] Browser LOG     [Audit] User Alex Super revealed sensitive data: email
+[07:53:24.137] Server  LOG      ✓ Compiled in 537ms
+[07:53:56.503] Server  LOG      ✓ Compiled in 151ms
+[07:54:09.000] Server  LOG      ✓ Compiled in 117ms
+[07:55:27.127] Server  LOG      ✓ Compiled in 61ms
+[07:55:33.678] Server  LOG      ✓ Compiled in 323ms
+[07:55:48.124] Server  LOG      ✓ Compiled in 94ms
+[07:57:43.971] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[07:57:44.329] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="/Downloads...">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" suppressHydrationWarning={true}>
+                          <body
+                            className="inter_b2991b2-module__9mH_6q__variable playfair_display_b7700c01-module__LbZqPq..."
+-                           data-new-gr-c-s-check-loaded="14.1264.0"
+-                           data-gr-ext-installed=""
+                          >
+                  ...
+
+[08:03:01.354] Server  LOG      ✓ Compiled in 179ms
+[08:03:50.224] Server  LOG      ✓ Compiled in 189ms
+[08:04:16.742] Server  LOG      ✓ Compiled in 78ms
+[08:08:15.862] Server  LOG      ✓ Compiled in 82ms
+[08:08:30.943] Server  LOG      ✓ Compiled in 112ms
+[08:09:04.091] Server  LOG      ✓ Compiled in 104ms
+[08:09:22.149] Server  LOG      ✓ Compiled in 110ms
+[08:09:31.864] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/employees/page.tsx:149:15
+Parsing ecmascript source code failed
+  147 |                 </TableCell>
+  148 |               </TableRow>
+> 149 |             ))}
+      |               ^
+  150 |           </TableBody>
+  151 |         </Table>
+  152 |       </div>
+
+Expected '</', got '}'
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/employees/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/employees/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/employees/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/employees/page.tsx [Server Component]
+[08:09:45.533] Server  LOG      ✓ Compiled in 113ms
+[08:10:04.919] Server  LOG      ✓ Compiled in 542ms
+[08:10:05.889] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:434:9
+Ecmascript file had an error
+  432 |   }
+  433 |
+> 434 |   const filteredTransactions = transactions.filter((tx) => {
+      |         ^^^^^^^^^^^^^^^^^^^^
+  435 |     if (dateFrom && new Date(tx.date) < dateFrom) return false
+  436 |     if (dateTo && new Date(tx.date) > dateTo) return false
+  437 |     if (transactionType !== "all" && tx.type !== transactionType) return false
+
+the name `filteredTransactions` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:10:08.640] Server  LOG      ✓ Compiled in 100ms
+[08:10:10.721] Browser ERROR   ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx:434:9
+Ecmascript file had an error
+  432 |   }
+  433 |
+> 434 |   const filteredTransactions = transactions.filter((tx) => {
+      |         ^^^^^^^^^^^^^^^^^^^^
+  435 |     if (dateFrom && new Date(tx.date) < dateFrom) return false
+  436 |     if (dateTo && new Date(tx.date) > dateTo) return false
+  437 |     if (transactionType !== "all" && tx.type !== transactionType) return false
+
+the name `filteredTransactions` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/wallet/page.tsx [Server Component]
+[08:16:34.250] Server  LOG      ✓ Compiled in 184ms
+[08:16:55.986] Server  LOG      ✓ Compiled in 118ms
+[08:17:07.478] Server  LOG      ✓ Compiled in 50ms
+[08:17:17.920] Server  LOG      ✓ Compiled in 31ms
+[08:17:29.618] Server  LOG      ✓ Compiled in 82ms
+[08:17:47.111] Server  LOG      ✓ Compiled in 71ms
+[08:17:58.110] Server  LOG      ✓ Compiled in 37ms
+[08:21:21.194] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[08:21:48.147] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[08:21:48.276] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="/Downloads...">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" suppressHydrationWarning={true}>
+                          <body
+                            className="inter_b2991b2-module__9mH_6q__variable playfair_display_b7700c01-module__LbZqPq..."
+-                           data-new-gr-c-s-check-loaded="14.1264.0"
+-                           data-gr-ext-installed=""
+                          >
+                  ...
+
+[08:32:54.182] Server  LOG      ✓ Compiled in 300ms
+[08:35:31.345] Server  LOG      ✓ Compiled in 102ms
+[08:36:48.287] Server  LOG      ✓ Compiled in 146ms
+[08:36:54.889] Server  LOG      ✓ Compiled in 157ms
+[08:37:17.753] Server  LOG      ✓ Compiled in 140ms
+[08:37:26.984] Server  LOG      ✓ Compiled in 104ms
+[08:37:32.407] Server  LOG      ✓ Compiled in 118ms
+[08:37:35.995] Server  LOG      ✓ Compiled in 117ms
+[08:37:54.382] Server  LOG      ✓ Compiled in 55ms
+[08:38:09.321] Server  LOG      ✓ Compiled in 185ms
