@@ -73,6 +73,7 @@ export interface Flight {
   currency: string
   policyCompliant: boolean
   stops: number
+  type?: "DOMESTIC" | "INTERNATIONAL"
 }
 
 export interface Booking {
@@ -521,6 +522,77 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: false, // Premium class - out of policy
     stops: 0,
+  },
+  // International routes
+  {
+    id: "f19",
+    airline: "Air India",
+    airlineLogo: "/air-india-logo.jpg",
+    flightNumber: "AI-101",
+    departure: { code: "DEL", city: "New Delhi", time: "2024-06-20T01:45:00" },
+    arrival: { code: "LHR", city: "London Heathrow", time: "2024-06-20T07:15:00" },
+    duration: "9h 30m",
+    price: 52000,
+    currency: "INR",
+    policyCompliant: false,
+    stops: 0,
+    type: "INTERNATIONAL",
+  },
+  {
+    id: "f20",
+    airline: "Emirates",
+    airlineLogo: "/placeholder-logo.svg",
+    flightNumber: "EK-507",
+    departure: { code: "BOM", city: "Mumbai", time: "2024-06-22T03:30:00" },
+    arrival: { code: "DXB", city: "Dubai", time: "2024-06-22T05:00:00" },
+    duration: "2h 30m",
+    price: 28000,
+    currency: "INR",
+    policyCompliant: true,
+    stops: 0,
+    type: "INTERNATIONAL",
+  },
+  {
+    id: "f21",
+    airline: "Singapore Airlines",
+    airlineLogo: "/placeholder-logo.svg",
+    flightNumber: "SQ-511",
+    departure: { code: "BLR", city: "Bangalore", time: "2024-06-25T00:30:00" },
+    arrival: { code: "SIN", city: "Singapore", time: "2024-06-25T07:10:00" },
+    duration: "4h 10m",
+    price: 36000,
+    currency: "INR",
+    policyCompliant: true,
+    stops: 0,
+    type: "INTERNATIONAL",
+  },
+  {
+    id: "f22",
+    airline: "Qatar Airways",
+    airlineLogo: "/placeholder-logo.svg",
+    flightNumber: "QR-571",
+    departure: { code: "DEL", city: "New Delhi", time: "2024-06-28T02:15:00" },
+    arrival: { code: "DOH", city: "Doha", time: "2024-06-28T04:00:00" },
+    duration: "3h 15m",
+    price: 30000,
+    currency: "INR",
+    policyCompliant: true,
+    stops: 0,
+    type: "INTERNATIONAL",
+  },
+  {
+    id: "f23",
+    airline: "Lufthansa",
+    airlineLogo: "/placeholder-logo.svg",
+    flightNumber: "LH-763",
+    departure: { code: "DEL", city: "New Delhi", time: "2024-07-01T02:50:00" },
+    arrival: { code: "FRA", city: "Frankfurt", time: "2024-07-01T08:45:00" },
+    duration: "8h 25m",
+    price: 48000,
+    currency: "INR",
+    policyCompliant: false,
+    stops: 0,
+    type: "INTERNATIONAL",
   },
 ]
 

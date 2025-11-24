@@ -542,32 +542,40 @@ export default function HotelsPage() {
   })
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Hotel Booking</h1>
-        <p className="text-muted-foreground">Find comfortable and compliant stays for your business trip.</p>
+    <div className="flex flex-col gap-8">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          Hotel Booking
+        </h1>
+        <p className="text-lg text-muted-foreground">Find comfortable and compliant stays for your business trip.</p>
       </div>
 
       {/* Progress Indicator */}
       <div className="w-full overflow-x-auto pb-4">
-        <div className="flex items-center min-w-max">
+        <div className="flex items-center min-w-max gap-2">
           {BOOKING_STAGES.map((stage, index) => (
             <div key={stage.id} className="flex items-center">
               <div
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-medium transition-colors",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-semibold transition-all duration-200 shadow-sm",
                   index === currentStage
-                    ? "bg-primary text-primary-foreground border-primary"
+                    ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
                     : index < currentStage
-                      ? "bg-muted text-muted-foreground border-transparent"
+                      ? "bg-primary/10 text-primary border-primary/30"
                       : "bg-background text-muted-foreground border-border",
                 )}
               >
-                {index < currentStage ? <CheckCircle2 className="w-4 h-4" /> : <span>{index + 1}</span>}
+                {index < currentStage ? (
+                  <CheckCircle2 className="w-4 h-4" />
+                ) : (
+                  <span className={cn("w-5 h-5 rounded-full flex items-center justify-center text-xs", index === currentStage && "bg-primary-foreground/20")}>
+                    {index + 1}
+                  </span>
+                )}
                 {stage.label}
               </div>
               {index < BOOKING_STAGES.length - 1 && (
-                <div className={cn("w-8 h-px mx-2", index < currentStage ? "bg-primary" : "bg-border")} />
+                <div className={cn("w-12 h-0.5 mx-2 transition-colors", index < currentStage ? "bg-primary" : "bg-border")} />
               )}
             </div>
           ))}
@@ -577,16 +585,16 @@ export default function HotelsPage() {
       {/* Stage 1: Search */}
       <Card
         className={cn(
-          "transition-all",
+          "border-2 shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/5",
           currentStage !== 0 && "opacity-50 pointer-events-none grayscale",
         )}
       >
         <CardHeader>
           <div className="flex items-center gap-2">
-            {currentStage > 0 && <Lock className="w-4 h-4 text-muted-foreground" />}
-            <CardTitle>Search Criteria</CardTitle>
+            {currentStage > 0 && <Lock className="w-5 h-5 text-muted-foreground" />}
+            <CardTitle className="text-2xl font-bold">Search Criteria</CardTitle>
           </div>
-          <CardDescription>Enter your hotel search requirements</CardDescription>
+          <CardDescription className="text-base">Enter your hotel search requirements</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -769,9 +777,13 @@ export default function HotelsPage() {
           </div>
 
           {currentStage === 0 && (
-            <div className="flex justify-end mt-4">
-              <Button size="lg" onClick={handleSearch}>
-                <Search className="mr-2 h-4 w-4" />
+            <div className="flex justify-end mt-6">
+              <Button 
+                size="lg" 
+                onClick={handleSearch}
+                className="min-w-[180px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-200 font-semibold text-base h-12"
+              >
+                <Search className="mr-2 h-5 w-5" />
                 Search Hotels
               </Button>
             </div>
@@ -781,18 +793,18 @@ export default function HotelsPage() {
 
       {/* Stage 2: Hotel Listing */}
       {currentStage >= 1 && (
-        <Card className={cn(currentStage > 1 && "opacity-50 pointer-events-none grayscale")}>
+        <Card className={cn("border-2 shadow-lg", currentStage > 1 && "opacity-50 pointer-events-none grayscale")}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {currentStage > 1 && <Lock className="w-4 h-4 text-muted-foreground" />}
-                <CardTitle>Available Hotels</CardTitle>
+                {currentStage > 1 && <Lock className="w-5 h-5 text-muted-foreground" />}
+                <CardTitle className="text-2xl font-bold">Available Hotels</CardTitle>
               </div>
               <Button variant="outline" size="sm" className="lg:hidden">
                 <Filter className="mr-2 h-4 w-4" /> Filters
               </Button>
             </div>
-            <CardDescription>
+            <CardDescription className="text-base">
               {filteredHotels.length} hotel{filteredHotels.length !== 1 ? "s" : ""} found
               {searchData.location && ` in ${searchData.location}`}
             </CardDescription>
@@ -827,18 +839,18 @@ export default function HotelsPage() {
 
       {/* Stage 3: Room Selection */}
       {currentStage === 2 && selectedHotel && (
-        <Card>
+        <Card className="border-2 shadow-lg">
           <CardHeader>
-            <CardTitle>Room Selection</CardTitle>
-            <CardDescription>Select room type and board basis</CardDescription>
+            <CardTitle className="text-2xl font-bold">Room Selection</CardTitle>
+            <CardDescription className="text-base">Select room type and board basis</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {selectedHotel.rooms?.map((room) => {
                 const selectedRoom = selectedRooms.find((r) => r.roomId === room.id)
                 return (
-                  <Card key={room.id} className={cn(!room.available && "opacity-50")}>
-                    <CardContent className="p-4">
+                  <Card key={room.id} className={cn("border-2 transition-all hover:shadow-md", !room.available && "opacity-50")}>
+                    <CardContent className="p-5">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
@@ -925,8 +937,8 @@ export default function HotelsPage() {
                 </Alert>
               )}
 
-              <div className="flex justify-end mt-4">
-                <Button onClick={handleNextStage} disabled={selectedRooms.length === 0}>
+              <div className="flex justify-end mt-6">
+                <Button onClick={handleNextStage} disabled={selectedRooms.length === 0} size="lg" className="min-w-[200px] font-semibold">
                   Continue to Guest Details <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -937,10 +949,10 @@ export default function HotelsPage() {
 
       {/* Stage 4: Guest Details + Add-ons */}
       {currentStage === 3 && selectedHotel && (
-        <Card>
+        <Card className="border-2 shadow-lg">
           <CardHeader>
-            <CardTitle>Guest Details + Add-ons</CardTitle>
-            <CardDescription>Enter guest information and select add-ons</CardDescription>
+            <CardTitle className="text-2xl font-bold">Guest Details + Add-ons</CardTitle>
+            <CardDescription className="text-base">Enter guest information and select add-ons</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1116,8 +1128,8 @@ export default function HotelsPage() {
             </div>
             {errors.acceptPolicies && <p className="text-xs text-red-500">{errors.acceptPolicies}</p>}
 
-            <div className="flex justify-end">
-              <Button onClick={handleNextStage}>
+            <div className="flex justify-end pt-2">
+              <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
                 Continue to Payment <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -1127,10 +1139,10 @@ export default function HotelsPage() {
 
       {/* Stage 5: Payment */}
       {currentStage === 4 && selectedHotel && (
-        <Card>
+        <Card className="border-2 shadow-lg">
           <CardHeader>
-            <CardTitle>Payment</CardTitle>
-            <CardDescription>Select payment method and review fare breakdown</CardDescription>
+            <CardTitle className="text-2xl font-bold">Payment</CardTitle>
+            <CardDescription className="text-base">Select payment method and review fare breakdown</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {paymentTimeout !== null && paymentTimeout > 0 && (
@@ -1251,8 +1263,8 @@ export default function HotelsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <Button onClick={handleNextStage} className="bg-green-600 hover:bg-green-700">
+            <div className="flex justify-end pt-2">
+              <Button onClick={handleNextStage} size="lg" className="min-w-[200px] bg-green-600 hover:bg-green-700 font-semibold shadow-lg hover:shadow-xl transition-all">
                 Pay & Confirm
               </Button>
             </div>
@@ -1262,25 +1274,25 @@ export default function HotelsPage() {
 
       {/* Stage 6: Confirmation */}
       {currentStage === 5 && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-2 border-green-300 bg-gradient-to-br from-green-50 to-green-100/50 shadow-xl">
           <CardContent className="p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="h-8 w-8 text-green-600" />
+            <div className="flex justify-center mb-6">
+              <div className="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircle2 className="h-10 w-10 text-green-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-green-800 mb-2">Booking Confirmed!</h2>
-            <p className="text-green-700 mb-6">Your hotel stay has been successfully reserved.</p>
+            <h2 className="text-3xl font-bold text-green-800 mb-3">Booking Confirmed!</h2>
+            <p className="text-lg text-green-700 mb-8 font-medium">Your hotel stay has been successfully reserved.</p>
 
-            <div className="bg-white rounded-lg p-6 mb-6 text-left max-w-md mx-auto">
-              <div className="space-y-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-8 text-left max-w-md mx-auto border-2 border-green-200 shadow-lg">
+              <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="font-medium">Booking ID:</span>
-                  <span className="font-mono">{bookingId}</span>
+                  <span className="font-bold text-base">Booking ID:</span>
+                  <span className="font-mono text-xl font-bold text-primary">{bookingId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium">Voucher Number:</span>
-                  <span className="font-mono">{voucherNumber}</span>
+                  <span className="font-bold text-base">Voucher Number:</span>
+                  <span className="font-mono text-xl font-bold text-primary">{voucherNumber}</span>
                 </div>
                 {selectedHotel && (
                   <>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { FlightSearch } from "@/components/booking/flight-search"
 import { FlightCard } from "@/components/booking/flight-card"
 import { MOCK_FLIGHTS, type Flight } from "@/lib/mock-data"
@@ -82,6 +82,7 @@ export default function FlightsPage() {
     email: "",
     gst: "",
     passport: "",
+    passportExpiry: "",
   })
 
   // Ancillaries State
@@ -106,6 +107,12 @@ export default function FlightsPage() {
   const fareReviewStartTimeRef = useRef<number | null>(null)
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const filteredFlights = useMemo(() => {
+    return MOCK_FLIGHTS.filter((flight) => {
+      const flightIsInternational = flight.type === "INTERNATIONAL"
+      return isInternational ? flightIsInternational : !flightIsInternational
+    })
+  }, [isInternational])
 
   // Payment timeout timer effect
   useEffect(() => {
@@ -426,6 +433,20 @@ export default function FlightsPage() {
       } else if (!/^[A-Z]{1}[0-9]{7}$/.test(passengerDetails.passport.toUpperCase())) {
         newErrors.passport = "Passport number must be 1 letter followed by 7 digits (e.g., A1234567)"
       }
+
+      if (!passengerDetails.passportExpiry) {
+        newErrors.passportExpiry = "Passport expiry date is required for international flights"
+      } else {
+        const expiryDate = new Date(passengerDetails.passportExpiry)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        if (isNaN(expiryDate.getTime())) {
+          newErrors.passportExpiry = "Please enter a valid expiry date"
+        } else if (expiryDate <= today) {
+          newErrors.passportExpiry = "Passport expiry date must be in the future"
+        }
+      }
     }
 
     setErrors(newErrors)
@@ -607,14 +628,16 @@ export default function FlightsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Flight Booking</h1>
-        <p className="text-muted-foreground">Search and book flights for your business travel.</p>
+    <div className="flex flex-col gap-8">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          Flight Booking
+        </h1>
+        <p className="text-lg text-muted-foreground">Search and book flights for your business travel with ease.</p>
       </div>
 
       <div className="w-full overflow-x-auto pb-4">
-        <div className="flex items-center min-w-max">
+        <div className="flex items-center min-w-max gap-2">
           {BOOKING_STAGES.map((stage, index) => {
             const stageIndex = getCurrentStageIndex()
             const isCurrent = stage.id === currentStage
@@ -623,19 +646,25 @@ export default function FlightsPage() {
               <div key={stage.id} className="flex items-center">
                 <div
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-medium transition-colors",
+                    "flex items-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-semibold transition-all duration-200 shadow-sm",
                     isCurrent
-                      ? "bg-primary text-primary-foreground border-primary"
+                      ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
                       : isCompleted
-                        ? "bg-muted text-muted-foreground border-transparent"
+                        ? "bg-primary/10 text-primary border-primary/30"
                         : "bg-background text-muted-foreground border-border",
                   )}
                 >
-                  {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <span>{index + 1}</span>}
+                  {isCompleted ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    <span className={cn("w-5 h-5 rounded-full flex items-center justify-center text-xs", isCurrent && "bg-primary-foreground/20")}>
+                      {index + 1}
+                    </span>
+                  )}
                   {stage.label}
                 </div>
                 {index < BOOKING_STAGES.length - 1 && (
-                  <div className={cn("w-8 h-px mx-2", isCompleted ? "bg-primary" : "bg-border")} />
+                  <div className={cn("w-12 h-0.5 mx-2 transition-colors", isCompleted ? "bg-primary" : "bg-border")} />
                 )}
               </div>
             )
@@ -644,10 +673,10 @@ export default function FlightsPage() {
       </div>
 
       {/* Stage 0: Search */}
-      <div className={cn(currentStage !== "Search" && "opacity-50 pointer-events-none grayscale")}>
-        <div className="flex items-center gap-2 mb-2">
-          {currentStage !== "Search" && <Lock className="w-4 h-4 text-muted-foreground" />}
-          <h2 className="text-lg font-semibold">Search Criteria</h2>
+      <div className={cn("transition-all duration-300", currentStage !== "Search" && "opacity-50 pointer-events-none grayscale")}>
+        <div className="flex items-center gap-2 mb-4">
+          {currentStage !== "Search" && <Lock className="w-5 h-5 text-muted-foreground" />}
+          <h2 className="text-2xl font-bold">Search Criteria</h2>
         </div>
         <FlightSearch
           tripType={searchData.tripType}
@@ -678,10 +707,10 @@ export default function FlightsPage() {
         <div className={cn("grid gap-6 lg:grid-cols-4", getCurrentStageIndex() > 1 && "hidden")}>
           {/* ... existing sidebar filters ... */}
           <div className="hidden space-y-6 lg:block">
-            <div className="rounded-lg border bg-card p-4">
+            <div className="rounded-xl border-2 bg-card p-5 shadow-sm">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-semibold">Filters</h3>
-                <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-lg font-bold">Filters</h3>
+                <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
               </div>
 
               <div className="space-y-4">
@@ -724,18 +753,29 @@ export default function FlightsPage() {
 
           {/* Results */}
           <div className="col-span-3 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{MOCK_FLIGHTS.length} Flights Found</h2>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h2 className="text-2xl font-bold">{filteredFlights.length} Flights Found</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {isInternational ? "Showing international routes" : "Showing domestic routes"}
+                </p>
+              </div>
               <Button variant="outline" size="sm" className="lg:hidden bg-transparent">
                 <Filter className="mr-2 h-4 w-4" /> Filters
               </Button>
             </div>
 
-            <div className="space-y-4">
-              {MOCK_FLIGHTS.map((flight) => (
-                <FlightCard key={flight.id} flight={flight} onBook={handleBook} userRole={currentUser.role} />
-              ))}
-            </div>
+            {filteredFlights.length === 0 ? (
+              <div className="rounded-xl border-2 border-dashed p-6 text-center text-sm text-muted-foreground">
+                No {isInternational ? "international" : "domestic"} flights available right now. Try adjusting your search.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredFlights.map((flight) => (
+                  <FlightCard key={flight.id} flight={flight} onBook={handleBook} userRole={currentUser.role} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -762,41 +802,43 @@ export default function FlightsPage() {
 
       {/* Stage 2: Fare Review */}
       {currentStage === "Fare Review" && selectedFlight && (
-        <div className="border rounded-lg p-6 space-y-4 bg-card">
-          <h3 className="text-xl font-semibold">Fare Review</h3>
+        <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg">
+          <div className="flex items-center gap-2">
+            <h3 className="text-2xl font-bold">Fare Review</h3>
+          </div>
           
           {/* Policy Compliance Warnings - Only show to AGENT and SUB_AGENT */}
           {policyCheckResult &&
             !policyCheckResult.compliant &&
             (currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT") && (
-              <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 space-y-2">
+              <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-950/10 border-2 border-yellow-300 dark:border-yellow-800 rounded-xl p-5 space-y-3 shadow-sm">
                 <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
                   <AlertCircle className="h-5 w-5" />
-                  <span className="font-semibold">Out of Policy - Approval Required</span>
+                  <span className="font-bold text-base">Out of Policy - Approval Required</span>
                 </div>
-                <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300 space-y-1 ml-2">
+                <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300 space-y-1.5 ml-2">
                   {policyCheckResult.violations.map((violation, idx) => (
-                    <li key={idx}>{violation}</li>
+                    <li key={idx} className="font-medium">{violation}</li>
                   ))}
                 </ul>
               </div>
             )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Base Fare</p>
-              <p className="font-medium">
-                {selectedFlight.currency} {selectedFlight.price}
+          <div className="grid grid-cols-2 gap-6 bg-muted/30 rounded-xl p-5">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">Base Fare</p>
+              <p className="text-xl font-bold">
+                {selectedFlight.currency} {selectedFlight.price.toLocaleString("en-IN")}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Taxes & Fees</p>
-              <p className="font-medium">₹3,750</p>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">Taxes & Fees</p>
+              <p className="text-xl font-bold">₹3,750</p>
             </div>
-            <Separator className="col-span-2" />
-            <div className="col-span-2 flex justify-between items-center">
-              <span className="font-bold">Total</span>
-              <span className="font-bold text-lg">
+            <Separator className="col-span-2 my-2" />
+            <div className="col-span-2 flex justify-between items-center pt-2">
+              <span className="text-lg font-bold">Total Amount</span>
+              <span className="text-2xl font-bold text-primary">
                 ₹
                 {(
                   selectedFlight.price +
@@ -824,9 +866,9 @@ export default function FlightsPage() {
             </Label>
           </div>
 
-          <div className="flex justify-end">
-            <Button onClick={handleNextStage} disabled={!fareAccepted}>
-              Continue to Passenger Details
+          <div className="flex justify-end pt-2">
+            <Button onClick={handleNextStage} disabled={!fareAccepted} size="lg" className="min-w-[200px] font-semibold">
+              Continue to Passenger Details <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </div>
@@ -835,18 +877,18 @@ export default function FlightsPage() {
       {/* Stage 3: Passenger Details */}
       <div
         className={cn(
-          "border rounded-lg p-6 space-y-4 bg-card transition-all",
+          "border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all",
           getCurrentStageIndex() < 3 ? "hidden" : getCurrentStageIndex() > 3 ? "opacity-50 pointer-events-none" : "",
         )}
       >
-        <div className="flex items-center gap-2 mb-4">
-          {getCurrentStageIndex() > 3 && <Lock className="w-4 h-4 text-muted-foreground" />}
-          <h3 className="text-xl font-semibold">Passenger Details</h3>
+        <div className="flex items-center gap-2 mb-2">
+          {getCurrentStageIndex() > 3 && <Lock className="w-5 h-5 text-muted-foreground" />}
+          <h3 className="text-2xl font-bold">Passenger Details</h3>
         </div>
 
         {/* Passenger Count Selection */}
-        <div className="border rounded-lg p-4 bg-muted/30 mb-6">
-          <Label className="text-base font-semibold mb-4 block">Number of Passengers</Label>
+        <div className="border-2 rounded-xl p-5 bg-gradient-to-br from-muted/50 to-muted/30 mb-6">
+          <Label className="text-lg font-bold mb-4 block">Number of Passengers</Label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="adults" className="text-sm">
@@ -967,8 +1009,8 @@ export default function FlightsPage() {
               </p>
             </div>
           </div>
-          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-md">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 border-2 border-blue-200 dark:border-blue-800 rounded-xl">
+            <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">
               <strong>Total Passengers:</strong> {passengerCount.adults + passengerCount.children + passengerCount.infants} 
               {" "}({passengerCount.adults} adult{passengerCount.adults !== 1 ? "s" : ""}
               {passengerCount.children > 0 && `, ${passengerCount.children} child${passengerCount.children !== 1 ? "ren" : ""}`}
@@ -1064,33 +1106,50 @@ export default function FlightsPage() {
             {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
           </div>
 
-          {/* Passport field for international flights */}
+          {/* Passport fields for international flights */}
           {isInternational && (
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="passport">
-                Passport Number <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="passport"
-                value={passengerDetails.passport}
-                onChange={(e) =>
-                  setPassengerDetails({ ...passengerDetails, passport: e.target.value.toUpperCase() })
-                }
-                placeholder="A1234567"
-                maxLength={8}
-                className={cn(errors.passport && "border-red-500")}
-              />
-              {errors.passport && <p className="text-xs text-red-500">{errors.passport}</p>}
-              <p className="text-xs text-muted-foreground">
-                Format: 1 letter followed by 7 digits (e.g., A1234567)
-              </p>
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="passport">
+                  Passport Number <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="passport"
+                  value={passengerDetails.passport}
+                  onChange={(e) =>
+                    setPassengerDetails({ ...passengerDetails, passport: e.target.value.toUpperCase() })
+                  }
+                  placeholder="A1234567"
+                  maxLength={8}
+                  className={cn(errors.passport && "border-red-500")}
+                />
+                {errors.passport && <p className="text-xs text-red-500">{errors.passport}</p>}
+                <p className="text-xs text-muted-foreground">
+                  Format: 1 letter followed by 7 digits (e.g., A1234567)
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="passportExpiry">
+                  Passport Expiry Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="passportExpiry"
+                  type="date"
+                  value={passengerDetails.passportExpiry}
+                  onChange={(e) =>
+                    setPassengerDetails({ ...passengerDetails, passportExpiry: e.target.value })
+                  }
+                  className={cn(errors.passportExpiry && "border-red-500")}
+                />
+                {errors.passportExpiry && <p className="text-xs text-red-500">{errors.passportExpiry}</p>}
+              </div>
             </div>
           )}
         </div>
 
         {currentStage === "Passenger Details" && (
           <div className="flex justify-end pt-4">
-            <Button onClick={handleNextStage}>
+            <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
               Continue to Ancillaries <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -1101,21 +1160,22 @@ export default function FlightsPage() {
       {getCurrentStageIndex() >= 4 && (
         <div
           className={cn(
-            "border rounded-lg p-6 space-y-4 bg-card transition-all",
+            "border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all",
             getCurrentStageIndex() > 4 ? "opacity-50 pointer-events-none" : "",
           )}
         >
-          <div className="flex items-center gap-2 mb-4">
-            {getCurrentStageIndex() > 4 && <Lock className="w-4 h-4 text-muted-foreground" />}
-            <h3 className="text-xl font-semibold">Ancillaries</h3>
+          <div className="flex items-center gap-2 mb-2">
+            {getCurrentStageIndex() > 4 && <Lock className="w-5 h-5 text-muted-foreground" />}
+            <h3 className="text-2xl font-bold">Ancillaries</h3>
+            <p className="text-sm text-muted-foreground ml-2">(Optional)</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div
               className={cn(
-                "border p-4 rounded-md cursor-pointer transition-all",
+                "border-2 p-5 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md",
                 ancillaries.extraBaggage
-                  ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                  : "hover:border-primary/50",
+                  ? "border-primary bg-primary/10 ring-2 ring-primary/20 shadow-sm"
+                  : "hover:border-primary/50 hover:bg-muted/50",
               )}
               onClick={() =>
                 setAncillaries({ ...ancillaries, extraBaggage: !ancillaries.extraBaggage })
@@ -1147,10 +1207,10 @@ export default function FlightsPage() {
             </div>
             <div
               className={cn(
-                "border p-4 rounded-md cursor-pointer transition-all",
+                "border-2 p-5 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md",
                 ancillaries.mealSelection
-                  ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                  : "hover:border-primary/50",
+                  ? "border-primary bg-primary/10 ring-2 ring-primary/20 shadow-sm"
+                  : "hover:border-primary/50 hover:bg-muted/50",
               )}
               onClick={() =>
                 setAncillaries({ ...ancillaries, mealSelection: !ancillaries.mealSelection })
@@ -1182,10 +1242,10 @@ export default function FlightsPage() {
             </div>
             <div
               className={cn(
-                "border p-4 rounded-md cursor-pointer transition-all",
+                "border-2 p-5 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md",
                 ancillaries.seatSelection
-                  ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                  : "hover:border-primary/50",
+                  ? "border-primary bg-primary/10 ring-2 ring-primary/20 shadow-sm"
+                  : "hover:border-primary/50 hover:bg-muted/50",
               )}
               onClick={() =>
                 setAncillaries({ ...ancillaries, seatSelection: !ancillaries.seatSelection })
@@ -1242,7 +1302,9 @@ export default function FlightsPage() {
           )}
           {currentStage === "Ancillaries" && (
             <div className="flex justify-end pt-4">
-              <Button onClick={handleNextStage}>Continue to Payment</Button>
+              <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
+                Continue to Payment <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
             </div>
           )}
         </div>
@@ -1250,9 +1312,9 @@ export default function FlightsPage() {
 
       {/* Stage 5: Payment */}
       {currentStage === "Payment Pending" && (
-        <div className="border rounded-lg p-6 space-y-6 bg-card">
+        <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Payment Pending</h3>
+            <h3 className="text-2xl font-bold">Payment Pending</h3>
             {paymentTimeout !== null && (
               <Badge variant={paymentTimeout < 3 ? "destructive" : "secondary"}>
                 Time remaining: {paymentTimeout} min
@@ -1260,8 +1322,8 @@ export default function FlightsPage() {
             )}
           </div>
 
-          <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-md border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200">
-            <p className="font-medium">
+          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-950/10 p-5 rounded-xl border-2 border-yellow-300 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 shadow-sm">
+            <p className="font-bold text-lg">
               Total Amount: ₹
               {selectedFlight
                 ? (
@@ -1273,19 +1335,20 @@ export default function FlightsPage() {
                   ).toLocaleString("en-IN")
                 : 0}
             </p>
-            <p className="text-sm">Please proceed to payment gateway to confirm your booking.</p>
+            <p className="text-sm mt-2">Please proceed to payment gateway to confirm your booking.</p>
             {paymentTimeout !== null && paymentTimeout < 5 && (
-              <p className="text-sm font-semibold mt-2">
-                ⚠️ Payment session expires in {paymentTimeout} minute{paymentTimeout !== 1 ? "s" : ""}
+              <p className="text-sm font-semibold mt-3 flex items-center gap-1">
+                <AlertCircle className="h-4 w-4" />
+                Payment session expires in {paymentTimeout} minute{paymentTimeout !== 1 ? "s" : ""}
               </p>
             )}
           </div>
 
           {/* Wallet Balance Display */}
-          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-md border border-blue-200 dark:border-blue-800">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 p-5 rounded-xl border-2 border-blue-200 dark:border-blue-800 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Wallet Balance:</span>
-              <span className="text-lg font-bold text-blue-900 dark:text-blue-100">
+              <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">Wallet Balance:</span>
+              <span className="text-xl font-bold text-blue-900 dark:text-blue-100">
                 ₹{parseFloat(localStorage.getItem("wallet_balance") || "0").toLocaleString("en-IN")}
               </span>
             </div>
@@ -1345,8 +1408,8 @@ export default function FlightsPage() {
               </Label>
             </div>
           </div>
-          <div className="flex justify-end">
-            <Button onClick={handleNextStage} className="bg-green-600 hover:bg-green-700">
+          <div className="flex justify-end pt-2">
+            <Button onClick={handleNextStage} size="lg" className="min-w-[200px] bg-green-600 hover:bg-green-700 font-semibold shadow-lg hover:shadow-xl transition-all">
               Pay & Confirm
             </Button>
           </div>
@@ -1355,23 +1418,23 @@ export default function FlightsPage() {
 
       {/* Stage 6: Confirmed */}
       {currentStage === "Booking Confirmed" && (
-        <div className="border rounded-lg p-8 text-center bg-green-50 border-green-200">
-          <div className="flex justify-center mb-4">
-            <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle2 className="h-8 w-8 text-green-600" />
+        <div className="border-2 rounded-xl p-8 text-center bg-gradient-to-br from-green-50 to-green-100/50 border-green-300 shadow-xl">
+          <div className="flex justify-center mb-6">
+            <div className="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center shadow-lg">
+              <CheckCircle2 className="h-10 w-10 text-green-600" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-green-800 mb-2">Booking Confirmed!</h2>
-          <p className="text-green-700 mb-6">Your flight has been successfully booked and ticketed.</p>
+          <h2 className="text-3xl font-bold text-green-800 mb-3">Booking Confirmed!</h2>
+          <p className="text-lg text-green-700 mb-8 font-medium">Your flight has been successfully booked and ticketed.</p>
           {bookingId && pnr && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 space-y-2 max-w-md mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-8 space-y-3 max-w-md mx-auto border-2 border-green-200 shadow-lg">
               <div className="flex items-center justify-between">
-                <span className="font-semibold">Booking ID:</span>
-                <span className="font-mono text-lg">{bookingId}</span>
+                <span className="font-bold text-base">Booking ID:</span>
+                <span className="font-mono text-xl font-bold text-primary">{bookingId}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-semibold">PNR:</span>
-                <span className="font-mono text-lg">{pnr}</span>
+                <span className="font-bold text-base">PNR:</span>
+                <span className="font-mono text-xl font-bold text-primary">{pnr}</span>
               </div>
             </div>
           )}

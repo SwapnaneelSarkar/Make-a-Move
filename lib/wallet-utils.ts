@@ -12,7 +12,7 @@ const MAX_ADD_FUNDS = 500000
 export function getWalletBalance(): number {
   if (typeof window === "undefined") return 0
   const stored = localStorage.getItem(WALLET_BALANCE_KEY)
-  return stored ? parseFloat(stored) : 2543000 // Default balance
+  return stored ? parseFloat(stored) : 100000 // Default balance
 }
 
 export function setWalletBalance(balance: number) {
@@ -184,4 +184,6 @@ export function formatTimeAgo(date: Date): string {
 
 // Export constants
 export { MIN_ADD_FUNDS, MAX_ADD_FUNDS }
+
+
 

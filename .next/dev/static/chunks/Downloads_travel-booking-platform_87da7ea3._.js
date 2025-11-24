@@ -2379,7 +2379,7 @@ function getWalletBalance() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
     const stored = localStorage.getItem(WALLET_BALANCE_KEY);
-    return stored ? parseFloat(stored) : 2543000 // Default balance
+    return stored ? parseFloat(stored) : 100000 // Default balance
     ;
 }
 function setWalletBalance(balance) {

@@ -1,2 +1,1491 @@
-[00:00:00.465] Server  LOG      ✓ Ready in 293ms
-[00:00:04.231] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:00.740] Server  LOG      ✓ Ready in 547ms
+[00:00:02.348] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:03.324] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:04.136] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:17.662] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:27.338] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:00:27.338] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:00:27.338] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:00:27.338] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:04:21.150] Server  LOG      ✓ Compiled in 78ms
+[00:04:30.365] Server  LOG      ✓ Compiled in 68ms
+[00:04:41.097] Server  LOG      ✓ Compiled in 58ms
+[00:05:00.062] Server  LOG      ✓ Compiled in 54ms
+[00:05:31.626] Server  LOG      ✓ Compiled in 38ms
+[00:05:42.844] Server  LOG      ✓ Compiled in 33ms
+[00:07:31.819] Server  LOG      ✓ Compiled in 71ms
+[00:10:25.030] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:25.569] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:10:25.569] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:10:25.569] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:10:25.569] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[00:10:26.320] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:18.521] Server  LOG      ✓ Compiled in 53ms
+[00:13:23.206] Server  LOG      ✓ Compiled in 40ms
+[00:13:33.893] Server  LOG      ✓ Compiled in 155ms
+[00:13:40.854] Server  LOG      ✓ Compiled in 81ms
+[00:13:52.306] Server  LOG      ✓ Compiled in 61ms
+[00:14:08.622] Server  LOG      ✓ Compiled in 73ms
+[00:16:18.842] Server  LOG      ✓ Compiled in 105ms
+[00:17:26.038] Server  LOG      ✓ Compiled in 55ms
+[00:19:11.516] Server  LOG      ✓ Compiled in 151ms
+[00:19:12.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:5
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |     ^
+  427 |   )
+  428 | }
+  429 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:12.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:6
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |      ^^^^^^
+  427 |   )
+  428 | }
+  429 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:12.380] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:5
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |     ^
+  427 |   )
+  428 | }
+  429 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:12.380] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:6
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |      ^^^^^^
+  427 |   )
+  428 | }
+  429 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:26.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:5
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |     ^
+  427 |   )
+  428 | }
+  429 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:26.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:6
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |      ^^^^^^
+  427 |   )
+  428 | }
+  429 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:26.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:5
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |     ^
+  427 |   )
+  428 | }
+  429 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:19:26.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:426:6
+Parsing ecmascript source code failed
+  424 |         </div>
+  425 |       </div>
+> 426 |     </Card>
+      |      ^^^^^^
+  427 |   )
+  428 | }
+  429 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:21:11.421] Server  LOG      ✓ Compiled in 72ms
+[00:58:32.037] Server  LOG      ✓ Compiled in 182ms
+[00:58:32.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:32.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.035] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.035] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.035] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.035] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.135] Browser ERROR   uncaughtError: Error: ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.376] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:58:33.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:238:1
+Parsing ecmascript source code failed
+  236 |     </Card>
+  237 |   )
+> 238 | }
+      | ^
+  239 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[00:59:21.413] Server  LOG      ✓ Compiled in 70ms
+[00:59:21.751] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:31:17.704] Server  LOG      ✓ Compiled in 148ms
+[01:36:30.125] Server  LOG      ✓ Compiled in 220ms
+[01:36:30.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:30.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:30.380] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:30.380] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:30.508] Browser ERROR   uncaughtError: Error: ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:31.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:48.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:48.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:48.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:5
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |     ^
+  503 |   )
+  504 | }
+  505 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:36:48.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:502:6
+Parsing ecmascript source code failed
+  500 |         </div>
+  501 |       </div>
+> 502 |     </Card>
+      |      ^^^^^^
+  503 |   )
+  504 | }
+  505 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:19.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:19.379] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:19.381] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:19.381] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:33.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:33.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:33.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:37:33.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:21.876] Server  ERROR    ⨯ ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+
+
+./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+
+[01:40:22.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.490] Browser ERROR   uncaughtError: Error: ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+
+[01:40:22.606] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.606] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.707] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:22.707] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:23.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:23.378] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:24.542] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:24.542] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:25.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:5
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |     ^
+  416 |   )
+  417 | }
+  418 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:40:25.377] Browser ERROR   ./Downloads/travel-booking-platform/components/booking/flight-search.tsx:415:6
+Parsing ecmascript source code failed
+  413 |         </div>
+  414 |       </div>
+> 415 |     </Card>
+      |      ^^^^^^
+  416 |   )
+  417 | }
+  418 |
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component Browser]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Downloads/travel-booking-platform/components/booking/flight-search.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Client Component SSR]
+    ./Downloads/travel-booking-platform/app/dashboard/flights/page.tsx [Server Component]
+[01:41:03.099] Server  LOG      ✓ Compiled in 38ms
+[01:41:03.650] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:03.859] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[08:01:27.561] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:01:27.561] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:01:27.561] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[08:01:27.561] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.

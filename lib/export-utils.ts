@@ -233,3 +233,5 @@ export function exportWalletStatement(
   doc.save(`wallet-statement-${period.from}-${period.to}.pdf`)
 }
 
+
+
