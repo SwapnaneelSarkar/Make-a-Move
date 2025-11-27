@@ -111,14 +111,14 @@ export function FlightSearch({
   }
 
   const airportOptions = flightType === "domestic" ? DOMESTIC_AIRPORTS : INTERNATIONAL_AIRPORTS
-  const swapDisabled = !origin && !destination
+  const swapDisabled = !origin || !destination
   const travellerCount = Math.max(1, parseInt(travellers || "1") || 1)
   const readableTripType = tripType.replace("-", " ")
 
   const handleSwapAirports = () => {
     if (swapDisabled) return
-    const newOrigin = destination || ""
-    const newDestination = origin || ""
+    const newOrigin = destination
+    const newDestination = origin
     onOriginChange?.(newOrigin)
     onDestinationChange?.(newDestination)
   }

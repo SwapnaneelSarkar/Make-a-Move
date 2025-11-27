@@ -158,11 +158,11 @@ export default function EmployeesPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {isSuperAdmin ? "Agent Admins" : "Agents"}
+            {isSuperAdmin ? "Agent onboarding" : "Agents"}
           </h1>
           <p className="text-muted-foreground">
             {isSuperAdmin 
-              ? "Manage agent admins in the system." 
+              ? "Manage agent onboarding in the system." 
               : "Manage your agents and their booking permissions."}
           </p>
         </div>
@@ -173,7 +173,7 @@ export default function EmployeesPage() {
           {canAddUser && (
             <Button onClick={() => setAddDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" /> 
-              {isSuperAdmin ? "Add Agent Admin" : "Add Agent"}
+              {isSuperAdmin ? "Add Agent onboarding" : "Add Agent"}
             </Button>
           )}
         </div>
@@ -426,7 +426,7 @@ function AddUserDialog({
         onUserAdded(newUser)
       }
       
-      toast.success(`${userRole === "AGENCY_ADMIN" ? "Agent Admin" : "Agent"} added successfully`, {
+      toast.success(`${userRole === "AGENCY_ADMIN" ? "Agent onboarding" : "Agent"} added successfully`, {
         description: `${name} has been added to the system.`,
       })
 
@@ -449,7 +449,7 @@ function AddUserDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {userRole === "AGENCY_ADMIN" ? "Add Agent Admin" : "Add Agent"}
+            {userRole === "AGENCY_ADMIN" ? "Add Agent onboarding" : "Add Agent"}
           </DialogTitle>
           <DialogDescription>
             {userRole === "AGENCY_ADMIN"

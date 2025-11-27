@@ -3,16 +3,17 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import type { Hotel } from "@/lib/mock-data"
+import type { Hotel, Role } from "@/lib/mock-data"
 import { Star, MapPin, Wifi, Coffee, Dumbbell, AlertCircle, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface HotelCardProps {
   hotel: Hotel
   onBook: (hotel: Hotel) => void
+  userRole?: Role
 }
 
-export function HotelCard({ hotel, onBook }: HotelCardProps) {
+export function HotelCard({ hotel, onBook, userRole }: HotelCardProps) {
   // Helper for rendering amenity icons
   const getAmenityIcon = (amenity: string) => {
     switch (amenity.toLowerCase()) {
@@ -26,6 +27,8 @@ export function HotelCard({ hotel, onBook }: HotelCardProps) {
         return null
     }
   }
+
+  const bookingDisabled = userRole === "SUPER_ADMIN"
 
   return (
     <Card className="group overflow-hidden border-2 transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5">
@@ -108,17 +111,27 @@ export function HotelCard({ hotel, onBook }: HotelCardProps) {
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="font-medium">Best Price Guaranteed</span>
             </div>
-            <Button
-              onClick={() => onBook(hotel)}
-              variant={hotel.policyCompliant ? "default" : "secondary"}
-              size="lg"
-              className={cn(
-                "font-semibold shadow-sm transition-all duration-200",
-                hotel.policyCompliant && "hover:shadow-md hover:scale-[1.02]"
+            <div className="flex flex-col items-end gap-1">
+              <Button
+                onClick={() => onBook(hotel)}
+                variant={hotel.policyCompliant ? "default" : "secondary"}
+                size="lg"
+                className={cn(
+                  "font-semibold shadow-sm transition-all duration-200",
+                  hotel.policyCompliant && "hover:shadow-md hover:scale-[1.02]",
+                  bookingDisabled && "opacity-60 cursor-not-allowed"
+                )}
+                disabled={bookingDisabled}
+                title={bookingDisabled ? "Super Admins cannot initiate hotel bookings" : undefined}
+              >
+                {bookingDisabled ? "View Only" : hotel.policyCompliant ? "Select Room" : "Request Approval"}
+              </Button>
+              {bookingDisabled && (
+                <p className="text-[11px] text-muted-foreground">
+                  Switch to an agency role to book hotels.
+                </p>
               )}
-            >
-              {hotel.policyCompliant ? "Select Room" : "Request Approval"}
-            </Button>
+            </div>
           </div>
         </CardContent>
       </div>

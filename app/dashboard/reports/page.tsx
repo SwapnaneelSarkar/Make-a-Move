@@ -23,8 +23,8 @@ const monthlySpendData = [
 
 // Category distribution
 const categoryData = [
-  { name: "Flights", value: 55, color: "#3b82f6" },
-  { name: "Hotels", value: 45, color: "#10b981" },
+  { name: "Flights", value: 55, color: "hsl(var(--chart-1))" },
+  { name: "Hotels", value: 45, color: "hsl(var(--chart-3))" },
 ]
 
 // Booking trends
@@ -40,11 +40,11 @@ const bookingTrendsData = [
 const chartConfig = {
   flights: {
     label: "Flights",
-    color: "#3b82f6",
+    color: "hsl(var(--chart-1))",
   },
   hotels: {
     label: "Hotels",
-    color: "#10b981",
+    color: "hsl(var(--chart-3))",
   },
 }
 
@@ -96,34 +96,34 @@ export default function ReportsPage() {
         </TabsList>
 
         <TabsContent value="spending" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="col-span-2">
+          <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+        <Card>
           <CardHeader>
             <CardTitle>Monthly Spend</CardTitle>
             <CardDescription>Travel expenses over the last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
+            <ChartContainer config={chartConfig} className="h-[320px]">
               <BarChart data={monthlySpendData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="flights" fill="#3b82f6" name="Flights" />
-                <Bar dataKey="hotels" fill="#10b981" name="Hotels" />
+                <Bar dataKey="flights" fill="hsl(var(--chart-1))" name="Flights" />
+                <Bar dataKey="hotels" fill="hsl(var(--chart-2))" name="Hotels" />
               </BarChart>
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="col-span-1">
+        <Card>
           <CardHeader>
             <CardTitle>Spend by Category</CardTitle>
             <CardDescription>Distribution of expenses</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
+            <ChartContainer config={chartConfig} className="h-[320px]">
               <PieChart>
                 <Pie
                   data={categoryData}
@@ -132,7 +132,7 @@ export default function ReportsPage() {
                   labelLine={false}
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                   outerRadius={80}
-                  fill="#8884d8"
+                  fill="hsl(var(--chart-1))"
                   dataKey="value"
                 >
                   {categoryData.map((entry, index) => (
@@ -140,6 +140,7 @@ export default function ReportsPage() {
                   ))}
                 </Pie>
                 <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend />
               </PieChart>
             </ChartContainer>
           </CardContent>
@@ -243,8 +244,20 @@ export default function ReportsPage() {
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    <Line type="monotone" dataKey="flights" stroke="#3b82f6" name="Flights" strokeWidth={2} />
-                    <Line type="monotone" dataKey="hotels" stroke="#10b981" name="Hotels" strokeWidth={2} />
+                    <Line
+                      type="monotone"
+                      dataKey="flights"
+                      stroke="hsl(var(--chart-1))"
+                      name="Flights"
+                      strokeWidth={2}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="hotels"
+                      stroke="hsl(var(--chart-2))"
+                      name="Hotels"
+                      strokeWidth={2}
+                    />
                   </LineChart>
                 </ChartContainer>
               </CardContent>

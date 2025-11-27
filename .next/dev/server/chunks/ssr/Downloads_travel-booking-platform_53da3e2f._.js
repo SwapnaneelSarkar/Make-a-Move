@@ -2491,8 +2491,6 @@ function LedgerReconciliationTab() {
         return true;
     });
     filteredEntries = filteredEntries.filter((e)=>filterStatus === "all" || e.status === filterStatus);
-    const unmatchedCount = filteredEntries.filter((e)=>e.status === "Unmatched").length;
-    const pendingCount = filteredEntries.filter((e)=>e.status === "Pending").length;
     const handleReconcile = async ()=>{
         setReconciling(true);
         try {
@@ -2535,7 +2533,7 @@ function LedgerReconciliationTab() {
                                 children: "Ledger Reconciliation"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 116,
+                                lineNumber: 113,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2543,13 +2541,13 @@ function LedgerReconciliationTab() {
                                 children: isSuperAdmin ? "Reconcile ledger entries with transactions and identify discrepancies across all agencies." : isAgencyAdmin ? "Reconcile ledger entries with transactions for your agency." : "Reconcile ledger entries with transactions and identify discrepancies."
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 117,
+                                lineNumber: 114,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 115,
+                        lineNumber: 112,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2562,7 +2560,7 @@ function LedgerReconciliationTab() {
                                         className: "mr-2 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 127,
+                                        lineNumber: 124,
                                         columnNumber: 13
                                     }, this),
                                     " Export ",
@@ -2570,7 +2568,7 @@ function LedgerReconciliationTab() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 126,
+                                lineNumber: 123,
                                 columnNumber: 11
                             }, this),
                             isSuperAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2583,14 +2581,14 @@ function LedgerReconciliationTab() {
                                                 className: `mr-2 h-4 w-4 ${reconciling ? "animate-spin" : ""}`
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 132,
+                                                lineNumber: 129,
                                                 columnNumber: 17
                                             }, this),
                                             reconciling ? "Reconciling..." : "Run Reconciliation"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 131,
+                                        lineNumber: 128,
                                         columnNumber: 15
                                     }, this),
                                     periodLocked ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2601,14 +2599,14 @@ function LedgerReconciliationTab() {
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 137,
+                                                lineNumber: 134,
                                                 columnNumber: 19
                                             }, this),
                                             " Unlock Period"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 136,
+                                        lineNumber: 133,
                                         columnNumber: 17
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                         onClick: handleLockPeriod,
@@ -2618,14 +2616,14 @@ function LedgerReconciliationTab() {
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 141,
+                                                lineNumber: 138,
                                                 columnNumber: 19
                                             }, this),
                                             " Lock Period"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 140,
+                                        lineNumber: 137,
                                         columnNumber: 17
                                     }, this)
                                 ]
@@ -2633,13 +2631,13 @@ function LedgerReconciliationTab() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 125,
+                        lineNumber: 122,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                lineNumber: 114,
+                lineNumber: 111,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2654,12 +2652,12 @@ function LedgerReconciliationTab() {
                                     children: "Total Entries"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 149,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 151,
+                                lineNumber: 148,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2668,18 +2666,18 @@ function LedgerReconciliationTab() {
                                     children: filteredEntries.length
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 155,
+                                    lineNumber: 152,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 154,
+                                lineNumber: 151,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 150,
+                        lineNumber: 147,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2691,12 +2689,12 @@ function LedgerReconciliationTab() {
                                     children: "Unmatched"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 160,
+                                    lineNumber: 157,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 159,
+                                lineNumber: 156,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2705,18 +2703,18 @@ function LedgerReconciliationTab() {
                                     children: unmatchedCount
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 163,
+                                    lineNumber: 160,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 162,
+                                lineNumber: 159,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 158,
+                        lineNumber: 155,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2728,12 +2726,12 @@ function LedgerReconciliationTab() {
                                     children: "Pending Review"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 168,
+                                    lineNumber: 165,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 167,
+                                lineNumber: 164,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2742,24 +2740,24 @@ function LedgerReconciliationTab() {
                                     children: pendingCount
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 171,
+                                    lineNumber: 168,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                lineNumber: 170,
+                                lineNumber: 167,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 166,
+                        lineNumber: 163,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                lineNumber: 149,
+                lineNumber: 146,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2774,20 +2772,20 @@ function LedgerReconciliationTab() {
                                             children: "Ledger Entries"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 180,
+                                            lineNumber: 177,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
                                             children: isSuperAdmin ? "Review and reconcile ledger entries across all agencies" : "Review and reconcile your agency's ledger entries"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 181,
+                                            lineNumber: 178,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 179,
+                                    lineNumber: 176,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2803,12 +2801,12 @@ function LedgerReconciliationTab() {
                                                         placeholder: "All Agencies"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                        lineNumber: 189,
+                                                        lineNumber: 186,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 188,
+                                                    lineNumber: 185,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2818,7 +2816,7 @@ function LedgerReconciliationTab() {
                                                             children: "All Agencies"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                            lineNumber: 192,
+                                                            lineNumber: 189,
                                                             columnNumber: 21
                                                         }, this),
                                                         agencies.map((agency)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2826,19 +2824,19 @@ function LedgerReconciliationTab() {
                                                                 children: agency.name
                                                             }, agency.id, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                lineNumber: 194,
+                                                                lineNumber: 191,
                                                                 columnNumber: 23
                                                             }, this))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 191,
+                                                    lineNumber: 188,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 187,
+                                            lineNumber: 184,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -2851,12 +2849,12 @@ function LedgerReconciliationTab() {
                                                         placeholder: "Filter by status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                        lineNumber: 203,
+                                                        lineNumber: 200,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 202,
+                                                    lineNumber: 199,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2866,7 +2864,7 @@ function LedgerReconciliationTab() {
                                                             children: "All Status"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                            lineNumber: 206,
+                                                            lineNumber: 203,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2874,7 +2872,7 @@ function LedgerReconciliationTab() {
                                                             children: "Matched"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                            lineNumber: 207,
+                                                            lineNumber: 204,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2882,7 +2880,7 @@ function LedgerReconciliationTab() {
                                                             children: "Unmatched"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                            lineNumber: 208,
+                                                            lineNumber: 205,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2890,36 +2888,36 @@ function LedgerReconciliationTab() {
                                                             children: "Pending"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                            lineNumber: 209,
+                                                            lineNumber: 206,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 205,
+                                                    lineNumber: 202,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 201,
+                                            lineNumber: 198,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 185,
+                                    lineNumber: 182,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                            lineNumber: 178,
+                            lineNumber: 175,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 177,
+                        lineNumber: 174,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2932,21 +2930,21 @@ function LedgerReconciliationTab() {
                                                 children: "Agency"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 219,
+                                                lineNumber: 216,
                                                 columnNumber: 34
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                 children: "Date"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 220,
+                                                lineNumber: 217,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                 children: "Description"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 221,
+                                                lineNumber: 218,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2954,7 +2952,7 @@ function LedgerReconciliationTab() {
                                                 children: "Debit"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 222,
+                                                lineNumber: 219,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2962,7 +2960,7 @@ function LedgerReconciliationTab() {
                                                 children: "Credit"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 223,
+                                                lineNumber: 220,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2970,7 +2968,7 @@ function LedgerReconciliationTab() {
                                                 children: "Balance"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 224,
+                                                lineNumber: 221,
                                                 columnNumber: 17
                                             }, this),
                                             isSuperAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2978,7 +2976,7 @@ function LedgerReconciliationTab() {
                                                 children: "Platform Fee"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 225,
+                                                lineNumber: 222,
                                                 columnNumber: 34
                                             }, this),
                                             isSuperAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2986,21 +2984,21 @@ function LedgerReconciliationTab() {
                                                 children: "Commission"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 223,
                                                 columnNumber: 34
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                 children: "Status"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 227,
+                                                lineNumber: 224,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                 children: "Matched With"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 228,
+                                                lineNumber: 225,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -3008,18 +3006,18 @@ function LedgerReconciliationTab() {
                                                 children: "Actions"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                lineNumber: 229,
+                                                lineNumber: 226,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 215,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 217,
+                                    lineNumber: 214,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -3030,12 +3028,12 @@ function LedgerReconciliationTab() {
                                             children: "No ledger entries found"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 235,
+                                            lineNumber: 232,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 231,
                                         columnNumber: 17
                                     }, this) : filteredEntries.map((entry)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableRow"], {
                                             children: [
@@ -3044,14 +3042,14 @@ function LedgerReconciliationTab() {
                                                     children: entry.agencyName || "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 243,
+                                                    lineNumber: 240,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$date$2d$fns$2f$format$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(entry.date), "MMM d, yyyy")
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 245,
+                                                    lineNumber: 242,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3059,7 +3057,7 @@ function LedgerReconciliationTab() {
                                                     children: entry.description
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 246,
+                                                    lineNumber: 243,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3067,7 +3065,7 @@ function LedgerReconciliationTab() {
                                                     children: entry.debit > 0 ? `₹${entry.debit.toLocaleString("en-IN")}` : "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 247,
+                                                    lineNumber: 244,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3075,7 +3073,7 @@ function LedgerReconciliationTab() {
                                                     children: entry.credit > 0 ? `₹${entry.credit.toLocaleString("en-IN")}` : "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 250,
+                                                    lineNumber: 247,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3086,7 +3084,7 @@ function LedgerReconciliationTab() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 253,
+                                                    lineNumber: 250,
                                                     columnNumber: 21
                                                 }, this),
                                                 isSuperAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3094,7 +3092,7 @@ function LedgerReconciliationTab() {
                                                     children: entry.platformFee ? `₹${entry.platformFee.toLocaleString("en-IN")}` : "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 255,
+                                                    lineNumber: 252,
                                                     columnNumber: 23
                                                 }, this),
                                                 isSuperAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3102,7 +3100,7 @@ function LedgerReconciliationTab() {
                                                     children: entry.commissionPaid ? `₹${entry.commissionPaid.toLocaleString("en-IN")}` : "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 260,
+                                                    lineNumber: 257,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3112,19 +3110,19 @@ function LedgerReconciliationTab() {
                                                         children: entry.status
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                        lineNumber: 265,
+                                                        lineNumber: 262,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 264,
+                                                    lineNumber: 261,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
                                                     children: entry.matchedWith || "-"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 278,
+                                                    lineNumber: 275,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3138,7 +3136,7 @@ function LedgerReconciliationTab() {
                                                                 children: "Match"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                lineNumber: 282,
+                                                                lineNumber: 279,
                                                                 columnNumber: 27
                                                             }, this),
                                                             isSuperAdmin && !periodLocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3149,12 +3147,12 @@ function LedgerReconciliationTab() {
                                                                     className: "h-4 w-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                    lineNumber: 286,
+                                                                    lineNumber: 283,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                lineNumber: 285,
+                                                                lineNumber: 282,
                                                                 columnNumber: 27
                                                             }, this),
                                                             isAgencyAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3166,59 +3164,59 @@ function LedgerReconciliationTab() {
                                                                         className: "h-4 w-4 mr-1"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                        lineNumber: 291,
+                                                                        lineNumber: 288,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     " Request"
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                                lineNumber: 290,
+                                                                lineNumber: 287,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                        lineNumber: 280,
+                                                        lineNumber: 277,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                                    lineNumber: 279,
+                                                    lineNumber: 276,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, entry.id, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                            lineNumber: 241,
+                                            lineNumber: 238,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                                    lineNumber: 232,
+                                    lineNumber: 229,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                            lineNumber: 216,
+                            lineNumber: 213,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                        lineNumber: 215,
+                        lineNumber: 212,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-                lineNumber: 176,
+                lineNumber: 173,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/financial-management/ledger-tab.tsx",
-        lineNumber: 113,
+        lineNumber: 110,
         columnNumber: 5
     }, this);
 }

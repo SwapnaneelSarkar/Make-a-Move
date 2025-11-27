@@ -61,7 +61,7 @@ export function Sidebar() {
     items.push(...common)
 
     // Booking modules
-    if (permissions.bookings.view) {
+    if (permissions.bookings.view && role !== "SUPER_ADMIN") {
       items.push(...booking)
     }
 
@@ -79,8 +79,8 @@ export function Sidebar() {
 
     // User Management
     if (permissions.agents.view || permissions.allAgents.view) {
-      // Super Admin sees "Agent Admins", others see "Employees"
-      const label = role === "SUPER_ADMIN" ? "Agent Admins" : "Employees"
+      // Super Admin sees "Agent Onboarding", others see "Employees"
+      const label = role === "SUPER_ADMIN" ? "Agent onboarding" : "Employees"
       items.push({ name: label, href: "/dashboard/employees", icon: Users })
     }
 
@@ -118,7 +118,6 @@ export function Sidebar() {
 
     // Super Admin only
     if (permissions.systemSettings.view) {
-      items.push({ name: "Corporates", href: "/dashboard/corporates", icon: Briefcase })
       items.push({ name: "Master Settings", href: "/dashboard/settings", icon: Settings })
       // Combined Financial Management page for Super Admin
       items.push({ name: "Financial Management", href: "/dashboard/financial-management", icon: FileSpreadsheet })

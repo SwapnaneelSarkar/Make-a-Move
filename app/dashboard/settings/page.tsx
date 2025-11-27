@@ -1,20 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Badge } from "@/components/ui/badge"
+import { useEffect, useState } from "react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
-import { Checkbox } from "@/components/ui/checkbox"
-import { toast } from "sonner"
 import { usePermissions } from "@/hooks/use-permissions"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { toast } from "sonner"
 
 export default function SettingsPage() {
   const { canView } = usePermissions()
@@ -31,107 +27,78 @@ export default function SettingsPage() {
       </div>
     )
   }
-  const handleSavePreferences = () => {
-    toast.success("Preferences Saved", {
-      description: "Mock notification sent to user@example.com",
-    })
-  }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Platform Settings</h1>
-        <p className="text-muted-foreground">Configure global parameters for the Travel Booking Platform.</p>
+        <p className="text-muted-foreground">
+          Align platform notifications, pricing guardrails, and promotional content with the Make a Move FRs.
+        </p>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="fees">Platform Fees</TabsTrigger>
-          <TabsTrigger value="commissions">Commissions</TabsTrigger>
-          <TabsTrigger value="banners">Promotional Banners</TabsTrigger>
-          <TabsTrigger value="permissions">Permission Matrix</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="general">
-          <Card>
-            <CardHeader>
-              <CardTitle>Platform Configuration</CardTitle>
-              <CardDescription>Manage general settings and maintenance modes.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between space-x-2">
-                <div className="flex flex-col space-y-1">
-                  <Label>Maintenance Mode</Label>
-                  <span className="text-sm text-muted-foreground">
-                    Disable platform access for all users except Super Admins
-                  </span>
-                </div>
-                <Switch />
-              </div>
-              <Separator />
-              <div className="space-y-2">
-                <Label>Support Email</Label>
-                <Input defaultValue="support@makeamove.com" />
-              </div>
-              <div className="space-y-2">
-                <Label>Default Currency</Label>
-                <Input defaultValue="INR (₹)" readOnly />
-                <p className="text-sm text-muted-foreground">Indian Rupees (₹) is the default currency for all transactions.</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how you want to be notified about important updates.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h4 className="text-sm font-medium">Notification Channels</h4>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch id="email-notif" defaultChecked />
-                    <Label htmlFor="email-notif">Email</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch id="sms-notif" />
-                    <Label htmlFor="sms-notif">SMS</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch id="whatsapp-notif" defaultChecked />
-                    <Label htmlFor="whatsapp-notif">WhatsApp</Label>
-                  </div>
+      <div className="grid gap-6">
+        <NotificationPreferences />
+        <MarkupRules />
+        <CommissionRules />
+        <PromotionalBanners />
                 </div>
               </div>
-              <Separator />
-              <div className="space-y-4">
-                <h4 className="text-sm font-medium">Notification Types</h4>
-                <div className="grid gap-4 md:grid-cols-2">
+  )
+}
+
+function NotificationPreferences() {
+  const [channels, setChannels] = useState({
+    email: true,
+    sms: false,
+    whatsapp: true,
+  })
+
+  useEffect(() => {
+    const stored = localStorage.getItem("notification_channels")
+    if (stored) {
+      try {
+        setChannels(JSON.parse(stored))
+      } catch {
+        /* noop */
+      }
+    }
+  }, [])
+
+  const toggleChannel = (key: keyof typeof channels) => {
+    setChannels((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const handleSavePreferences = () => {
+    localStorage.setItem("notification_channels", JSON.stringify(channels))
+    toast.success("Preferences saved", {
+      description: "Mock notification sent to user@example.com",
+    })
+  }
+
+  return (
+          <Card>
+            <CardHeader>
+        <CardTitle>Notification Center Preferences</CardTitle>
+        <CardDescription>Enable the delivery channels defined in FR24.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+        <div className="flex flex-wrap items-center gap-6">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="booking-confirm" defaultChecked />
-                    <Label htmlFor="booking-confirm">Booking Confirmations</Label>
+            <Switch id="notif-email" checked={channels.email} onCheckedChange={() => toggleChannel("email")} />
+            <Label htmlFor="notif-email">Email</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="refund-updates" defaultChecked />
-                    <Label htmlFor="refund-updates">Refund Updates</Label>
+            <Switch id="notif-sms" checked={channels.sms} onCheckedChange={() => toggleChannel("sms")} />
+            <Label htmlFor="notif-sms">SMS</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="dispute-status" defaultChecked />
-                    <Label htmlFor="dispute-status">Dispute Status</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="kyc-results" defaultChecked />
-                    <Label htmlFor="kyc-results">KYC Results</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="payment-alerts" defaultChecked />
-                    <Label htmlFor="payment-alerts">Payment Alerts</Label>
-                  </div>
+            <Switch
+              id="notif-whatsapp"
+              checked={channels.whatsapp}
+              onCheckedChange={() => toggleChannel("whatsapp")}
+            />
+            <Label htmlFor="notif-whatsapp">WhatsApp</Label>
                 </div>
               </div>
               <div className="flex justify-end">
@@ -139,62 +106,478 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="fees">
-          <Card>
-            <CardHeader>
-              <CardTitle>Fee Structure</CardTitle>
-              <CardDescription>Set markup and platform fees for bookings. All amounts are in Indian Rupees (₹ INR).</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Flight Markup (%)</Label>
-                  <Input defaultValue="2.5" type="number" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Hotel Markup (%)</Label>
-                  <Input defaultValue="5.0" type="number" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Flat Fee per Booking (₹ INR)</Label>
-                  <Input defaultValue="0.00" type="number" placeholder="0.00" />
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button>Save Changes</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="commissions">
-          <CommissionsManagement />
-        </TabsContent>
-
-        <TabsContent value="banners">
-          <BannersManagement />
-        </TabsContent>
-
-        <TabsContent value="permissions">
-          <PermissionMatrix />
-        </TabsContent>
-      </Tabs>
-    </div>
   )
 }
 
-// Banners Management Component
-function BannersManagement() {
-  const [banners, setBanners] = useState([
+type MarkupRule = {
+  id: string
+  product: "flights" | "hotels"
+  fareType: string
+  route: string
+  currency: string
+  markupPercent: string
+  startDate: string
+  endDate: string
+}
+
+function MarkupRules() {
+  const [rules, setRules] = useState<MarkupRule[]>([])
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editingRule, setEditingRule] = useState<MarkupRule | null>(null)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("markup_rules")
+    if (stored) {
+      try {
+        setRules(JSON.parse(stored))
+        return
+      } catch {
+        /* noop */
+      }
+    }
+    setRules([
+      {
+        id: "seed-flight",
+        product: "flights",
+        fareType: "Corporate",
+        route: "Domestic",
+        currency: "INR",
+        markupPercent: "2.5",
+        startDate: "2024-01-01",
+        endDate: "2024-12-31",
+      },
+    ])
+  }, [])
+
+  const persist = (next: MarkupRule[]) => {
+    setRules(next)
+    localStorage.setItem("markup_rules", JSON.stringify(next))
+  }
+
+  const handleDelete = (id: string) => {
+    const next = rules.filter((rule) => rule.id !== id)
+    persist(next)
+    toast.success("Markup rule deleted")
+  }
+
+  const handleSave = (payload: Omit<MarkupRule, "id">, id?: string) => {
+    if (id) {
+      const next = rules.map((rule) => (rule.id === id ? { ...payload, id } : rule))
+      persist(next)
+      toast.success("Markup rule updated")
+    } else {
+      const next = [...rules, { ...payload, id: Date.now().toString() }]
+      persist(next)
+      toast.success("Markup rule added")
+    }
+    setEditingRule(null)
+    setEditorOpen(false)
+  }
+
+  return (
+          <Card>
+            <CardHeader>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <CardTitle>Markup Rules</CardTitle>
+            <CardDescription>
+              Configure markups per product, fare type, route, currency, and validity window.
+            </CardDescription>
+          </div>
+          <Button
+            onClick={() => {
+              setEditingRule(null)
+              setEditorOpen(true)
+            }}
+          >
+            Add Markup Rule
+          </Button>
+        </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+        <div className="overflow-x-auto rounded-md border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left">
+              <tr>
+                <th className="p-3 font-medium">Product</th>
+                <th className="p-3 font-medium">Fare Type</th>
+                <th className="p-3 font-medium">Route</th>
+                <th className="p-3 font-medium">Currency</th>
+                <th className="p-3 font-medium">Markup (%)</th>
+                <th className="p-3 font-medium">Effective</th>
+                <th className="p-3 text-right font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rules.map((rule) => (
+                <tr key={rule.id} className="border-t">
+                  <td className="p-3 capitalize">{rule.product}</td>
+                  <td className="p-3">{rule.fareType}</td>
+                  <td className="p-3">{rule.route}</td>
+                  <td className="p-3">{rule.currency}</td>
+                  <td className="p-3">{rule.markupPercent}</td>
+                  <td className="p-3 text-xs">
+                    {rule.startDate} → {rule.endDate}
+                  </td>
+                  <td className="p-3 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditingRule(rule)
+                          setEditorOpen(true)
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(rule.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {editorOpen && (
+          <MarkupEditor
+            rule={editingRule ?? undefined}
+            onCancel={() => {
+              setEditingRule(null)
+              setEditorOpen(false)
+            }}
+            onSave={handleSave}
+          />
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function MarkupEditor({
+  rule,
+  onCancel,
+  onSave,
+}: {
+  rule?: MarkupRule
+  onCancel: () => void
+  onSave: (payload: Omit<MarkupRule, "id">, id?: string) => void
+}) {
+  const [form, setForm] = useState<Omit<MarkupRule, "id">>(
+    rule ?? {
+      product: "flights",
+      fareType: "",
+      route: "",
+      currency: "INR",
+      markupPercent: "",
+      startDate: "",
+      endDate: "",
+    }
+  )
+
+  useEffect(() => {
+    if (rule) {
+      const { id: _id, ...rest } = rule
+      setForm(rest)
+    }
+  }, [rule])
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{rule ? "Edit Markup Rule" : "Add Markup Rule"}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Product</Label>
+            <Select value={form.product} onValueChange={(value: MarkupRule["product"]) => setForm({ ...form, product: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="flights">Flights</SelectItem>
+                <SelectItem value="hotels">Hotels</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Fare Type</Label>
+            <Input value={form.fareType} onChange={(event) => setForm({ ...form, fareType: event.target.value })} placeholder="Corporate / Flexi / Saver" />
+          </div>
+        </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+            <Label>Route</Label>
+            <Input value={form.route} onChange={(event) => setForm({ ...form, route: event.target.value })} placeholder="Domestic / International" />
+                </div>
+                <div className="space-y-2">
+            <Label>Currency</Label>
+            <Input value={form.currency} onChange={(event) => setForm({ ...form, currency: event.target.value })} placeholder="INR" />
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Markup (%)</Label>
+            <Input type="number" value={form.markupPercent} onChange={(event) => setForm({ ...form, markupPercent: event.target.value })} placeholder="2.5" />
+                </div>
+                <div className="space-y-2">
+            <Label>Effective Dates</Label>
+            <div className="grid gap-2 md:grid-cols-2">
+              <Input type="date" value={form.startDate} onChange={(event) => setForm({ ...form, startDate: event.target.value })} />
+              <Input type="date" value={form.endDate} onChange={(event) => setForm({ ...form, endDate: event.target.value })} />
+            </div>
+                </div>
+              </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={() => onSave(form, rule?.id)}>Save</Button>
+              </div>
+            </CardContent>
+          </Card>
+  )
+}
+
+type CommissionRule = {
+  id: string
+  slabName: string
+  slabType: "monthly" | "quarterly"
+  payoutType: "percentage" | "fixed"
+  value: string
+}
+
+function CommissionRules() {
+  const [rules, setRules] = useState<CommissionRule[]>([])
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editingRule, setEditingRule] = useState<CommissionRule | null>(null)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("commission_rules")
+    if (stored) {
+      try {
+        setRules(JSON.parse(stored))
+        return
+      } catch {
+        /* noop */
+      }
+    }
+    setRules([
+      {
+        id: "seed-commission",
+        slabName: "Base Monthly Slab",
+        slabType: "monthly",
+        payoutType: "percentage",
+        value: "1.5",
+      },
+    ])
+  }, [])
+
+  const persist = (next: CommissionRule[]) => {
+    setRules(next)
+    localStorage.setItem("commission_rules", JSON.stringify(next))
+  }
+
+  const handleDelete = (id: string) => {
+    persist(rules.filter((rule) => rule.id !== id))
+    toast.success("Commission rule deleted")
+  }
+
+  const handleSave = (payload: Omit<CommissionRule, "id">, id?: string) => {
+    if (id) {
+      persist(rules.map((rule) => (rule.id === id ? { ...payload, id } : rule)))
+      toast.success("Commission rule updated")
+    } else {
+      persist([...rules, { ...payload, id: Date.now().toString() }])
+      toast.success("Commission rule added")
+    }
+    setEditingRule(null)
+    setEditorOpen(false)
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <CardTitle>Commission Rules</CardTitle>
+            <CardDescription>Define monthly or quarterly slabs with percentage or flat payouts.</CardDescription>
+          </div>
+          <Button
+            onClick={() => {
+              setEditingRule(null)
+              setEditorOpen(true)
+            }}
+          >
+            Add Commission Rule
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="rounded-md border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left">
+              <tr>
+                <th className="p-3 font-medium">Slab Name</th>
+                <th className="p-3 font-medium">Slab Type</th>
+                <th className="p-3 font-medium">Payout Type</th>
+                <th className="p-3 font-medium">Value</th>
+                <th className="p-3 text-right font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rules.map((rule) => (
+                <tr key={rule.id} className="border-t">
+                  <td className="p-3">{rule.slabName}</td>
+                  <td className="p-3 capitalize">{rule.slabType}</td>
+                  <td className="p-3 capitalize">{rule.payoutType}</td>
+                  <td className="p-3">
+                    {rule.payoutType === "percentage" ? `${rule.value}%` : `₹${rule.value}`}
+                  </td>
+                  <td className="p-3 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditingRule(rule)
+                          setEditorOpen(true)
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(rule.id)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {editorOpen && (
+          <CommissionEditor
+            rule={editingRule ?? undefined}
+            onCancel={() => {
+              setEditingRule(null)
+              setEditorOpen(false)
+            }}
+            onSave={handleSave}
+          />
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function CommissionEditor({
+  rule,
+  onCancel,
+  onSave,
+}: {
+  rule?: CommissionRule
+  onCancel: () => void
+  onSave: (payload: Omit<CommissionRule, "id">, id?: string) => void
+}) {
+  const [form, setForm] = useState<Omit<CommissionRule, "id">>(
+    rule ?? {
+      slabName: "",
+      slabType: "monthly",
+      payoutType: "percentage",
+      value: "",
+    }
+  )
+
+  useEffect(() => {
+    if (rule) {
+      const { id: _id, ...rest } = rule
+      setForm(rest)
+    }
+  }, [rule])
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{rule ? "Edit Commission Rule" : "Add Commission Rule"}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>Slab Name</Label>
+          <Input value={form.slabName} onChange={(event) => setForm({ ...form, slabName: event.target.value })} placeholder="Monthly Volume Tier" />
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Slab Type</Label>
+            <Select
+              value={form.slabType}
+              onValueChange={(value: CommissionRule["slabType"]) => setForm({ ...form, slabType: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="monthly">Monthly</SelectItem>
+                <SelectItem value="quarterly">Quarterly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Payout Type</Label>
+            <Select
+              value={form.payoutType}
+              onValueChange={(value: CommissionRule["payoutType"]) => setForm({ ...form, payoutType: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="percentage">Percentage (%)</SelectItem>
+                <SelectItem value="fixed">Flat Amount (₹)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Value</Label>
+          <Input
+            type="number"
+            value={form.value}
+            onChange={(event) => setForm({ ...form, value: event.target.value })}
+            placeholder="1.5"
+          />
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={() => onSave(form, rule?.id)}>Save</Button>
+    </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function PromotionalBanners() {
+  type Banner = {
+    id: string
+    title: string
+    imageUrl: string
+    link: string
+    expirationDate: string
+  }
+
+  const [banners, setBanners] = useState<Banner[]>([
     {
       id: "1",
       title: "Summer Business Travel Special",
       imageUrl: "/placeholder.jpg",
       link: "/dashboard/flights",
       expirationDate: "2024-12-31",
-      status: "active",
     },
     {
       id: "2",
@@ -202,96 +585,78 @@ function BannersManagement() {
       imageUrl: "/placeholder.jpg",
       link: "/dashboard/hotels",
       expirationDate: "2024-06-15",
-      status: "expired",
     },
   ])
-  const [isAddOpen, setIsAddOpen] = useState(false)
-  const [editingBanner, setEditingBanner] = useState<any>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingBanner, setEditingBanner] = useState<Banner | null>(null)
 
   useEffect(() => {
     const saved = localStorage.getItem("promotional_banners")
     if (saved) {
       try {
         setBanners(JSON.parse(saved))
-      } catch {}
+      } catch {
+        /* noop */
+      }
     }
   }, [])
 
-  const saveBanners = (newBanners: typeof banners) => {
-    setBanners(newBanners)
-    localStorage.setItem("promotional_banners", JSON.stringify(newBanners))
+  const saveBanners = (payload: Banner[]) => {
+    setBanners(payload)
+    localStorage.setItem("promotional_banners", JSON.stringify(payload))
   }
 
   const handleDelete = (id: string) => {
-    const filtered = banners.filter((b) => b.id !== id)
-    saveBanners(filtered)
+    saveBanners(banners.filter((banner) => banner.id !== id))
     toast.success("Banner deleted")
   }
 
-  const handleAdd = (banner: any) => {
-    const newBanner = { ...banner, id: Date.now().toString(), status: "active" }
-    saveBanners([...banners, newBanner])
-    setIsAddOpen(false)
+  const handleAdd = (banner: Omit<Banner, "id">) => {
+    const next = { ...banner, id: Date.now().toString() }
+    saveBanners([...banners, next])
+    setIsFormOpen(false)
     toast.success("Banner added")
   }
 
-  const handleEdit = (banner: any) => {
-    const updated = banners.map((b) => (b.id === banner.id ? banner : b))
-    saveBanners(updated)
+  const handleEdit = (banner: Banner) => {
+    const next = banners.map((current) => (current.id === banner.id ? banner : current))
+    saveBanners(next)
     setEditingBanner(null)
     toast.success("Banner updated")
   }
 
-  const activeBanners = banners.filter((b) => {
-    if (b.status === "expired") return false
-    const expDate = new Date(b.expirationDate)
-    return expDate >= new Date()
-  })
-
-  const expiredBanners = banners.filter((b) => {
-    if (b.status === "expired") return true
-    const expDate = new Date(b.expirationDate)
-    return expDate < new Date()
-  })
+  const isShowingForm = isFormOpen || Boolean(editingBanner)
 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
             <CardTitle>Promotional Banners</CardTitle>
-            <CardDescription>Manage promotional banners displayed on the dashboard</CardDescription>
+            <CardDescription>Configure dashboard hero banners exactly as defined in the FRs.</CardDescription>
           </div>
-          <Button onClick={() => setIsAddOpen(true)}>Add Banner</Button>
+          <Button onClick={() => setIsFormOpen(true)}>Add Banner</Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <h3 className="font-semibold">Active Banners</h3>
           <div className="rounded-md border">
-            <table className="w-full">
-              <thead className="bg-muted/50">
-                <tr>
-                  <th className="p-3 text-left text-sm font-medium">Title</th>
-                  <th className="p-3 text-left text-sm font-medium">Image URL</th>
-                  <th className="p-3 text-left text-sm font-medium">Link</th>
-                  <th className="p-3 text-left text-sm font-medium">Expiration</th>
-                  <th className="p-3 text-left text-sm font-medium">Status</th>
-                  <th className="p-3 text-right text-sm font-medium">Actions</th>
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left">
+              <tr>
+                <th className="p-3 font-medium">Title</th>
+                <th className="p-3 font-medium">Image URL</th>
+                <th className="p-3 font-medium">Link</th>
+                <th className="p-3 font-medium">Expiration Date</th>
+                <th className="p-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {activeBanners.map((banner) => (
+              {banners.map((banner) => (
                   <tr key={banner.id} className="border-t">
                     <td className="p-3">{banner.title}</td>
-                    <td className="p-3 text-sm text-muted-foreground truncate max-w-xs">{banner.imageUrl}</td>
-                    <td className="p-3 text-sm text-muted-foreground">{banner.link}</td>
-                    <td className="p-3 text-sm">{banner.expirationDate}</td>
-                    <td className="p-3">
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        Active
-                      </Badge>
-                    </td>
+                  <td className="p-3 text-muted-foreground">{banner.imageUrl}</td>
+                  <td className="p-3 text-muted-foreground">{banner.link}</td>
+                  <td className="p-3">{banner.expirationDate}</td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => setEditingBanner(banner)}>
@@ -306,45 +671,20 @@ function BannersManagement() {
                 ))}
               </tbody>
             </table>
-          </div>
         </div>
 
-        {expiredBanners.length > 0 && (
-          <div className="space-y-4">
-            <h3 className="font-semibold">Expired Banners</h3>
-            <div className="rounded-md border">
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="p-3 text-left text-sm font-medium">Title</th>
-                    <th className="p-3 text-left text-sm font-medium">Expiration</th>
-                    <th className="p-3 text-right text-sm font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expiredBanners.map((banner) => (
-                    <tr key={banner.id} className="border-t">
-                      <td className="p-3">{banner.title}</td>
-                      <td className="p-3 text-sm">{banner.expirationDate}</td>
-                      <td className="p-3 text-right">
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(banner.id)}>
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {(isAddOpen || editingBanner) && (
+        {isShowingForm && (
           <BannerForm
-            banner={editingBanner}
-            onSave={editingBanner ? handleEdit : handleAdd}
+            banner={editingBanner ?? undefined}
+            onSave={(payload) => {
+              if (editingBanner) {
+                handleEdit({ ...payload, id: editingBanner.id })
+              } else {
+                handleAdd(payload)
+              }
+            }}
             onCancel={() => {
-              setIsAddOpen(false)
+              setIsFormOpen(false)
               setEditingBanner(null)
             }}
           />
@@ -354,320 +694,75 @@ function BannersManagement() {
   )
 }
 
-function BannerForm({ banner, onSave, onCancel }: { banner?: any; onSave: (banner: any) => void; onCancel: () => void }) {
-  const [formData, setFormData] = useState(
-    banner || {
-      title: "",
-      imageUrl: "",
-      link: "",
-      expirationDate: "",
-    }
-  )
+function BannerForm({
+  banner,
+  onSave,
+  onCancel,
+}: {
+  banner?: { id?: string; title: string; imageUrl: string; link: string; expirationDate: string }
+  onSave: (banner: { title: string; imageUrl: string; link: string; expirationDate: string }) => void
+  onCancel: () => void
+}) {
+  const emptyForm = { title: "", imageUrl: "", link: "", expirationDate: "" }
+  const [formData, setFormData] = useState(banner ?? emptyForm)
+
+  useEffect(() => {
+    setFormData(banner ?? emptyForm)
+  }, [banner])
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{banner ? "Edit Banner" : "Add New Banner"}</CardTitle>
+        <CardTitle>{banner ? "Edit Banner" : "Add Banner"}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Banner Title</Label>
+          <Label htmlFor="banner-title">Banner Title</Label>
           <Input
+            id="banner-title"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(event) => setFormData({ ...formData, title: event.target.value })}
             placeholder="Summer Special"
           />
         </div>
         <div className="space-y-2">
-          <Label>Image URL</Label>
+          <Label htmlFor="banner-image">Image URL</Label>
           <Input
+            id="banner-image"
             value={formData.imageUrl}
-            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+            onChange={(event) => setFormData({ ...formData, imageUrl: event.target.value })}
             placeholder="/placeholder.jpg"
           />
         </div>
         <div className="space-y-2">
-          <Label>Link</Label>
+          <Label htmlFor="banner-link">Target Link</Label>
           <Input
+            id="banner-link"
             value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+            onChange={(event) => setFormData({ ...formData, link: event.target.value })}
             placeholder="/dashboard/flights"
           />
         </div>
         <div className="space-y-2">
-          <Label>Expiration Date</Label>
+          <Label htmlFor="banner-expiration">Expiration Date</Label>
           <Input
+            id="banner-expiration"
             type="date"
             value={formData.expirationDate}
-            onChange={(e) => setFormData({ ...formData, expirationDate: e.target.value })}
+            onChange={(event) => setFormData({ ...formData, expirationDate: event.target.value })}
           />
         </div>
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={() => onSave(formData)}>Save</Button>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Commissions Management Component
-function CommissionsManagement() {
-  const [commissions, setCommissions] = useState([
-    { id: "1", agentId: "u3", agentName: "John Agent", flightCommission: 2.5, hotelCommission: 5.0, type: "percentage" },
-    { id: "2", agentId: "u4", agentName: "Jane Sub Agent", flightCommission: 2.0, hotelCommission: 4.5, type: "percentage" },
-  ])
-  const [isAddOpen, setIsAddOpen] = useState(false)
-
-  const handleSave = () => {
-    localStorage.setItem("commissions_config", JSON.stringify(commissions))
-    toast.success("Commissions configuration saved")
-  }
-
-  const handleAdd = (commission: any) => {
-    const newCommission = { ...commission, id: Date.now().toString() }
-    setCommissions([...commissions, newCommission])
-    setIsAddOpen(false)
-    toast.success("Commission rule added")
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Commission Structure</CardTitle>
-            <CardDescription>Configure commission rates for agents. Can be percentage-based or fixed amount.</CardDescription>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleSave}>Save Changes</Button>
-            <Button onClick={() => setIsAddOpen(true)}>Add Commission Rule</Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Agent</TableHead>
-                <TableHead>Flight Commission</TableHead>
-                <TableHead>Hotel Commission</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {commissions.map((comm) => (
-                <TableRow key={comm.id}>
-                  <TableCell className="font-medium">{comm.agentName}</TableCell>
-                  <TableCell>
-                    {comm.type === "percentage" ? `${comm.flightCommission}%` : `₹${comm.flightCommission}`}
-                  </TableCell>
-                  <TableCell>
-                    {comm.type === "percentage" ? `${comm.hotelCommission}%` : `₹${comm.hotelCommission}`}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{comm.type === "percentage" ? "Percentage" : "Fixed"}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">Edit</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        {isAddOpen && (
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle>Add Commission Rule</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label>Agent</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select agent" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="u3">John Agent</SelectItem>
-                      <SelectItem value="u4">Jane Sub Agent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <Label>Flight Commission</Label>
-                    <Input type="number" placeholder="2.5" />
-                  </div>
-                  <div>
-                    <Label>Hotel Commission</Label>
-                    <Input type="number" placeholder="5.0" />
-                  </div>
-                </div>
-                <div>
-                  <Label>Commission Type</Label>
-                  <Select defaultValue="percentage">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="percentage">Percentage (%)</SelectItem>
-                      <SelectItem value="fixed">Fixed Amount (₹)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
-                  <Button onClick={() => {
-                    handleAdd({ agentId: "u3", agentName: "John Agent", flightCommission: 2.5, hotelCommission: 5.0, type: "percentage" })
-                  }}>Add Rule</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-// Permission Matrix Component
-function PermissionMatrix() {
-  const roles: Array<{ role: string; name: string }> = [
-    { role: "SUPER_ADMIN", name: "Super Admin" },
-    { role: "AGENCY_ADMIN", name: "Agency Admin" },
-    { role: "AGENT", name: "Agent" },
-    { role: "SUB_AGENT", name: "Sub Agent" },
-    { role: "FINANCE_TEAM", name: "Finance" },
-    { role: "SUPPORT_TEAM", name: "Support" },
-    { role: "KYC_COMPLIANCE_TEAM", name: "KYC" },
-  ]
-
-  const modules = [
-    { key: "bookings", name: "Bookings" },
-    { key: "wallet", name: "Wallet" },
-    { key: "agents", name: "Agents" },
-    { key: "kycDocuments", name: "KYC Documents" },
-    { key: "disputes", name: "Disputes" },
-    { key: "reports", name: "Reports" },
-    { key: "systemSettings", name: "System Settings" },
-  ]
-
-  const [permissions, setPermissions] = useState<Record<string, Record<string, { view: boolean; edit: boolean; approve: boolean }>>>({})
-
-  useEffect(() => {
-    const saved = localStorage.getItem("permission_matrix")
-    if (saved) {
-      try {
-        setPermissions(JSON.parse(saved))
-      } catch {}
-    } else {
-      // Initialize with default permissions
-      const initial: typeof permissions = {}
-      roles.forEach(({ role }) => {
-        initial[role] = {}
-        modules.forEach(({ key }) => {
-          // Default permissions based on role
-          if (role === "SUPER_ADMIN") {
-            initial[role][key] = { view: true, edit: true, approve: true }
-          } else {
-            initial[role][key] = { view: false, edit: false, approve: false }
-          }
-        })
-      })
-      setPermissions(initial)
-    }
-  }, [])
-
-  const handleToggle = (role: string, module: string, action: "view" | "edit" | "approve") => {
-    const updated = {
-      ...permissions,
-      [role]: {
-        ...permissions[role],
-        [module]: {
-          ...permissions[role][module],
-          [action]: !permissions[role][module]?.[action],
-        },
-      },
-    }
-    setPermissions(updated)
-    localStorage.setItem("permission_matrix", JSON.stringify(updated))
-  }
-
-  const handleSave = () => {
-    localStorage.setItem("permission_matrix", JSON.stringify(permissions))
-    toast.success("Permission matrix saved")
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Permission Matrix</CardTitle>
-            <CardDescription>Configure role-based permissions for each module</CardDescription>
-          </div>
-          <Button onClick={handleSave}>Save Changes</Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="border p-2 text-left bg-muted/50 sticky left-0 z-10">Module</th>
-                {roles.map(({ role, name }) => (
-                  <th key={role} className="border p-2 text-center bg-muted/50 min-w-[200px]">
-                    <div className="font-semibold">{name}</div>
-                    <div className="text-xs text-muted-foreground mt-1 flex gap-4 justify-center">
-                      <span>V</span>
-                      <span>E</span>
-                      <span>A</span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {modules.map(({ key, name }) => (
-                <tr key={key}>
-                  <td className="border p-2 font-medium bg-muted/30 sticky left-0 z-10">{name}</td>
-                  {roles.map(({ role }) => {
-                    const perm = permissions[role]?.[key] || { view: false, edit: false, approve: false }
-                    return (
-                      <td key={role} className="border p-2">
-                        <div className="flex gap-4 justify-center">
-                          <Checkbox
-                            checked={perm.view}
-                            onCheckedChange={() => handleToggle(role, key, "view")}
-                            aria-label="View"
-                          />
-                          <Checkbox
-                            checked={perm.edit}
-                            onCheckedChange={() => handleToggle(role, key, "edit")}
-                            aria-label="Edit"
-                          />
-                          <Checkbox
-                            checked={perm.approve}
-                            onCheckedChange={() => handleToggle(role, key, "approve")}
-                            aria-label="Approve"
-                          />
-                        </div>
-                      </td>
-                    )
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p>V = View, E = Edit, A = Approve</p>
+          <Button
+            onClick={() => {
+              onSave(formData)
+            }}
+          >
+            Save
+          </Button>
         </div>
       </CardContent>
     </Card>

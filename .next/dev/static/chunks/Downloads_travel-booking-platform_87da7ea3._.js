@@ -3633,9 +3633,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/Bar.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$LineChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/chart/LineChart.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/Line.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$PieChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/chart/PieChart.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$Pie$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/polar/Pie.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Cell$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/component/Cell.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/XAxis.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/YAxis.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianGrid$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/CartesianGrid.js [app-client] (ecmascript)");
@@ -3670,7 +3667,7 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                         children: title
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 54,
+                        lineNumber: 26,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3678,13 +3675,13 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                         children: icon
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 55,
+                        lineNumber: 27,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                lineNumber: 53,
+                lineNumber: 25,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3694,7 +3691,7 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                         children: value
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 58,
+                        lineNumber: 30,
                         columnNumber: 9
                     }, this),
                     change !== undefined && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3704,13 +3701,13 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                                 className: "h-3 w-3 text-green-600"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 62,
+                                lineNumber: 34,
                                 columnNumber: 15
                             }, this) : trend === "down" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$down$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowDownRight$3e$__["ArrowDownRight"], {
                                 className: "h-3 w-3 text-red-600"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 64,
+                                lineNumber: 36,
                                 columnNumber: 15
                             }, this) : null,
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3722,7 +3719,7 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 66,
+                                lineNumber: 38,
                                 columnNumber: 13
                             }, this),
                             changeLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3730,25 +3727,25 @@ function MetricCard({ title, value, change, changeLabel, icon, trend }) {
                                 children: changeLabel
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 70,
+                                lineNumber: 42,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 60,
+                        lineNumber: 32,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                lineNumber: 57,
+                lineNumber: 29,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-        lineNumber: 52,
+        lineNumber: 24,
         columnNumber: 5
     }, this);
 }
@@ -3937,12 +3934,12 @@ function AdminUsageInsights() {
                         children: "Admin Usage Insights"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 272,
+                        lineNumber: 244,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                    lineNumber: 271,
+                    lineNumber: 243,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3951,18 +3948,18 @@ function AdminUsageInsights() {
                         children: "Loading insights..."
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 275,
+                        lineNumber: 247,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                    lineNumber: 274,
+                    lineNumber: 246,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-            lineNumber: 270,
+            lineNumber: 242,
             columnNumber: 7
         }, this);
     }
@@ -3978,7 +3975,7 @@ function AdminUsageInsights() {
                             children: "Admin Usage Insights"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 285,
+                            lineNumber: 257,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3986,18 +3983,18 @@ function AdminUsageInsights() {
                             children: "Comprehensive metrics and analytics dashboard"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 286,
+                            lineNumber: 258,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                    lineNumber: 284,
+                    lineNumber: 256,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                lineNumber: 283,
+                lineNumber: 255,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4012,13 +4009,13 @@ function AdminUsageInsights() {
                             className: "h-4 w-4"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 297,
+                            lineNumber: 269,
                             columnNumber: 17
                         }, void 0),
                         trend: bookingsChange >= 0 ? "up" : "down"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 292,
+                        lineNumber: 264,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MetricCard, {
@@ -4030,13 +4027,13 @@ function AdminUsageInsights() {
                             className: "h-4 w-4"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 305,
+                            lineNumber: 277,
                             columnNumber: 17
                         }, void 0),
                         trend: conversionChange >= 0 ? "up" : "down"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 300,
+                        lineNumber: 272,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MetricCard, {
@@ -4047,12 +4044,12 @@ function AdminUsageInsights() {
                             className: "h-4 w-4"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 312,
+                            lineNumber: 284,
                             columnNumber: 17
                         }, void 0)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 308,
+                        lineNumber: 280,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MetricCard, {
@@ -4063,18 +4060,18 @@ function AdminUsageInsights() {
                             className: "h-4 w-4"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 318,
+                            lineNumber: 290,
                             columnNumber: 17
                         }, void 0)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 314,
+                        lineNumber: 286,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                lineNumber: 291,
+                lineNumber: 263,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tabs"], {
@@ -4088,7 +4085,7 @@ function AdminUsageInsights() {
                                 children: "Overview"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 325,
+                                lineNumber: 297,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -4096,7 +4093,7 @@ function AdminUsageInsights() {
                                 children: "Agent Performance"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 326,
+                                lineNumber: 298,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -4104,7 +4101,7 @@ function AdminUsageInsights() {
                                 children: "Top Routes & Hotels"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 327,
+                                lineNumber: 299,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -4112,13 +4109,13 @@ function AdminUsageInsights() {
                                 children: "Supplier Performance"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 328,
+                                lineNumber: 300,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 324,
+                        lineNumber: 296,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -4136,20 +4133,20 @@ function AdminUsageInsights() {
                                                         children: "Booking Trends"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 335,
+                                                        lineNumber: 307,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                         children: "Last 6 months"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 336,
+                                                        lineNumber: 308,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 334,
+                                                lineNumber: 306,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4171,21 +4168,21 @@ function AdminUsageInsights() {
                                                                 strokeDasharray: "3 3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 346,
+                                                                lineNumber: 318,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
                                                                 dataKey: "month"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 347,
+                                                                lineNumber: 319,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
                                                                 yAxisId: "left"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 348,
+                                                                lineNumber: 320,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
@@ -4193,18 +4190,18 @@ function AdminUsageInsights() {
                                                                 orientation: "right"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 349,
+                                                                lineNumber: 321,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                                 content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 350,
+                                                                    lineNumber: 322,
                                                                     columnNumber: 44
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 350,
+                                                                lineNumber: 322,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
@@ -4215,7 +4212,7 @@ function AdminUsageInsights() {
                                                                 name: "Bookings"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 351,
+                                                                lineNumber: 323,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
@@ -4226,29 +4223,29 @@ function AdminUsageInsights() {
                                                                 name: "Revenue"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 358,
+                                                                lineNumber: 330,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 345,
+                                                        lineNumber: 317,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 339,
+                                                    lineNumber: 311,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 338,
+                                                lineNumber: 310,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                        lineNumber: 333,
+                                        lineNumber: 305,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -4259,20 +4256,20 @@ function AdminUsageInsights() {
                                                         children: "Booking Status Distribution"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 372,
+                                                        lineNumber: 344,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                         children: "Current status breakdown"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 373,
+                                                        lineNumber: 345,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 371,
+                                                lineNumber: 343,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4295,9 +4292,9 @@ function AdminUsageInsights() {
                                                             color: "hsl(var(--chart-4))"
                                                         }
                                                     },
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$PieChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PieChart"], {
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PieChart, {
                                                         children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$Pie$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Pie"], {
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Pie, {
                                                                 data: statusData,
                                                                 cx: "50%",
                                                                 cy: "50%",
@@ -4306,55 +4303,55 @@ function AdminUsageInsights() {
                                                                 outerRadius: 80,
                                                                 fill: "#8884d8",
                                                                 dataKey: "value",
-                                                                children: statusData.map((entry, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Cell$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Cell"], {
+                                                                children: statusData.map((entry, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Cell, {
                                                                         fill: entry.color
                                                                     }, `cell-${index}`, false, {
                                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                        lineNumber: 396,
+                                                                        lineNumber: 368,
                                                                         columnNumber: 25
                                                                     }, this))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 385,
+                                                                lineNumber: 357,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                                 content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 399,
+                                                                    lineNumber: 371,
                                                                     columnNumber: 44
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 399,
+                                                                lineNumber: 371,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 384,
+                                                        lineNumber: 356,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 376,
+                                                    lineNumber: 348,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 375,
+                                                lineNumber: 347,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                        lineNumber: 370,
+                                        lineNumber: 342,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 332,
+                                lineNumber: 304,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4368,20 +4365,20 @@ function AdminUsageInsights() {
                                                         children: "Wallet Usage"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 409,
+                                                        lineNumber: 381,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                         children: "Top-ups and spending"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 410,
+                                                        lineNumber: 382,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 408,
+                                                lineNumber: 380,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4396,7 +4393,7 @@ function AdminUsageInsights() {
                                                                     children: "Total Top-ups"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 415,
+                                                                    lineNumber: 387,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4407,13 +4404,13 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 416,
+                                                                    lineNumber: 388,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 414,
+                                                            lineNumber: 386,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4424,7 +4421,7 @@ function AdminUsageInsights() {
                                                                     children: "Total Usage"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 419,
+                                                                    lineNumber: 391,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4435,13 +4432,13 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 420,
+                                                                    lineNumber: 392,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 418,
+                                                            lineNumber: 390,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4452,7 +4449,7 @@ function AdminUsageInsights() {
                                                                     children: "Utilization Rate"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 423,
+                                                                    lineNumber: 395,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4463,30 +4460,30 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 424,
+                                                                    lineNumber: 396,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 422,
+                                                            lineNumber: 394,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 413,
+                                                    lineNumber: 385,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 412,
+                                                lineNumber: 384,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                        lineNumber: 407,
+                                        lineNumber: 379,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -4497,20 +4494,20 @@ function AdminUsageInsights() {
                                                         children: "Refund Metrics"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 432,
+                                                        lineNumber: 404,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                         children: "Refund statistics"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 433,
+                                                        lineNumber: 405,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 431,
+                                                lineNumber: 403,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4525,7 +4522,7 @@ function AdminUsageInsights() {
                                                                     children: "Total Refunds"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 438,
+                                                                    lineNumber: 410,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4533,13 +4530,13 @@ function AdminUsageInsights() {
                                                                     children: totalRefunds
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 439,
+                                                                    lineNumber: 411,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 437,
+                                                            lineNumber: 409,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4550,7 +4547,7 @@ function AdminUsageInsights() {
                                                                     children: "Completed"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 442,
+                                                                    lineNumber: 414,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4558,13 +4555,13 @@ function AdminUsageInsights() {
                                                                     children: completedRefunds
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 443,
+                                                                    lineNumber: 415,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 441,
+                                                            lineNumber: 413,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4575,7 +4572,7 @@ function AdminUsageInsights() {
                                                                     children: "Refund Amount"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 446,
+                                                                    lineNumber: 418,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4586,13 +4583,13 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 447,
+                                                                    lineNumber: 419,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 445,
+                                                            lineNumber: 417,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4603,7 +4600,7 @@ function AdminUsageInsights() {
                                                                     children: "Refund Rate"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 450,
+                                                                    lineNumber: 422,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4614,42 +4611,42 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 451,
+                                                                    lineNumber: 423,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 449,
+                                                            lineNumber: 421,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 436,
+                                                    lineNumber: 408,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 435,
+                                                lineNumber: 407,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                        lineNumber: 430,
+                                        lineNumber: 402,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                lineNumber: 406,
+                                lineNumber: 378,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 331,
+                        lineNumber: 303,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -4663,20 +4660,20 @@ function AdminUsageInsights() {
                                             children: "Top Performing Agents"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 462,
+                                            lineNumber: 434,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                             children: "By revenue and booking count"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 463,
+                                            lineNumber: 435,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 461,
+                                    lineNumber: 433,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4699,21 +4696,21 @@ function AdminUsageInsights() {
                                                         strokeDasharray: "3 3"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 473,
+                                                        lineNumber: 445,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
                                                         dataKey: "name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 474,
+                                                        lineNumber: 446,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
                                                         yAxisId: "left"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 475,
+                                                        lineNumber: 447,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
@@ -4721,18 +4718,18 @@ function AdminUsageInsights() {
                                                         orientation: "right"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 476,
+                                                        lineNumber: 448,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                         content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 477,
+                                                            lineNumber: 449,
                                                             columnNumber: 42
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 477,
+                                                        lineNumber: 449,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -4742,7 +4739,7 @@ function AdminUsageInsights() {
                                                         name: "Revenue"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 478,
+                                                        lineNumber: 450,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -4752,18 +4749,18 @@ function AdminUsageInsights() {
                                                         name: "Bookings"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 479,
+                                                        lineNumber: 451,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 472,
+                                                lineNumber: 444,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 466,
+                                            lineNumber: 438,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4778,7 +4775,7 @@ function AdminUsageInsights() {
                                                                     children: agent.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 486,
+                                                                    lineNumber: 458,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4791,13 +4788,13 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 487,
+                                                                    lineNumber: 459,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 485,
+                                                            lineNumber: 457,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4810,40 +4807,40 @@ function AdminUsageInsights() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 492,
+                                                                lineNumber: 464,
                                                                 columnNumber: 23
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 491,
+                                                            lineNumber: 463,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 484,
+                                                    lineNumber: 456,
                                                     columnNumber: 19
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 482,
+                                            lineNumber: 454,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 465,
+                                    lineNumber: 437,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 460,
+                            lineNumber: 432,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 459,
+                        lineNumber: 431,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -4862,27 +4859,27 @@ function AdminUsageInsights() {
                                                             className: "inline h-4 w-4 mr-2"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 506,
+                                                            lineNumber: 478,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Top Flight Routes"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 505,
+                                                    lineNumber: 477,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                     children: "Most booked routes"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 509,
+                                                    lineNumber: 481,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 504,
+                                            lineNumber: 476,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4901,30 +4898,30 @@ function AdminUsageInsights() {
                                                                 strokeDasharray: "3 3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 518,
+                                                                lineNumber: 490,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
                                                                 dataKey: "route"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 519,
+                                                                lineNumber: 491,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {}, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 520,
+                                                                lineNumber: 492,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                                 content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 521,
+                                                                    lineNumber: 493,
                                                                     columnNumber: 44
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 521,
+                                                                lineNumber: 493,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -4933,18 +4930,18 @@ function AdminUsageInsights() {
                                                                 name: "Bookings"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 522,
+                                                                lineNumber: 494,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 517,
+                                                        lineNumber: 489,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 512,
+                                                    lineNumber: 484,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4957,7 +4954,7 @@ function AdminUsageInsights() {
                                                                     children: route.route
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 528,
+                                                                    lineNumber: 500,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4971,7 +4968,7 @@ function AdminUsageInsights() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                            lineNumber: 530,
+                                                                            lineNumber: 502,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4982,36 +4979,36 @@ function AdminUsageInsights() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                            lineNumber: 531,
+                                                                            lineNumber: 503,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 529,
+                                                                    lineNumber: 501,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, index, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 527,
+                                                            lineNumber: 499,
                                                             columnNumber: 21
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 525,
+                                                    lineNumber: 497,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 511,
+                                            lineNumber: 483,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 503,
+                                    lineNumber: 475,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -5024,27 +5021,27 @@ function AdminUsageInsights() {
                                                             className: "inline h-4 w-4 mr-2"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 542,
+                                                            lineNumber: 514,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Top Hotels"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 541,
+                                                    lineNumber: 513,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                     children: "Most booked hotels"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 545,
+                                                    lineNumber: 517,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 540,
+                                            lineNumber: 512,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -5063,7 +5060,7 @@ function AdminUsageInsights() {
                                                                 strokeDasharray: "3 3"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 554,
+                                                                lineNumber: 526,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
@@ -5073,23 +5070,23 @@ function AdminUsageInsights() {
                                                                 height: 100
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 555,
+                                                                lineNumber: 527,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {}, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 556,
+                                                                lineNumber: 528,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                                 content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 557,
+                                                                    lineNumber: 529,
                                                                     columnNumber: 44
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 557,
+                                                                lineNumber: 529,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -5098,18 +5095,18 @@ function AdminUsageInsights() {
                                                                 name: "Bookings"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 558,
+                                                                lineNumber: 530,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 553,
+                                                        lineNumber: 525,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 548,
+                                                    lineNumber: 520,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5122,7 +5119,7 @@ function AdminUsageInsights() {
                                                                     children: hotel.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 564,
+                                                                    lineNumber: 536,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5136,7 +5133,7 @@ function AdminUsageInsights() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                            lineNumber: 566,
+                                                                            lineNumber: 538,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5147,47 +5144,47 @@ function AdminUsageInsights() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                            lineNumber: 567,
+                                                                            lineNumber: 539,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 565,
+                                                                    lineNumber: 537,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, index, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 563,
+                                                            lineNumber: 535,
                                                             columnNumber: 21
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 561,
+                                                    lineNumber: 533,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 547,
+                                            lineNumber: 519,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 539,
+                                    lineNumber: 511,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 502,
+                            lineNumber: 474,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 501,
+                        lineNumber: 473,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -5201,20 +5198,20 @@ function AdminUsageInsights() {
                                             children: "Supplier Performance"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 580,
+                                            lineNumber: 552,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                             children: "Top suppliers by revenue"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 581,
+                                            lineNumber: 553,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 579,
+                                    lineNumber: 551,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -5237,7 +5234,7 @@ function AdminUsageInsights() {
                                                         strokeDasharray: "3 3"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 591,
+                                                        lineNumber: 563,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
@@ -5247,14 +5244,14 @@ function AdminUsageInsights() {
                                                         height: 100
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 592,
+                                                        lineNumber: 564,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
                                                         yAxisId: "left"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 593,
+                                                        lineNumber: 565,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
@@ -5262,18 +5259,18 @@ function AdminUsageInsights() {
                                                         orientation: "right"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 594,
+                                                        lineNumber: 566,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltip"], {
                                                         content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChartTooltipContent"], {}, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 595,
+                                                            lineNumber: 567,
                                                             columnNumber: 42
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 595,
+                                                        lineNumber: 567,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -5283,7 +5280,7 @@ function AdminUsageInsights() {
                                                         name: "Revenue"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 596,
+                                                        lineNumber: 568,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Bar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Bar"], {
@@ -5293,18 +5290,18 @@ function AdminUsageInsights() {
                                                         name: "Bookings"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                        lineNumber: 597,
+                                                        lineNumber: 569,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                lineNumber: 590,
+                                                lineNumber: 562,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 584,
+                                            lineNumber: 556,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5319,7 +5316,7 @@ function AdminUsageInsights() {
                                                                     children: supplier.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 604,
+                                                                    lineNumber: 576,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5331,7 +5328,7 @@ function AdminUsageInsights() {
                                                                             children: supplier.type
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                            lineNumber: 606,
+                                                                            lineNumber: 578,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         supplier.bookings,
@@ -5339,13 +5336,13 @@ function AdminUsageInsights() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                    lineNumber: 605,
+                                                                    lineNumber: 577,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 603,
+                                                            lineNumber: 575,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5358,52 +5355,52 @@ function AdminUsageInsights() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                                lineNumber: 613,
+                                                                lineNumber: 585,
                                                                 columnNumber: 23
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                            lineNumber: 612,
+                                                            lineNumber: 584,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                                    lineNumber: 602,
+                                                    lineNumber: 574,
                                                     columnNumber: 19
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                            lineNumber: 600,
+                                            lineNumber: 572,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                                    lineNumber: 583,
+                                    lineNumber: 555,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                            lineNumber: 578,
+                            lineNumber: 550,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                        lineNumber: 577,
+                        lineNumber: 549,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-                lineNumber: 323,
+                lineNumber: 295,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Downloads/travel-booking-platform/components/dashboard/admin-usage-insights.tsx",
-        lineNumber: 282,
+        lineNumber: 254,
         columnNumber: 5
     }, this);
 }

@@ -1306,7 +1306,7 @@ function EmployeesPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                                 className: "text-3xl font-bold tracking-tight",
-                                children: isSuperAdmin ? "Agent Admins" : "Agents"
+                                children: isSuperAdmin ? "Agent onboarding" : "Agents"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/employees/page.tsx",
                                 lineNumber: 160,
@@ -1314,7 +1314,7 @@ function EmployeesPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-muted-foreground",
-                                children: isSuperAdmin ? "Manage agent admins in the system." : "Manage your agents and their booking permissions."
+                                children: isSuperAdmin ? "Manage agent onboarding in the system." : "Manage your agents and their booking permissions."
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/employees/page.tsx",
                                 lineNumber: 163,
@@ -1356,7 +1356,7 @@ function EmployeesPage() {
                                         lineNumber: 175,
                                         columnNumber: 15
                                     }, this),
-                                    isSuperAdmin ? "Add Agent Admin" : "Add Agent"
+                                    isSuperAdmin ? "Add Agent onboarding" : "Add Agent"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/employees/page.tsx",
@@ -1881,7 +1881,7 @@ function AddUserDialog({ open, onOpenChange, userRole, onUserAdded }) {
             if (onUserAdded) {
                 onUserAdded(newUser);
             }
-            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success(`${userRole === "AGENCY_ADMIN" ? "Agent Admin" : "Agent"} added successfully`, {
+            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success(`${userRole === "AGENCY_ADMIN" ? "Agent onboarding" : "Agent"} added successfully`, {
                 description: `${name} has been added to the system.`
             });
             // Reset form
@@ -1905,7 +1905,7 @@ function AddUserDialog({ open, onOpenChange, userRole, onUserAdded }) {
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogHeader"], {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogTitle"], {
-                            children: userRole === "AGENCY_ADMIN" ? "Add Agent Admin" : "Add Agent"
+                            children: userRole === "AGENCY_ADMIN" ? "Add Agent onboarding" : "Add Agent"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/employees/page.tsx",
                             lineNumber: 451,

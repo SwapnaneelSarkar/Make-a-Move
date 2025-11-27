@@ -45,7 +45,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const BOOKING_STAGES = [
   { id: "search", label: "Search" },
@@ -102,6 +102,7 @@ interface PaymentData {
 
 export default function HotelsPage() {
   const { currentUser } = useAppStore()
+  const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
   const [currentStage, setCurrentStage] = useState(0)
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null)
   const [selectedRooms, setSelectedRooms] = useState<RoomSelection[]>([])
@@ -363,6 +364,12 @@ export default function HotelsPage() {
 
   // Handle hotel selection
   const handleHotelSelect = (hotel: Hotel) => {
+    if (isSuperAdmin) {
+      toast.error("Super Admins cannot initiate hotel bookings.", {
+        description: "Switch to an agency role to continue.",
+      })
+      return
+    }
     setSelectedHotel(hotel)
     setCurrentStage(2)
     setSelectedRooms([])
@@ -540,6 +547,25 @@ export default function HotelsPage() {
     }
     return true
   })
+
+  if (isSuperAdmin) {
+    return (
+      <div className="px-6 py-10">
+        <div className="max-w-2xl mx-auto">
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              Booking access restricted
+            </AlertTitle>
+            <AlertDescription>
+              Super Admins oversee agencies and cannot initiate hotel bookings from this workspace.
+              Switch to an agency-facing role to access hotel search and booking flows.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -812,7 +838,12 @@ export default function HotelsPage() {
           <CardContent>
             <div className="space-y-4">
               {filteredHotels.map((hotel) => (
-                <HotelCard key={hotel.id} hotel={hotel} onBook={handleHotelSelect} />
+                <HotelCard
+                  key={hotel.id}
+                  hotel={hotel}
+                  onBook={handleHotelSelect}
+                  userRole={currentUser.role}
+                />
               ))}
             </div>
           </CardContent>

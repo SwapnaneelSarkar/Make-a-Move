@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/lib/store"
 import { toast } from "sonner"
@@ -38,6 +39,7 @@ const BOOKING_STAGES = [
 
 export default function FlightsPage() {
   const { currentUser } = useAppStore()
+  const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
   const [currentStage, setCurrentStage] = useState<FlightStage>("Search")
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
   const [bookingId, setBookingId] = useState<string>(generateBookingId())
@@ -266,6 +268,12 @@ export default function FlightsPage() {
   }
 
   const handleBook = (flight: Flight) => {
+    if (isSuperAdmin) {
+      toast.error("Super Admins cannot initiate flight bookings.", {
+        description: "Switch to an agency role to create bookings.",
+      })
+      return
+    }
     // Ensure we're in Listing stage before booking
     if (currentStage !== "Listing") {
       toast.error("Cannot book flight", {
@@ -625,6 +633,25 @@ export default function FlightsPage() {
     } else {
       toast.error("Cannot proceed", { description: result.error })
     }
+  }
+
+  if (isSuperAdmin) {
+    return (
+      <div className="px-6 py-10">
+        <div className="max-w-2xl mx-auto">
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              Booking access restricted
+            </AlertTitle>
+            <AlertDescription>
+              Super Admins supervise agencies but cannot create flight bookings from this workspace.
+              Switch to an agency role (Agency Admin, Agent, or Sub Agent) to access flight booking tools.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    )
   }
 
   return (

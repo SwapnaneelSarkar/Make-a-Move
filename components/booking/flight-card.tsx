@@ -17,6 +17,7 @@ interface FlightCardProps {
 export function FlightCard({ flight, onBook, userRole }: FlightCardProps) {
   // Only show policy warnings to AGENT and SUB_AGENT
   const showPolicyWarning = userRole === "AGENT" || userRole === "SUB_AGENT"
+  const bookingDisabled = userRole === "SUPER_ADMIN"
   return (
     <Card className="group overflow-hidden border-2 transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5">
       <CardContent className="p-6">
@@ -107,11 +108,23 @@ export function FlightCard({ flight, onBook, userRole }: FlightCardProps) {
                   "w-full font-semibold shadow-sm transition-all duration-200",
                   flight.policyCompliant || !showPolicyWarning
                     ? "hover:shadow-md hover:scale-[1.02]"
-                    : "hover:shadow-sm"
+                    : "hover:shadow-sm",
+                  bookingDisabled && "opacity-60 cursor-not-allowed"
                 )}
+                disabled={bookingDisabled}
+                title={bookingDisabled ? "Super Admins cannot initiate flight bookings" : undefined}
               >
-                {flight.policyCompliant || !showPolicyWarning ? "Book Now" : "Request Approval"}
+                {bookingDisabled
+                  ? "View Only"
+                  : flight.policyCompliant || !showPolicyWarning
+                    ? "Book Now"
+                    : "Request Approval"}
               </Button>
+              {bookingDisabled && (
+                <p className="text-[11px] text-muted-foreground text-right">
+                  Switch to an agency role to book flights.
+                </p>
+              )}
             </div>
           </div>
         </div>
