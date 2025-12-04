@@ -3,6 +3,7 @@
   "/dashboard/financial-management/page": "app/dashboard/financial-management/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/policies/page": "app/dashboard/policies/page.js",
+  "/dashboard/reports/page": "app/dashboard/reports/page.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js"
 }

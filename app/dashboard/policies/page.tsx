@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { PlusCircle, Edit, Trash2, Save, Globe, Building2, Users, Settings } from "lucide-react"
+import { PlusCircle, Edit, Trash2, Save, Building2, Users } from "lucide-react"
 import { useAppStore } from "@/lib/store"
 import { usePermissions } from "@/hooks/use-permissions"
 import { MOCK_USERS, type User } from "@/lib/mock-data"
@@ -45,7 +45,7 @@ interface AgencyPolicy {
   name: string
   agencyId: string
   agencyName: string
-  type: "AGENCY_TRAVEL" | "APPROVAL_WORKFLOW"
+  type: "AGENCY_TRAVEL"
   scope: "AGENCY"
   flightPolicy?: {
     maxDomesticPrice: number
@@ -111,7 +111,6 @@ export default function PoliciesPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedPolicy, setSelectedPolicy] = useState<GlobalPolicy | AgencyPolicy | null>(null)
-  const [activeTab, setActiveTab] = useState("travel")
 
   // Load policies on mount
   useEffect(() => {
@@ -183,7 +182,7 @@ export default function PoliciesPage() {
           <p className="text-muted-foreground">
             {isSuperAdmin
               ? "Manage platform-wide travel policies. All amounts are in Indian Rupees (₹ INR)."
-              : "Configure agency-specific travel policies and approval workflows. All amounts are in Indian Rupees (₹ INR)."}
+              : "Configure agency-specific travel policies. All amounts are in Indian Rupees (₹ INR)."}
           </p>
         </div>
         {canEdit("policies") && (
@@ -334,12 +333,10 @@ function AgencyAdminView({
   onDelete: (id: string) => void
   canEdit: boolean
 }) {
-  const [activeTab, setActiveTab] = useState("travel")
   const [assignDialogOpen, setAssignDialogOpen] = useState(false)
   const [selectedPolicyForAssign, setSelectedPolicyForAssign] = useState<AgencyPolicy | null>(null)
 
   const travelPolicies = policies.filter((p) => p.type === "AGENCY_TRAVEL")
-  const workflowPolicies = policies.filter((p) => p.type === "APPROVAL_WORKFLOW")
 
   const handleAssignAgents = (policy: AgencyPolicy) => {
     setSelectedPolicyForAssign(policy)
@@ -348,13 +345,10 @@ function AgencyAdminView({
 
   return (
     <>
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs value="travel" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="travel">
             <Building2 className="mr-2 h-4 w-4" /> Travel Policies
-          </TabsTrigger>
-          <TabsTrigger value="workflow">
-            <Settings className="mr-2 h-4 w-4" /> Approval Workflows
           </TabsTrigger>
         </TabsList>
 
@@ -372,37 +366,6 @@ function AgencyAdminView({
               ) : (
                 <div className="space-y-4">
                   {travelPolicies.map((policy) => (
-                    <PolicyCard
-                      key={policy.id}
-                      policy={policy}
-                      onEdit={() => onEdit(policy)}
-                      onDelete={() => onDelete(policy.id)}
-                      onAssign={() => handleAssignAgents(policy)}
-                      canEdit={canEdit}
-                      type="agency"
-                      agents={agents}
-                    />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="workflow" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Approval Workflow Settings</CardTitle>
-              <CardDescription>Configure approval workflows for bookings within your agency</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {workflowPolicies.length === 0 ? (
-                <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-muted-foreground">
-                  No approval workflows configured. Create one to get started.
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {workflowPolicies.map((policy) => (
                     <PolicyCard
                       key={policy.id}
                       policy={policy}
