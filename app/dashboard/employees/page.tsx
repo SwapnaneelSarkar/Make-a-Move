@@ -63,12 +63,18 @@ export default function EmployeesPage() {
     setEmployees(filtered)
 
     // Load agent statuses
-    const allStatuses = await agentStatusDB.readAll()
-    const statusMap: Record<string, AgentStatus> = {}
-    allStatuses.forEach((status) => {
-      statusMap[status.agentId] = status
-    })
-    setAgentStatuses(statusMap)
+    try {
+      const allStatuses = await agentStatusDB.readAll()
+      const statusMap: Record<string, AgentStatus> = {}
+      allStatuses.forEach((status) => {
+        statusMap[status.agentId] = status
+      })
+      setAgentStatuses(statusMap)
+    } catch (error) {
+      console.error("Failed to load agent statuses:", error)
+      // Set empty status map on error - agents will default to "Active"
+      setAgentStatuses({})
+    }
   }
 
   const getAgentStatus = (agentId: string): "Active" | "Suspended" => {

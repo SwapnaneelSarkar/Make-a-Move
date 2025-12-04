@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Database, RefreshCw, CheckCircle2, XCircle, Settings } from "lucide-react"
+import { RefreshCw, Settings } from "lucide-react"
 import { usePermissions } from "@/hooks/use-permissions"
 import { toast } from "sonner"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 interface ERPConnection {
   id: string
   name: string
-  type: "Tally Prime" | "Zoho Books"
+  type: "Tally Prime"
   status: "Connected" | "Disconnected" | "Error"
   lastSync: string
   syncFrequency: "Real-time" | "Hourly" | "Daily"
@@ -31,14 +31,6 @@ const MOCK_CONNECTIONS: ERPConnection[] = [
     status: "Connected",
     lastSync: "2024-01-20T10:30:00",
     syncFrequency: "Hourly",
-  },
-  {
-    id: "2",
-    name: "Zoho Books Integration",
-    type: "Zoho Books",
-    status: "Disconnected",
-    lastSync: "2024-01-19T15:45:00",
-    syncFrequency: "Daily",
   },
 ]
 
@@ -84,7 +76,7 @@ export default function ERPIntegrationPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">ERP Integration</h1>
-          <p className="text-muted-foreground">Integrate with Tally Prime and Zoho Books for invoice and ledger synchronization.</p>
+          <p className="text-muted-foreground">Integrate with Tally Prime for invoice and ledger synchronization.</p>
         </div>
       </div>
 
@@ -92,7 +84,6 @@ export default function ERPIntegrationPage() {
         <TabsList>
           <TabsTrigger value="connections">Connections</TabsTrigger>
           <TabsTrigger value="tally">Tally Prime</TabsTrigger>
-          <TabsTrigger value="zoho">Zoho Books</TabsTrigger>
           <TabsTrigger value="sync">Sync Settings</TabsTrigger>
         </TabsList>
 
@@ -100,7 +91,7 @@ export default function ERPIntegrationPage() {
           <Card>
             <CardHeader>
               <CardTitle>ERP Connections</CardTitle>
-              <CardDescription>Manage connections to Tally Prime and Zoho Books</CardDescription>
+              <CardDescription>Manage connections to Tally Prime</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -201,46 +192,6 @@ export default function ERPIntegrationPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="zoho">
-          <Card>
-            <CardHeader>
-              <CardTitle>Zoho Books Configuration</CardTitle>
-              <CardDescription>Configure connection to Zoho Books for invoice and ledger sync</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label>Zoho Organization ID</Label>
-                <Input placeholder="Enter organization ID" />
-              </div>
-              <div>
-                <Label>API Token</Label>
-                <Input type="password" placeholder="Enter API token" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Enable Auto Sync</Label>
-                  <p className="text-sm text-muted-foreground">Automatically sync invoices and ledger entries</p>
-                </div>
-                <Switch />
-              </div>
-              <div>
-                <Label>Sync Frequency</Label>
-                <Select defaultValue="daily">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="realtime">Real-time</SelectItem>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="daily">Daily</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button>Save Configuration</Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="sync">
           <Card>
             <CardHeader>
@@ -278,6 +229,8 @@ export default function ERPIntegrationPage() {
     </div>
   )
 }
+
+
 
 
 

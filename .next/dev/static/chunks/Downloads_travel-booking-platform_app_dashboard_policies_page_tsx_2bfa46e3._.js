@@ -1,8 +1,8 @@
 (globalThis.TURBOPACK_CHUNK_LISTS || (globalThis.TURBOPACK_CHUNK_LISTS = [])).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
-  "static/chunks/Downloads_travel-booking-platform_3c198fef._.js",
-  "static/chunks/56a5d_b4502de5._.js"
+  "static/chunks/Downloads_travel-booking-platform_33e0af95._.js",
+  "static/chunks/56a5d_e5600961._.js"
 ],
     source: "dynamic"
 });

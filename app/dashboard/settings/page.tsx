@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
 import { usePermissions } from "@/hooks/use-permissions"
 import { AlertCircle } from "lucide-react"
 import { toast } from "sonner"
@@ -38,74 +37,11 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid gap-6">
-        <NotificationPreferences />
         <MarkupRules />
         <CommissionRules />
         <PromotionalBanners />
                 </div>
               </div>
-  )
-}
-
-function NotificationPreferences() {
-  const [channels, setChannels] = useState({
-    email: true,
-    sms: false,
-    whatsapp: true,
-  })
-
-  useEffect(() => {
-    const stored = localStorage.getItem("notification_channels")
-    if (stored) {
-      try {
-        setChannels(JSON.parse(stored))
-      } catch {
-        /* noop */
-      }
-    }
-  }, [])
-
-  const toggleChannel = (key: keyof typeof channels) => {
-    setChannels((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const handleSavePreferences = () => {
-    localStorage.setItem("notification_channels", JSON.stringify(channels))
-    toast.success("Preferences saved", {
-      description: "Mock notification sent to user@example.com",
-    })
-  }
-
-  return (
-          <Card>
-            <CardHeader>
-        <CardTitle>Notification Center Preferences</CardTitle>
-        <CardDescription>Enable the delivery channels defined in FR24.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-        <div className="flex flex-wrap items-center gap-6">
-                  <div className="flex items-center space-x-2">
-            <Switch id="notif-email" checked={channels.email} onCheckedChange={() => toggleChannel("email")} />
-            <Label htmlFor="notif-email">Email</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-            <Switch id="notif-sms" checked={channels.sms} onCheckedChange={() => toggleChannel("sms")} />
-            <Label htmlFor="notif-sms">SMS</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-            <Switch
-              id="notif-whatsapp"
-              checked={channels.whatsapp}
-              onCheckedChange={() => toggleChannel("whatsapp")}
-            />
-            <Label htmlFor="notif-whatsapp">WhatsApp</Label>
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button onClick={handleSavePreferences}>Save Preferences</Button>
-              </div>
-            </CardContent>
-          </Card>
   )
 }
 

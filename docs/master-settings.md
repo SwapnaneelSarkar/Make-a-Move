@@ -65,3 +65,5 @@ This document explains the Super Admin only **Master Settings** area (`/dashboar
 
 Update this reference whenever a new tab is introduced, existing settings gain additional controls, or persistence moves from client storage to an API so operators understand the impact scope.
 
+
+

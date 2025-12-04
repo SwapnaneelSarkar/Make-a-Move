@@ -895,7 +895,7 @@ __turbopack_context__.s([
     ()=>walletDepositRequestsDB
 ]);
 const DB_NAME = "TravelBookingDB";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const TABLES = {
     BOOKINGS: "bookings",
     TRANSACTIONS: "transactions",
@@ -1047,6 +1047,10 @@ function generatePNR() {
 // Generic CRUD functions
 async function create(table, data) {
     const db = await initDB();
+    // Check if object store exists
+    if (!db.objectStoreNames.contains(table)) {
+        throw new Error(`Object store "${table}" does not exist. Please upgrade the database.`);
+    }
     const tx = db.transaction(table, "readwrite");
     const store = tx.objectStore(table);
     const newData = {
@@ -1061,6 +1065,11 @@ async function create(table, data) {
 }
 async function read(table, id) {
     const db = await initDB();
+    // Check if object store exists
+    if (!db.objectStoreNames.contains(table)) {
+        console.warn(`Object store "${table}" does not exist. Returning undefined.`);
+        return undefined;
+    }
     const tx = db.transaction(table, "readonly");
     const store = tx.objectStore(table);
     return new Promise((resolve, reject)=>{
@@ -1071,6 +1080,11 @@ async function read(table, id) {
 }
 async function readAll(table) {
     const db = await initDB();
+    // Check if object store exists
+    if (!db.objectStoreNames.contains(table)) {
+        console.warn(`Object store "${table}" does not exist. Returning empty array.`);
+        return [];
+    }
     const tx = db.transaction(table, "readonly");
     const store = tx.objectStore(table);
     return new Promise((resolve, reject)=>{
@@ -1081,6 +1095,10 @@ async function readAll(table) {
 }
 async function update(table, id, data) {
     const db = await initDB();
+    // Check if object store exists
+    if (!db.objectStoreNames.contains(table)) {
+        throw new Error(`Object store "${table}" does not exist. Please upgrade the database.`);
+    }
     const tx = db.transaction(table, "readwrite");
     const store = tx.objectStore(table);
     return new Promise((resolve, reject)=>{
@@ -1105,6 +1123,10 @@ async function update(table, id, data) {
 }
 async function remove(table, id) {
     const db = await initDB();
+    // Check if object store exists
+    if (!db.objectStoreNames.contains(table)) {
+        throw new Error(`Object store "${table}" does not exist. Please upgrade the database.`);
+    }
     const tx = db.transaction(table, "readwrite");
     const store = tx.objectStore(table);
     return new Promise((resolve, reject)=>{
