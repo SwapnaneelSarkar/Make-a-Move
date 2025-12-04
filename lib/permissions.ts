@@ -43,7 +43,6 @@ export interface Permissions {
   auditLogs: PermissionSet
   policies: PermissionSet
   reports: PermissionSet
-  erpIntegration: PermissionSet
 
   // Support & Disputes
   disputes: PermissionSet
@@ -97,7 +96,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: true, edit: true, approve: true },
     policies: { view: true, edit: true, approve: true },
     reports: { view: true, edit: true, approve: true },
-    erpIntegration: { view: true, edit: true, approve: true },
 
     // Support & Disputes
     disputes: { view: true, edit: true, approve: true },
@@ -150,7 +148,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: true, edit: true, approve: false }, // Agency policies
     reports: { view: true, edit: false, approve: false }, // Agency reports
-    erpIntegration: { view: false, edit: false, approve: false },
 
     // Support & Disputes
     disputes: { view: true, edit: false, approve: false }, // Can raise, view status
@@ -203,7 +200,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: false, edit: false, approve: false },
     reports: { view: false, edit: false, approve: false },
-    erpIntegration: { view: false, edit: false, approve: false },
 
     // Support & Disputes
     disputes: { view: true, edit: false, approve: false }, // Can raise, view status
@@ -256,7 +252,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: false, edit: false, approve: false },
     reports: { view: false, edit: false, approve: false },
-    erpIntegration: { view: false, edit: false, approve: false },
 
     // Support & Disputes
     disputes: { view: true, edit: false, approve: false },
@@ -309,7 +304,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: false, edit: false, approve: false },
     reports: { view: true, edit: false, approve: false }, // Financial reports
-    erpIntegration: { view: true, edit: true, approve: false }, // ERP sync
 
     // Support & Disputes
     disputes: { view: false, edit: false, approve: false },
@@ -362,7 +356,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: false, edit: false, approve: false },
     reports: { view: false, edit: false, approve: false },
-    erpIntegration: { view: false, edit: false, approve: false },
 
     // Support & Disputes
     disputes: { view: true, edit: true, approve: true }, // Dispute closure/rejection
@@ -415,7 +408,6 @@ const PERMISSIONS: Record<Role, Permissions> = {
     auditLogs: { view: false, edit: false, approve: false },
     policies: { view: false, edit: false, approve: false },
     reports: { view: false, edit: false, approve: false },
-    erpIntegration: { view: false, edit: false, approve: false },
 
     // Support & Disputes
     disputes: { view: false, edit: false, approve: false },

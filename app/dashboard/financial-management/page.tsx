@@ -4,11 +4,10 @@ import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { usePermissions } from "@/hooks/use-permissions"
 import ContractsTab from "./contracts-tab"
-import ERPTab from "./erp-tab"
 import LedgerReconciliationTab from "./ledger-tab"
 import InvoiceReconciliationTab from "./invoice-tab"
 import CreditControlTab from "./credit-control-tab"
-import { FileText, Database, FileSpreadsheet, Receipt, TrendingUp } from "lucide-react"
+import { FileText, FileSpreadsheet, Receipt, TrendingUp } from "lucide-react"
 
 export default function FinancialManagementPage() {
   const { canView } = usePermissions()
@@ -30,20 +29,14 @@ export default function FinancialManagementPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Financial Management</h1>
-        <p className="text-muted-foreground">
-          Manage contracts, ERP integrations, reconciliations, and credit control in one place.
-        </p>
+        <p className="text-muted-foreground">Manage contracts, reconciliations, and credit control in one place.</p>
       </div>
 
       <Tabs defaultValue="contracts" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="contracts" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Contracts
-          </TabsTrigger>
-          <TabsTrigger value="erp" className="flex items-center gap-2">
-            <Database className="h-4 w-4" />
-            ERP Integration
           </TabsTrigger>
           <TabsTrigger value="ledger" className="flex items-center gap-2">
             <FileSpreadsheet className="h-4 w-4" />
@@ -63,10 +56,6 @@ export default function FinancialManagementPage() {
           <ContractsTab />
         </TabsContent>
 
-        <TabsContent value="erp">
-          <ERPTab />
-        </TabsContent>
-
         <TabsContent value="ledger">
           <LedgerReconciliationTab />
         </TabsContent>
@@ -82,6 +71,7 @@ export default function FinancialManagementPage() {
     </div>
   )
 }
+
 
 
 

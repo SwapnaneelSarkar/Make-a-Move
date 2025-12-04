@@ -137,11 +137,6 @@ const PERMISSIONS = {
             edit: true,
             approve: true
         },
-        erpIntegration: {
-            view: true,
-            edit: true,
-            approve: true
-        },
         // Support & Disputes
         disputes: {
             view: true,
@@ -301,11 +296,6 @@ const PERMISSIONS = {
             edit: false,
             approve: false
         },
-        erpIntegration: {
-            view: false,
-            edit: false,
-            approve: false
-        },
         // Support & Disputes
         disputes: {
             view: true,
@@ -461,11 +451,6 @@ const PERMISSIONS = {
             approve: false
         },
         reports: {
-            view: false,
-            edit: false,
-            approve: false
-        },
-        erpIntegration: {
             view: false,
             edit: false,
             approve: false
@@ -629,11 +614,6 @@ const PERMISSIONS = {
             edit: false,
             approve: false
         },
-        erpIntegration: {
-            view: false,
-            edit: false,
-            approve: false
-        },
         // Support & Disputes
         disputes: {
             view: true,
@@ -791,11 +771,6 @@ const PERMISSIONS = {
         reports: {
             view: true,
             edit: false,
-            approve: false
-        },
-        erpIntegration: {
-            view: true,
-            edit: true,
             approve: false
         },
         // Support & Disputes
@@ -957,11 +932,6 @@ const PERMISSIONS = {
             edit: false,
             approve: false
         },
-        erpIntegration: {
-            view: false,
-            edit: false,
-            approve: false
-        },
         // Support & Disputes
         disputes: {
             view: true,
@@ -1117,11 +1087,6 @@ const PERMISSIONS = {
             approve: false
         },
         reports: {
-            view: false,
-            edit: false,
-            approve: false
-        },
-        erpIntegration: {
             view: false,
             edit: false,
             approve: false

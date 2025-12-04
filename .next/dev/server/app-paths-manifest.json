@@ -1,21 +1,7 @@
 {
-  "/dashboard/approvals/page": "app/dashboard/approvals/page.js",
-  "/dashboard/bookings/page": "app/dashboard/bookings/page.js",
-  "/dashboard/disputes/page": "app/dashboard/disputes/page.js",
-  "/dashboard/employees/page": "app/dashboard/employees/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/dashboard/financial-management/page": "app/dashboard/financial-management/page.js",
-  "/dashboard/invoice-reconciliation/page": "app/dashboard/invoice-reconciliation/page.js",
-  "/dashboard/kyc/page": "app/dashboard/kyc/page.js",
-  "/dashboard/kyc/review/page": "app/dashboard/kyc/review/page.js",
-  "/dashboard/ledger-reconciliation/page": "app/dashboard/ledger-reconciliation/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/policies/page": "app/dashboard/policies/page.js",
-  "/dashboard/refunds/page": "app/dashboard/refunds/page.js",
-  "/dashboard/reports/page": "app/dashboard/reports/page.js",
-  "/dashboard/schedule-escalations/page": "app/dashboard/schedule-escalations/page.js",
-  "/dashboard/settings/page": "app/dashboard/settings/page.js",
-  "/dashboard/support-tickets/page": "app/dashboard/support-tickets/page.js",
-  "/dashboard/wallet/page": "app/dashboard/wallet/page.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js"
 }

@@ -59,11 +59,12 @@ This document explains the Super Admin only **Master Settings** area (`/dashboar
 ## Implementation Notes
 
 - All forms currently mock persistence through browser storage. To productionize, wire the submit handlers to your backend (REST or GraphQL) and enforce audit logging via `audit-utils`.  
-- Tabs rely on `@radix-ui/react-tabs` via the shared UI kit, so adding new sections (e.g., “ERP Integrations”) just requires adding another `TabsTrigger`/`TabsContent` pair.
+- Tabs rely on `@radix-ui/react-tabs` via the shared UI kit, so adding new sections just requires adding another `TabsTrigger`/`TabsContent` pair.
 
 ## When to Update This Doc
 
 Update this reference whenever a new tab is introduced, existing settings gain additional controls, or persistence moves from client storage to an API so operators understand the impact scope.
+
 
 
 
