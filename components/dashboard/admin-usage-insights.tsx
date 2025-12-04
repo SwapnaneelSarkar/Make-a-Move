@@ -64,9 +64,185 @@ export function AdminUsageInsights() {
         transactionsDB.readAll(),
         refundsDB.readAll(),
       ])
-      setBookings(bookingsData)
-      setTransactions(transactionsData)
-      setRefunds(refundsData)
+
+      // If there is no real data yet, seed the insights with mock data
+      if (bookingsData.length === 0 && transactionsData.length === 0 && refundsData.length === 0) {
+        const now = new Date()
+        const today = now.toISOString().split("T")[0]
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0]
+
+        const mockBookings: Booking[] = [
+          {
+            id: "mock-booking-1",
+            bookingId: "FL-20250101-0001",
+            pnr: "AB12CD",
+            type: "FLIGHT",
+            status: "CONFIRMED",
+            details: {
+              departure: { code: "DEL" },
+              arrival: { code: "BOM" },
+              airline: "IndiGo",
+            },
+            date: today,
+            amount: 12500,
+            agentName: "Sky Travels (Main)",
+            agentId: "agent-1",
+            approvalStatus: "APPROVED",
+            createdAt: now.toISOString(),
+            updatedAt: now.toISOString(),
+          },
+          {
+            id: "mock-booking-2",
+            bookingId: "FL-20250101-0002",
+            pnr: "EF34GH",
+            type: "FLIGHT",
+            status: "CONFIRMED",
+            details: {
+              departure: { code: "BOM" },
+              arrival: { code: "DXB" },
+              airline: "Emirates",
+            },
+            date: today,
+            amount: 48000,
+            agentName: "Sky Travels (Main)",
+            agentId: "agent-1",
+            approvalStatus: "APPROVED",
+            createdAt: now.toISOString(),
+            updatedAt: now.toISOString(),
+          },
+          {
+            id: "mock-booking-3",
+            bookingId: "HT-20250101-0001",
+            pnr: "IJ56KL",
+            type: "HOTEL",
+            status: "COMPLETED",
+            details: {
+              name: "The Grand Mumbai",
+            },
+            date: monthStart,
+            amount: 8200,
+            agentName: "Travel Partners Co.",
+            agentId: "agent-2",
+            approvalStatus: "APPROVED",
+            createdAt: now.toISOString(),
+            updatedAt: now.toISOString(),
+          },
+          {
+            id: "mock-booking-4",
+            bookingId: "FL-20250101-0003",
+            pnr: "MN78OP",
+            type: "FLIGHT",
+            status: "CANCELLED",
+            details: {
+              departure: { code: "DEL" },
+              arrival: { code: "GOI" },
+              airline: "IndiGo",
+            },
+            date: monthStart,
+            amount: 9500,
+            agentName: "Travel Partners Co.",
+            agentId: "agent-2",
+            approvalStatus: "REJECTED",
+            createdAt: now.toISOString(),
+            updatedAt: now.toISOString(),
+          },
+        ]
+
+        const mockTransactions: Transaction[] = [
+          // Wallet top-ups
+          {
+            id: "mock-tx-1",
+            date: monthStart,
+            description: "Wallet Top-up - Sky Travels (Main)",
+            amount: 100000,
+            type: "CREDIT",
+            status: "Completed",
+            paymentMethod: "Bank Transfer",
+            productType: "Wallet Top-up",
+            balanceAfter: 100000,
+            createdAt: now.toISOString(),
+          },
+          {
+            id: "mock-tx-2",
+            date: today,
+            description: "Wallet Top-up - Travel Partners Co.",
+            amount: 50000,
+            type: "CREDIT",
+            status: "Completed",
+            paymentMethod: "UPI",
+            productType: "Wallet Top-up",
+            balanceAfter: 150000,
+            createdAt: now.toISOString(),
+          },
+          // Usage debits
+          {
+            id: "mock-tx-3",
+            date: today,
+            description: "Flight booking - DEL-BOM",
+            amount: 12500,
+            type: "DEBIT",
+            status: "Completed",
+            paymentMethod: "Wallet",
+            productType: "Flight",
+            bookingId: "FL-20250101-0001",
+            balanceAfter: 137500,
+            createdAt: now.toISOString(),
+          },
+          {
+            id: "mock-tx-4",
+            date: today,
+            description: "Flight booking - BOM-DXB",
+            amount: 48000,
+            type: "DEBIT",
+            status: "Completed",
+            paymentMethod: "Wallet",
+            productType: "Flight",
+            bookingId: "FL-20250101-0002",
+            balanceAfter: 89500,
+            createdAt: now.toISOString(),
+          },
+          {
+            id: "mock-tx-5",
+            date: monthStart,
+            description: "Hotel booking - The Grand Mumbai",
+            amount: 8200,
+            type: "DEBIT",
+            status: "Completed",
+            paymentMethod: "Wallet",
+            productType: "Hotel",
+            bookingId: "HT-20250101-0001",
+            balanceAfter: 81300,
+            createdAt: now.toISOString(),
+          },
+        ]
+
+        const mockRefunds: Refund[] = [
+          {
+            id: "mock-refund-1",
+            refundId: "RF-20250101-0001",
+            bookingId: "FL-20250101-0003",
+            reason: "Customer cancellation",
+            type: "PARTIAL",
+            amount: 4500,
+            status: "Completed",
+            description: "50% refund after airline charges",
+            timeline: [
+              { stage: "Initiated", date: monthStart, status: "Completed" },
+              { stage: "Processed", date: today, status: "Completed" },
+            ],
+            createdAt: monthStart,
+            updatedAt: today,
+          },
+        ]
+
+        setBookings(mockBookings)
+        setTransactions(mockTransactions)
+        setRefunds(mockRefunds)
+      } else {
+        setBookings(bookingsData)
+        setTransactions(transactionsData)
+        setRefunds(refundsData)
+      }
     } catch (error) {
       console.error("Failed to load insights data:", error)
     } finally {

@@ -876,15 +876,20 @@ function PolicyDialog({
                   </div>
                 <div className="space-y-2">
                     <Label>Minimum Star Rating (Optional)</Label>
-                    <Select value={minStarRating} onValueChange={setMinStarRating}>
+                    <Select
+                      value={minStarRating}
+                      onValueChange={(value) =>
+                        setMinStarRating(value === "any" ? "" : value)
+                      }
+                    >
                     <SelectTrigger>
                         <SelectValue placeholder="Any" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="">Any</SelectItem>
+                      <SelectItem value="any">Any</SelectItem>
                       <SelectItem value="3">3 Star</SelectItem>
                       <SelectItem value="4">4 Star</SelectItem>
-                        <SelectItem value="5">5 Star</SelectItem>
+                      <SelectItem value="5">5 Star</SelectItem>
                     </SelectContent>
                   </Select>
                   </div>
