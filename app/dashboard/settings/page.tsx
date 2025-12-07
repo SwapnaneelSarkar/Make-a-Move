@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { usePermissions } from "@/hooks/use-permissions"
 import { AlertCircle } from "lucide-react"
 import { toast } from "sonner"
+import { Switch } from "@/components/ui/switch"
 
 export default function SettingsPage() {
   const { canView } = usePermissions()
@@ -37,11 +38,58 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid gap-6">
+        <DownloadMarkupSettings />
         <MarkupRules />
         <CommissionRules />
         <PromotionalBanners />
                 </div>
               </div>
+  )
+}
+
+function DownloadMarkupSettings() {
+  const [showMarkupInDownloads, setShowMarkupInDownloads] = useState<boolean>(true)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("download_markup_visibility")
+    if (stored !== null) {
+      setShowMarkupInDownloads(stored === "true")
+    }
+  }, [])
+
+  const handleToggle = (checked: boolean) => {
+    setShowMarkupInDownloads(checked)
+    localStorage.setItem("download_markup_visibility", checked.toString())
+    toast.success(`Markup ${checked ? "shown" : "hidden"} in downloads`)
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Reporting & Downloads Settings</CardTitle>
+        <CardDescription>
+          Control markup visibility in exported documents (Tickets, Vouchers, Invoices, Booking Confirmations)
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <Label htmlFor="markup-visibility" className="text-base">
+              Show Markup in Downloads
+            </Label>
+            <p className="text-sm text-muted-foreground">
+              When enabled, markup will be displayed as a separate line item in all exported documents.
+              When disabled, only base fare and taxes will be shown.
+            </p>
+          </div>
+          <Switch
+            id="markup-visibility"
+            checked={showMarkupInDownloads}
+            onCheckedChange={handleToggle}
+          />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 

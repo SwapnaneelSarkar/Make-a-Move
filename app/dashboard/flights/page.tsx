@@ -1,16 +1,20 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { FlightSearch } from "@/components/booking/flight-search"
 import { FlightCard } from "@/components/booking/flight-card"
 import { MOCK_FLIGHTS, type Flight } from "@/lib/mock-data"
-import { Filter, SlidersHorizontal, CheckCircle2, Lock, ChevronRight, AlertCircle } from "lucide-react"
+import { CheckCircle2, Lock, ChevronRight, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Slider } from "@/components/ui/slider"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/lib/store"
 import { toast } from "sonner"
@@ -26,6 +30,8 @@ import { audit } from "@/lib/audit-utils"
 import { checkFlightPolicyCompliance, generateBookingId, generatePNR } from "@/lib/policy-utils"
 import { downloadTicket, type TicketData } from "@/lib/ticket-generator"
 import { hasSufficientBalance, getWalletBalance, createTransaction } from "@/lib/wallet-utils"
+import { calculatePricingBreakdown, type PricingBreakdown } from "@/lib/pricing-utils"
+import { getMarkupVisibility } from "@/lib/utils"
 
 const BOOKING_STAGES = [
   { id: "Search", label: "Search" },
@@ -38,8 +44,14 @@ const BOOKING_STAGES = [
 ]
 
 export default function FlightsPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const { currentUser } = useAppStore()
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
+  
+  // Check if we're coming from listing page with a selected flight
+  const selectedFlightId = searchParams.get("selectedFlight")
+  
   const [currentStage, setCurrentStage] = useState<FlightStage>("Search")
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
   const [bookingId, setBookingId] = useState<string>(generateBookingId())
@@ -77,7 +89,8 @@ export default function FlightsPage() {
 
   // Passenger Details State - now supports multiple passengers
   const [passengerDetails, setPassengerDetails] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     dob: "",
     gender: "",
     mobile: "",
@@ -107,14 +120,98 @@ export default function FlightsPage() {
   const [paymentTimeout, setPaymentTimeout] = useState<number | null>(null)
   const paymentTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const fareReviewStartTimeRef = useRef<number | null>(null)
+  
+  // Calculate pricing breakdown using useMemo
+  const pricingBreakdown = useMemo(() => {
+    if (!selectedFlight) return null
+    
+    const baseFare = selectedFlight.price
+    const taxes = 3750
+    
+    return calculatePricingBreakdown(
+      baseFare,
+      taxes,
+      "flights",
+      isInternational ? "International" : "Domestic",
+      searchData.specialFare || "Regular",
+      selectedFlight.currency || "INR"
+    )
+  }, [selectedFlight, isInternational, searchData.specialFare])
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const filteredFlights = useMemo(() => {
-    return MOCK_FLIGHTS.filter((flight) => {
-      const flightIsInternational = flight.type === "INTERNATIONAL"
-      return isInternational ? flightIsInternational : !flightIsInternational
-    })
-  }, [isInternational])
+
+  // Handle flight selection from listing page
+  useEffect(() => {
+    if (selectedFlightId) {
+      const flight = MOCK_FLIGHTS.find((f) => f.id === selectedFlightId)
+      if (flight) {
+        setSelectedFlight(flight)
+        const newListingData = {
+          selectedFlight: flight.id,
+          fareType: "Standard",
+          airline: flight.airline,
+          time: flight.departure.time,
+          price: flight.price.toString(),
+        }
+        setListingData(newListingData)
+        
+        // Restore search params from URL if available
+        const origin = searchParams.get("origin")
+        const destination = searchParams.get("destination")
+        const departureDate = searchParams.get("departureDate")
+        const returnDate = searchParams.get("returnDate")
+        const travellers = searchParams.get("travellers")
+        const classType = searchParams.get("class")
+        const tripType = searchParams.get("tripType")
+        const isIntl = searchParams.get("isInternational") === "true"
+        
+        if (origin) setSearchData(prev => ({ ...prev, origin }))
+        if (destination) setSearchData(prev => ({ ...prev, destination }))
+        if (departureDate) setSearchData(prev => ({ ...prev, departureDate: new Date(departureDate) }))
+        if (returnDate) setSearchData(prev => ({ ...prev, returnDate: new Date(returnDate) }))
+        if (travellers) setSearchData(prev => ({ ...prev, travellers }))
+        if (classType) setSearchData(prev => ({ ...prev, class: classType }))
+        if (tripType) setSearchData(prev => ({ ...prev, tripType }))
+        setIsInternational(isIntl)
+        
+        // Transition to Fare Review stage
+        const departureDateObj = departureDate ? new Date(departureDate) : new Date(flight.departure.time)
+        const cabinClass = classType || "Economy"
+        const policyResult = checkFlightPolicyCompliance(
+          flight.price,
+          cabinClass,
+          departureDateObj,
+          isIntl,
+        )
+        setPolicyCheckResult(policyResult)
+        
+        // Log the stage transition
+        const transitionResult = transitionStage(
+          "FLIGHT",
+          bookingId,
+          "Listing",
+          "Fare Review",
+          newListingData,
+          currentUser.id,
+          `Flight ${flight.flightNumber} selected`,
+        )
+        
+        if (transitionResult.success) {
+          setCurrentStage("Fare Review")
+          fareReviewStartTimeRef.current = Date.now()
+          setFareAccepted(false)
+        } else {
+          toast.error("Cannot proceed", { description: transitionResult.error })
+        }
+        
+        // Clear the selectedFlight param from URL
+        const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete("selectedFlight")
+        router.replace(`/dashboard/flights?${newParams.toString()}`)
+      }
+    }
+  }, [selectedFlightId, router, searchParams])
+
 
   // Payment timeout timer effect
   useEffect(() => {
@@ -260,8 +357,18 @@ export default function FlightsPage() {
     )
 
     if (result.success) {
-      setCurrentStage("Listing")
-      toast.success("Search completed", { description: "Moving to flight listings" })
+      // Navigate to listing page with search parameters
+      const params = new URLSearchParams({
+        origin: searchData.origin,
+        destination: searchData.destination,
+        departureDate: searchData.departureDate?.toISOString() || "",
+        returnDate: searchData.returnDate?.toISOString() || "",
+        travellers: searchData.travellers || "1",
+        class: searchData.class || "Economy",
+        tripType: searchData.tripType || "one-way",
+        isInternational: isInternational.toString(),
+      })
+      window.location.href = `/dashboard/flights/listing?${params.toString()}`
     } else {
       toast.error("Cannot proceed", { description: result.error })
     }
@@ -385,13 +492,20 @@ export default function FlightsPage() {
   const validatePassengerDetails = () => {
     const newErrors: Record<string, string> = {}
 
-    // Name: Required, alphabets only, min 2 characters
-    if (!passengerDetails.name) {
-      newErrors.name = "Name is required"
-    } else if (passengerDetails.name.length < 2) {
-      newErrors.name = "Name must be at least 2 characters"
-    } else if (!/^[a-zA-Z\s]+$/.test(passengerDetails.name)) {
-      newErrors.name = "Name can only contain alphabets and spaces"
+    // First Name: Required, alphabets only, min 2 characters
+    if (!passengerDetails.firstName) {
+      newErrors.firstName = "First name is required"
+    } else if (passengerDetails.firstName.length < 2) {
+      newErrors.firstName = "First name must be at least 2 characters"
+    } else if (!/^[a-zA-Z\s]+$/.test(passengerDetails.firstName)) {
+      newErrors.firstName = "First name can only contain alphabets and spaces"
+    }
+
+    // Last Name: Optional, but if provided, must be valid
+    if (passengerDetails.lastName && passengerDetails.lastName.length > 0) {
+      if (!/^[a-zA-Z\s]+$/.test(passengerDetails.lastName)) {
+        newErrors.lastName = "Last name can only contain alphabets and spaces"
+      }
     }
 
     // DOB: Required, valid date format, age validation
@@ -518,12 +632,28 @@ export default function FlightsPage() {
         return
       }
 
-      // Calculate total amount including ancillaries
+      // Calculate total amount including ancillaries and markup
       const ancillariesTotal =
         (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
         (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
         (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-      const totalAmount = selectedFlight ? selectedFlight.price + 3750 + ancillariesTotal : 0 // Base price + taxes + ancillaries
+      
+      // Use pricing breakdown if available, otherwise calculate
+      let totalAmount = 0
+      if (selectedFlight && pricingBreakdown) {
+        totalAmount = pricingBreakdown.totalAmount + ancillariesTotal
+      } else if (selectedFlight) {
+        // Fallback calculation
+        const breakdown = calculatePricingBreakdown(
+          selectedFlight.price,
+          3750,
+          "flights",
+          isInternational ? "International" : "Domestic",
+          searchData.specialFare || "Regular",
+          selectedFlight.currency || "INR"
+        )
+        totalAmount = breakdown.totalAmount + ancillariesTotal
+      }
       
       // Wallet balance: Must be ≥ total booking amount OR payment method selected
       if (paymentData.walletUsage) {
@@ -594,6 +724,26 @@ export default function FlightsPage() {
 
           // Create transaction
           if (paymentData.walletUsage && selectedFlight) {
+            const ancillariesTotal =
+              (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+              (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+              (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+            
+            // Use pricing breakdown for accurate total
+            let totalAmount = 0
+            if (pricingBreakdown) {
+              totalAmount = pricingBreakdown.totalAmount + ancillariesTotal
+            } else {
+              const breakdown = calculatePricingBreakdown(
+                selectedFlight.price,
+                3750,
+                "flights",
+                isInternational ? "International" : "Domestic",
+                searchData.specialFare || "Regular",
+                selectedFlight.currency || "INR"
+              )
+              totalAmount = breakdown.totalAmount + ancillariesTotal
+            }
             await createTransaction({
               date: new Date().toISOString().split("T")[0],
               description: `Flight Booking ${booking.bookingId}`,
@@ -729,83 +879,7 @@ export default function FlightsPage() {
         />
       </div>
 
-      {/* Stage 1: Listing */}
-      {(currentStage === "Listing" || (getCurrentStageIndex() > 1 && selectedFlight)) && (
-        <div className={cn("grid gap-6 lg:grid-cols-4", getCurrentStageIndex() > 1 && "hidden")}>
-          {/* ... existing sidebar filters ... */}
-          <div className="hidden space-y-6 lg:block">
-            <div className="rounded-xl border-2 bg-card p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-bold">Filters</h3>
-                <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Stops</label>
-                  <div className="flex flex-col gap-2">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" className="rounded border-gray-300" defaultChecked /> Direct
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" className="rounded border-gray-300" /> 1 Stop
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Airlines</label>
-                  <div className="flex flex-col gap-2">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" className="rounded border-gray-300" defaultChecked /> Indigo
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" className="rounded border-gray-300" defaultChecked /> Air India
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="checkbox" className="rounded border-gray-300" defaultChecked /> Vistara
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Policy</label>
-                  <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" className="rounded border-gray-300" /> Show out of policy
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Results */}
-          <div className="col-span-3 space-y-4">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h2 className="text-2xl font-bold">{filteredFlights.length} Flights Found</h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {isInternational ? "Showing international routes" : "Showing domestic routes"}
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="lg:hidden bg-transparent">
-                <Filter className="mr-2 h-4 w-4" /> Filters
-              </Button>
-            </div>
-
-            {filteredFlights.length === 0 ? (
-              <div className="rounded-xl border-2 border-dashed p-6 text-center text-sm text-muted-foreground">
-                No {isInternational ? "international" : "domestic"} flights available right now. Try adjusting your search.
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredFlights.map((flight) => (
-                  <FlightCard key={flight.id} flight={flight} onBook={handleBook} userRole={currentUser.role} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Listing is now on a separate page - removed from here */}
 
       {/* Selected Flight Summary (Visible after listing) */}
       {getCurrentStageIndex() > 1 && selectedFlight && (
@@ -851,32 +925,101 @@ export default function FlightsPage() {
               </div>
             )}
 
-          <div className="grid grid-cols-2 gap-6 bg-muted/30 rounded-xl p-5">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">Base Fare</p>
-              <p className="text-xl font-bold">
-                {selectedFlight.currency} {selectedFlight.price.toLocaleString("en-IN")}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">Taxes & Fees</p>
-              <p className="text-xl font-bold">₹3,750</p>
-            </div>
-            <Separator className="col-span-2 my-2" />
-            <div className="col-span-2 flex justify-between items-center pt-2">
-              <span className="text-lg font-bold">Total Amount</span>
-              <span className="text-2xl font-bold text-primary">
-                ₹
-                {(
-                  selectedFlight.price +
-                  3750 +
-                  (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-                  (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-                  (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-                ).toLocaleString("en-IN")}
-              </span>
-            </div>
-          </div>
+          {(() => {
+            if (!pricingBreakdown) {
+              // Fallback if pricing breakdown not calculated
+              const baseFare = selectedFlight.price
+              const taxes = 3750
+              const ancillariesTotal =
+                (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+                (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+                (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+              const totalAmount = baseFare + taxes + ancillariesTotal
+              
+              return (
+                <div className="grid grid-cols-2 gap-6 bg-muted/30 rounded-xl p-5">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-muted-foreground">Base Fare</p>
+                    <p className="text-xl font-bold">
+                      {selectedFlight.currency} {baseFare.toLocaleString("en-IN")}
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-muted-foreground">Taxes & Fees</p>
+                    <p className="text-xl font-bold">₹{taxes.toLocaleString("en-IN")}</p>
+                  </div>
+                  {ancillariesTotal > 0 && (
+                    <>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">Ancillaries</p>
+                        <p className="text-xl font-bold">₹{ancillariesTotal.toLocaleString("en-IN")}</p>
+                      </div>
+                      <div className="space-y-1"></div>
+                    </>
+                  )}
+                  <Separator className="col-span-2 my-2" />
+                  <div className="col-span-2 flex justify-between items-center pt-2">
+                    <span className="text-lg font-bold">Total Amount</span>
+                    <span className="text-2xl font-bold text-primary">
+                      ₹{totalAmount.toLocaleString("en-IN")}
+                    </span>
+                  </div>
+                </div>
+              )
+            }
+            
+            const baseFare = pricingBreakdown.baseFare
+            const taxes = pricingBreakdown.taxes
+            const ancillariesTotal =
+              (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+              (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+              (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+            
+            const showMarkup = getMarkupVisibility() && pricingBreakdown.markup > 0
+            const totalAmount = pricingBreakdown.totalAmount + ancillariesTotal
+            
+            return (
+              <div className="grid grid-cols-2 gap-6 bg-muted/30 rounded-xl p-5">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Base Fare</p>
+                  <p className="text-xl font-bold">
+                    {selectedFlight.currency} {baseFare.toLocaleString("en-IN")}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">Taxes & Fees</p>
+                  <p className="text-xl font-bold">₹{taxes.toLocaleString("en-IN")}</p>
+                </div>
+                {showMarkup && (
+                  <>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Markup ({pricingBreakdown.markupPercent.toFixed(2)}%)
+                      </p>
+                      <p className="text-xl font-bold">₹{pricingBreakdown.markup.toLocaleString("en-IN")}</p>
+                    </div>
+                    <div className="space-y-1"></div>
+                  </>
+                )}
+                {ancillariesTotal > 0 && (
+                  <>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Ancillaries</p>
+                      <p className="text-xl font-bold">₹{ancillariesTotal.toLocaleString("en-IN")}</p>
+                    </div>
+                    <div className="space-y-1"></div>
+                  </>
+                )}
+                <Separator className="col-span-2 my-2" />
+                <div className="col-span-2 flex justify-between items-center pt-2">
+                  <span className="text-lg font-bold">Total Amount</span>
+                  <span className="text-2xl font-bold text-primary">
+                    ₹{totalAmount.toLocaleString("en-IN")}
+                  </span>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Fare Acceptance Checkbox */}
           <div className="flex items-start gap-2 pt-2">
@@ -1048,16 +1191,29 @@ export default function FlightsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name">
-              Full Name <span className="text-red-500">*</span>
+            <Label htmlFor="firstName">
+              First Name <span className="text-red-500">*</span>
             </Label>
             <Input
-              id="name"
-              value={passengerDetails.name}
-              onChange={(e) => setPassengerDetails({ ...passengerDetails, name: e.target.value })}
-              className={cn(errors.name && "border-red-500")}
+              id="firstName"
+              value={passengerDetails.firstName}
+              onChange={(e) => setPassengerDetails({ ...passengerDetails, firstName: e.target.value })}
+              className={cn(errors.firstName && "border-red-500")}
             />
-            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+            {errors.firstName && <p className="text-xs text-red-500">{errors.firstName}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="lastName">
+              Last Name
+            </Label>
+            <Input
+              id="lastName"
+              value={passengerDetails.lastName}
+              onChange={(e) => setPassengerDetails({ ...passengerDetails, lastName: e.target.value })}
+              className={cn(errors.lastName && "border-red-500")}
+            />
+            {errors.lastName && <p className="text-xs text-red-500">{errors.lastName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -1474,6 +1630,24 @@ export default function FlightsPage() {
                     (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
                     (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
                     (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+                  
+                  // Calculate pricing breakdown if not already available
+                  let finalPricingBreakdown = pricingBreakdown
+                  if (!finalPricingBreakdown && selectedFlight) {
+                    finalPricingBreakdown = calculatePricingBreakdown(
+                      selectedFlight.price,
+                      3750,
+                      "flights",
+                      isInternational ? "International" : "Domestic",
+                      searchData.specialFare || "Regular",
+                      selectedFlight.currency || "INR"
+                    )
+                  }
+                  
+                  const totalAmount = finalPricingBreakdown 
+                    ? finalPricingBreakdown.totalAmount + ancillariesTotal
+                    : selectedFlight.price + 3750 + ancillariesTotal
+                  
                   const ticketData: TicketData = {
                     bookingId,
                     pnr,
@@ -1484,15 +1658,29 @@ export default function FlightsPage() {
                       arrival: selectedFlight.arrival,
                       duration: selectedFlight.duration,
                     },
-                    passenger: passengerDetails,
+                    passenger: {
+                      firstName: passengerDetails.firstName,
+                      lastName: passengerDetails.lastName || undefined,
+                      dob: passengerDetails.dob,
+                      gender: passengerDetails.gender,
+                      mobile: passengerDetails.mobile,
+                      email: passengerDetails.email,
+                      passport: passengerDetails.passport || undefined,
+                    },
                     passengerCount,
                     bookingDate: new Date().toISOString(),
-                    totalAmount: selectedFlight.price + 3750 + ancillariesTotal,
+                    totalAmount,
                     ancillaries: {
                       extraBaggage: ancillaries.extraBaggage,
                       mealSelection: ancillaries.mealSelection,
                       seatSelection: ancillaries.seatSelection,
                     },
+                    pricingBreakdown: finalPricingBreakdown ? {
+                      baseFare: finalPricingBreakdown.baseFare,
+                      taxes: finalPricingBreakdown.taxes,
+                      markup: finalPricingBreakdown.markup,
+                      markupPercent: finalPricingBreakdown.markupPercent,
+                    } : undefined,
                   }
                   downloadTicket(ticketData)
                   toast.success("Ticket downloaded", {

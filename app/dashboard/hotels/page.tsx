@@ -38,6 +38,8 @@ import {
   validateMobileNumber,
   validateName,
 } from "@/lib/policy-utils"
+import { calculatePricingBreakdown } from "@/lib/pricing-utils"
+import { getMarkupVisibility } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
@@ -1269,28 +1271,59 @@ export default function HotelsPage() {
             <div>
               <h4 className="font-semibold mb-4">Fare Breakdown</h4>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base Fare</span>
-                  <span>₹{calculateTotalAmount().toLocaleString("en-IN")}</span>
-                </div>
-                {paymentData.couponCode && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount (Coupon)</span>
-                    <span>-₹{(calculateTotalAmount() * 0.1).toLocaleString("en-IN")}</span>
-                  </div>
-                )}
-                {paymentData.walletUsage && paymentData.walletAmount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Wallet Payment</span>
-                    <span>-₹{paymentData.walletAmount.toLocaleString("en-IN")}</span>
-                  </div>
-                )}
-                <Separator />
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Final Amount</span>
-                  <span>₹{Math.max(0, calculateFinalAmount()).toLocaleString("en-IN")}</span>
-                </div>
-                {errors.finalAmount && <p className="text-xs text-red-500">{errors.finalAmount}</p>}
+                {(() => {
+                  const baseAmount = calculateTotalAmount()
+                  const breakdown = calculatePricingBreakdown(
+                    baseAmount,
+                    0, // Hotels typically include taxes in base price
+                    "hotels",
+                    "Domestic", // Can be enhanced to detect international hotels
+                    "Regular",
+                    "INR"
+                  )
+                  const showMarkup = getMarkupVisibility() && breakdown.markup > 0
+                  
+                  return (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Base Fare</span>
+                        <span>₹{breakdown.baseFare.toLocaleString("en-IN")}</span>
+                      </div>
+                      {breakdown.taxes > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Taxes & Fees</span>
+                          <span>₹{breakdown.taxes.toLocaleString("en-IN")}</span>
+                        </div>
+                      )}
+                      {showMarkup && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            Markup ({breakdown.markupPercent.toFixed(2)}%)
+                          </span>
+                          <span>₹{breakdown.markup.toLocaleString("en-IN")}</span>
+                        </div>
+                      )}
+                      {paymentData.couponCode && (
+                        <div className="flex justify-between text-green-600">
+                          <span>Discount (Coupon)</span>
+                          <span>-₹{(breakdown.totalAmount * 0.1).toLocaleString("en-IN")}</span>
+                        </div>
+                      )}
+                      {paymentData.walletUsage && paymentData.walletAmount > 0 && (
+                        <div className="flex justify-between text-green-600">
+                          <span>Wallet Payment</span>
+                          <span>-₹{paymentData.walletAmount.toLocaleString("en-IN")}</span>
+                        </div>
+                      )}
+                      <Separator />
+                      <div className="flex justify-between font-bold text-lg">
+                        <span>Final Amount</span>
+                        <span>₹{Math.max(0, calculateFinalAmount()).toLocaleString("en-IN")}</span>
+                      </div>
+                      {errors.finalAmount && <p className="text-xs text-red-500">{errors.finalAmount}</p>}
+                    </>
+                  )
+                })()}
               </div>
             </div>
 
@@ -1349,6 +1382,15 @@ export default function HotelsPage() {
                       (searchData.checkOut.getTime() - searchData.checkIn.getTime()) / (1000 * 60 * 60 * 24),
                     )
                     import("@/lib/voucher-generator").then(({ generateHotelVoucherPDF }) => {
+                      const baseAmount = calculateTotalAmount()
+                      const breakdown = calculatePricingBreakdown(
+                        baseAmount,
+                        0,
+                        "hotels",
+                        "Domestic",
+                        "Regular",
+                        "INR"
+                      )
                       generateHotelVoucherPDF({
                       bookingId,
                       voucherNumber,
@@ -1367,11 +1409,17 @@ export default function HotelsPage() {
                         price: r.price,
                       })),
                       addOns,
-                      totalAmount: calculateTotalAmount(),
+                      totalAmount: breakdown.totalAmount,
                       finalAmount: calculateFinalAmount(),
                       paymentMode: paymentData.paymentMode,
                       bookingDate: new Date().toISOString(),
                       specialRequests: guestDetails.specialRequests || undefined,
+                      pricingBreakdown: {
+                        baseFare: breakdown.baseFare,
+                        taxes: breakdown.taxes,
+                        markup: breakdown.markup,
+                        markupPercent: breakdown.markupPercent,
+                      },
                       })
                       toast.success("Voucher downloaded", {
                         description: "Your hotel voucher has been downloaded as PDF.",

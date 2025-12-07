@@ -1,6 +1,8 @@
 // Ticket Generator Utility
 // Generates professional flight ticket in HTML/PDF format
 
+import { getMarkupVisibility } from "./utils"
+
 export interface TicketData {
   bookingId: string
   pnr: string
@@ -20,7 +22,8 @@ export interface TicketData {
     duration: string
   }
   passenger: {
-    name: string
+    firstName: string
+    lastName?: string
     dob: string
     gender: string
     mobile: string
@@ -38,6 +41,12 @@ export interface TicketData {
     extraBaggage: boolean
     mealSelection: boolean
     seatSelection: boolean
+  }
+  pricingBreakdown?: {
+    baseFare: number
+    taxes: number
+    markup?: number
+    markupPercent?: number
   }
 }
 
@@ -65,6 +74,12 @@ export function generateTicketHTML(data: TicketData): string {
     (data.ancillaries?.extraBaggage ? 1500 : 0) +
     (data.ancillaries?.mealSelection ? 1200 : 0) +
     (data.ancillaries?.seatSelection ? 800 : 0)
+
+  // Get pricing breakdown or calculate from totalAmount
+  const baseFare = data.pricingBreakdown?.baseFare ?? (data.totalAmount - 3750 - ancillariesTotal)
+  const taxes = data.pricingBreakdown?.taxes ?? 3750
+  const markup = data.pricingBreakdown?.markup ?? 0
+  const showMarkup = getMarkupVisibility() && markup > 0
 
   return `
 <!DOCTYPE html>
@@ -368,7 +383,7 @@ export function generateTicketHTML(data: TicketData): string {
         <div class="passenger-details">
           <div class="detail-item">
             <div class="detail-label">Passenger Name</div>
-            <div class="detail-value">${data.passenger.name}</div>
+            <div class="detail-value">${data.passenger.firstName}${data.passenger.lastName ? ` ${data.passenger.lastName}` : ""}</div>
           </div>
           <div class="detail-item">
             <div class="detail-label">Date of Birth</div>
@@ -418,12 +433,18 @@ export function generateTicketHTML(data: TicketData): string {
         <div class="section-title">Price Breakdown</div>
         <div class="price-row">
           <span class="price-label">Base Fare</span>
-          <span class="price-value">₹${(data.totalAmount - 3750 - ancillariesTotal).toLocaleString("en-IN")}</span>
+          <span class="price-value">₹${baseFare.toLocaleString("en-IN")}</span>
         </div>
         <div class="price-row">
           <span class="price-label">Taxes & Fees</span>
-          <span class="price-value">₹3,750</span>
+          <span class="price-value">₹${taxes.toLocaleString("en-IN")}</span>
         </div>
+        ${showMarkup ? `
+        <div class="price-row">
+          <span class="price-label">Markup (${data.pricingBreakdown?.markupPercent?.toFixed(2) || '0.00'}%)</span>
+          <span class="price-value">₹${markup.toLocaleString("en-IN")}</span>
+        </div>
+        ` : ""}
         ${ancillariesTotal > 0 ? `
         <div class="price-row">
           <span class="price-label">Ancillaries</span>
@@ -431,7 +452,7 @@ export function generateTicketHTML(data: TicketData): string {
         </div>
         ` : ""}
         <div class="price-row total">
-          <span class="price-label">Total Amount</span>
+          <span class="price-label">Final Payable Amount</span>
           <span class="price-value">₹${data.totalAmount.toLocaleString("en-IN")}</span>
         </div>
       </div>
@@ -476,6 +497,9 @@ export function downloadTicket(data: TicketData) {
     }, 250)
   }
 }
+
+
+
 
 
 

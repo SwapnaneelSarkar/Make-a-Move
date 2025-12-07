@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/dashboard/layout,_N_T_/dashboard/schedule-escalations/layout,_N_T_/dashboard/schedule-escalations/page,_N_T_/dashboard/schedule-escalations"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/dashboard/schedule-escalations/__PAGE__",
+    "/dashboard/schedule-escalations",
+    "/dashboard",
+    "/_index",
+    "/_head"
+  ]
+}

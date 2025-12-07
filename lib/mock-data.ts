@@ -74,6 +74,7 @@ export interface Flight {
   policyCompliant: boolean
   stops: number
   type?: "DOMESTIC" | "INTERNATIONAL"
+  baggage?: string // e.g., "No baggage", "15kg", "20kg", "25kg", "30kg"
 }
 
 export interface Booking {
@@ -295,6 +296,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   {
     id: "f2",
@@ -308,6 +310,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "20kg",
   },
   {
     id: "f3",
@@ -321,6 +324,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: false, // Business class mock
     stops: 0,
+    baggage: "30kg",
   },
   {
     id: "f4",
@@ -334,6 +338,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   {
     id: "f5",
@@ -347,6 +352,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "No baggage",
   },
   {
     id: "f6",
@@ -360,6 +366,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   // Delhi to Bangalore routes
   {
@@ -374,6 +381,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   {
     id: "f8",
@@ -387,6 +395,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "20kg",
   },
   {
     id: "f9",
@@ -400,6 +409,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "25kg",
   },
   // Mumbai to Bangalore routes
   {
@@ -414,6 +424,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   {
     id: "f11",
@@ -427,6 +438,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "No baggage",
   },
   // Delhi to Chennai routes
   {
@@ -441,6 +453,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   {
     id: "f13",
@@ -454,6 +467,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "20kg",
   },
   // Mumbai to Chennai routes
   {
@@ -468,6 +482,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 0,
+    baggage: "15kg",
   },
   // Routes with stops
   {
@@ -482,6 +497,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 1,
+    baggage: "No baggage",
   },
   {
     id: "f16",
@@ -495,6 +511,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: true,
     stops: 1,
+    baggage: "15kg",
   },
   // Premium/Business class options
   {
@@ -509,6 +526,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: false, // Business class - out of policy
     stops: 0,
+    baggage: "30kg",
   },
   {
     id: "f18",
@@ -522,6 +540,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     currency: "INR",
     policyCompliant: false, // Premium class - out of policy
     stops: 0,
+    baggage: "25kg",
   },
   // International routes
   {
@@ -537,6 +556,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     policyCompliant: false,
     stops: 0,
     type: "INTERNATIONAL",
+    baggage: "30kg",
   },
   {
     id: "f20",
@@ -551,6 +571,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     policyCompliant: true,
     stops: 0,
     type: "INTERNATIONAL",
+    baggage: "25kg",
   },
   {
     id: "f21",
@@ -565,6 +586,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     policyCompliant: true,
     stops: 0,
     type: "INTERNATIONAL",
+    baggage: "30kg",
   },
   {
     id: "f22",
@@ -579,6 +601,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     policyCompliant: true,
     stops: 0,
     type: "INTERNATIONAL",
+    baggage: "25kg",
   },
   {
     id: "f23",
@@ -593,6 +616,7 @@ export const MOCK_FLIGHTS: Flight[] = [
     policyCompliant: false,
     stops: 0,
     type: "INTERNATIONAL",
+    baggage: "30kg",
   },
 ]
 

@@ -1,0 +1,3 @@
+module.exports=[639,a=>{"use strict";var b=a.i(7810),c=a.i(15069),d=a.i(43687);function e(){let a=(0,c.useRouter)(),{currentUser:e,setCurrentUser:f}=(0,d.useAppStore)();return(0,b.useEffect)(()=>{let b=localStorage.getItem("session_user");if(b)try{let c=JSON.parse(b);f(c),a.push("/dashboard")}catch(b){localStorage.removeItem("session_user"),a.push("/login")}else a.push("/login")},[a,f]),null}a.s(["default",()=>e])}];
+
+//# sourceMappingURL=Downloads_travel-booking-platform_app_page_tsx_a8b74b7e._.js.map

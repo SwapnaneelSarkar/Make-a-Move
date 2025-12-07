@@ -532,38 +532,6 @@ function PolicyDetails({ policy }: { policy: GlobalPolicy | AgencyPolicy }) {
     )
   }
 
-
-  if ("approvalWorkflow" in policy && policy.approvalWorkflow) {
-    return (
-      <div className="space-y-2 text-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Auto-approval:</span>
-          <Badge variant={policy.approvalWorkflow.autoApproval ? "default" : "secondary"}>
-            {policy.approvalWorkflow.autoApproval ? "Enabled" : "Disabled"}
-          </Badge>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Manager Approval:</span>
-          <Badge variant={policy.approvalWorkflow.managerApproval ? "default" : "secondary"}>
-            {policy.approvalWorkflow.managerApproval ? "Required" : "Not Required"}
-          </Badge>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Finance Approval:</span>
-          <Badge variant={policy.approvalWorkflow.financeApproval ? "default" : "secondary"}>
-            {policy.approvalWorkflow.financeApproval ? "Required" : "Not Required"}
-          </Badge>
-        </div>
-        <div>
-          <span className="text-muted-foreground">Approval Threshold:</span> ₹{policy.approvalWorkflow.approvalThreshold.toLocaleString('en-IN')} (INR)
-        </div>
-        <div>
-          <span className="text-muted-foreground">Escalation Days:</span> {policy.approvalWorkflow.escalationDays} days
-        </div>
-      </div>
-    )
-  }
-
   return <div className="text-sm text-muted-foreground">No details available</div>
 }
 
@@ -631,34 +599,6 @@ function PolicyDialog({
       : ""
   )
 
-
-  // Approval Workflow
-  const [autoApproval, setAutoApproval] = useState(
-    policy && "approvalWorkflow" in policy && policy.approvalWorkflow
-      ? policy.approvalWorkflow.autoApproval
-      : true
-  )
-  const [managerApproval, setManagerApproval] = useState(
-    policy && "approvalWorkflow" in policy && policy.approvalWorkflow
-      ? policy.approvalWorkflow.managerApproval
-      : false
-  )
-  const [financeApproval, setFinanceApproval] = useState(
-    policy && "approvalWorkflow" in policy && policy.approvalWorkflow
-      ? policy.approvalWorkflow.financeApproval
-      : false
-  )
-  const [approvalThreshold, setApprovalThreshold] = useState(
-    policy && "approvalWorkflow" in policy && policy.approvalWorkflow
-      ? policy.approvalWorkflow.approvalThreshold.toString()
-      : "50000"
-  )
-  const [escalationDays, setEscalationDays] = useState(
-    policy && "approvalWorkflow" in policy && policy.approvalWorkflow
-      ? policy.approvalWorkflow.escalationDays.toString()
-      : "3"
-  )
-
   const handleSave = () => {
     if (!policyName.trim()) {
       toast.error("Policy name is required")
@@ -690,26 +630,17 @@ function PolicyDialog({
       basePolicy.agencyName = agencyName
       basePolicy.assignedAgents = policy && "assignedAgents" in policy ? policy.assignedAgents : []
 
-      if (policyType === "AGENCY_TRAVEL") {
-        basePolicy.flightPolicy = {
-          maxDomesticPrice: parseInt(maxDomesticPrice),
-          maxInternationalPrice: parseInt(maxInternationalPrice),
-          allowedCabinClass,
-          advanceBookingDays: parseInt(advanceBookingDays),
-        }
-        basePolicy.hotelPolicy = {
-          maxRatePerNightMetro: parseInt(maxMetroRate),
-          maxRatePerNightOther: parseInt(maxOtherRate),
-          minStarRating: minStarRating ? parseInt(minStarRating) : undefined,
-        }
-      } else if (policyType === "APPROVAL_WORKFLOW") {
-        basePolicy.approvalWorkflow = {
-          autoApproval,
-          managerApproval,
-          financeApproval,
-          approvalThreshold: parseInt(approvalThreshold),
-          escalationDays: parseInt(escalationDays),
-        }
+      // Agency admins now only manage travel policies here
+      basePolicy.flightPolicy = {
+        maxDomesticPrice: parseInt(maxDomesticPrice),
+        maxInternationalPrice: parseInt(maxInternationalPrice),
+        allowedCabinClass,
+        advanceBookingDays: parseInt(advanceBookingDays),
+      }
+      basePolicy.hotelPolicy = {
+        maxRatePerNightMetro: parseInt(maxMetroRate),
+        maxRatePerNightOther: parseInt(maxOtherRate),
+        minStarRating: minStarRating ? parseInt(minStarRating) : undefined,
       }
     }
 
@@ -749,10 +680,7 @@ function PolicyDialog({
                   {isSuperAdmin ? (
                     <SelectItem value="MASTER_TRAVEL">Master Travel Policy</SelectItem>
                   ) : (
-                    <>
-                      <SelectItem value="AGENCY_TRAVEL">Agency Travel Policy</SelectItem>
-                      <SelectItem value="APPROVAL_WORKFLOW">Approval Workflow</SelectItem>
-                    </>
+                    <SelectItem value="AGENCY_TRAVEL">Agency Travel Policy</SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -862,56 +790,7 @@ function PolicyDialog({
           )}
 
 
-          {/* Approval Workflow */}
-          {policyType === "APPROVAL_WORKFLOW" && (
-            <div className="space-y-4">
-              <h4 className="font-semibold">Approval Workflow Settings</h4>
-              <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Auto-approval</Label>
-                  <p className="text-sm text-muted-foreground">
-                      Automatically approve bookings within policy limits
-                  </p>
-                  </div>
-                  <Switch checked={autoApproval} onCheckedChange={setAutoApproval} />
-                </div>
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <Label className="text-base">Manager Approval</Label>
-                    <p className="text-sm text-muted-foreground">Require direct manager approval</p>
-                  </div>
-                  <Switch checked={managerApproval} onCheckedChange={setManagerApproval} />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                    <Label className="text-base">Finance Approval</Label>
-                    <p className="text-sm text-muted-foreground">Require finance team approval</p>
-                  </div>
-                  <Switch checked={financeApproval} onCheckedChange={setFinanceApproval} />
-                </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Approval Threshold (₹ INR)</Label>
-                    <Input
-                      type="number"
-                      value={approvalThreshold}
-                      onChange={(e) => setApprovalThreshold(e.target.value)}
-                      placeholder="50000"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Escalation Days</Label>
-                    <Input
-                      type="number"
-                      value={escalationDays}
-                      onChange={(e) => setEscalationDays(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Approval workflows are managed outside this policy dialog now */}
         </div>
 
         <DialogFooter>

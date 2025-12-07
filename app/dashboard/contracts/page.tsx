@@ -156,6 +156,7 @@ export default function ContractsPage() {
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead>Value</TableHead>
+                <TableHead>Added Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -163,7 +164,7 @@ export default function ContractsPage() {
             <TableBody>
               {filteredContracts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center text-muted-foreground">
                     No contracts found
                   </TableCell>
                 </TableRow>
@@ -178,6 +179,7 @@ export default function ContractsPage() {
                     <TableCell>{format(new Date(contract.startDate), "MMM d, yyyy")}</TableCell>
                     <TableCell>{format(new Date(contract.endDate), "MMM d, yyyy")}</TableCell>
                     <TableCell>₹{contract.value?.toLocaleString("en-IN") || "N/A"}</TableCell>
+                    <TableCell>{format(new Date(contract.createdAt), "MMM d, yyyy")}</TableCell>
                     <TableCell>
                       <Badge
                         variant="outline"
@@ -194,11 +196,18 @@ export default function ContractsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm">
-                          <FileText className="h-4 w-4" />
-                        </Button>
-                        {canEdit("systemSettings") && (
-                          <Button variant="ghost" size="sm">Edit</Button>
+                        {contract.documentUrl && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              if (contract.documentUrl) {
+                                window.open(contract.documentUrl, '_blank')
+                              }
+                            }}
+                          >
+                            <FileText className="h-4 w-4" />
+                          </Button>
                         )}
                       </div>
                     </TableCell>
@@ -240,11 +249,50 @@ function AddContractForm({
   const [endDate, setEndDate] = useState("")
   const [value, setValue] = useState("")
   const [documentUrl, setDocumentUrl] = useState("")
+  const [documentFile, setDocumentFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
 
-  const handleSubmit = () => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File size must be less than 10MB")
+        return
+      }
+      setDocumentFile(file)
+      // For demo purposes, create a local object URL
+      // In production, this would upload to a server and return a URL
+      const localUrl = URL.createObjectURL(file)
+      setDocumentUrl(localUrl)
+    }
+  }
+
+  const handleSubmit = async () => {
     if (!supplierName || !startDate || !endDate) {
       toast.error("Please fill in all required fields")
       return
+    }
+
+    // In a real implementation, you would upload the file here
+    // For now, we'll use the local URL or the provided URL
+    let finalDocumentUrl = documentUrl
+    
+    if (documentFile) {
+      setUploading(true)
+      try {
+        // Simulate file upload
+        await new Promise(resolve => setTimeout(resolve, 500))
+        // In production: upload file to server and get URL
+        // const uploadedUrl = await uploadContractDocument(documentFile)
+        // finalDocumentUrl = uploadedUrl
+        toast.success("Contract document uploaded successfully")
+      } catch (error) {
+        toast.error("Failed to upload document")
+        setUploading(false)
+        return
+      } finally {
+        setUploading(false)
+      }
     }
 
     onSave({
@@ -254,8 +302,17 @@ function AddContractForm({
       endDate,
       status: "Pending",
       value: value ? parseFloat(value) : undefined,
-      documentUrl: documentUrl || undefined,
+      documentUrl: finalDocumentUrl || undefined,
     })
+    
+    // Reset form
+    setSupplierName("")
+    setContractType("Supplier")
+    setStartDate("")
+    setEndDate("")
+    setValue("")
+    setDocumentUrl("")
+    setDocumentFile(null)
   }
 
   return (
@@ -310,23 +367,45 @@ function AddContractForm({
           />
         </div>
         <div>
-          <Label>Document URL</Label>
-          <Input
-            value={documentUrl}
-            onChange={(e) => setDocumentUrl(e.target.value)}
-            placeholder="Enter document URL or path"
-          />
+          <Label>Contract Document</Label>
+          <div className="space-y-2">
+            <Input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="cursor-pointer"
+            />
+            {documentFile && (
+              <p className="text-sm text-muted-foreground">
+                Selected: {documentFile.name} ({(documentFile.size / 1024).toFixed(2)} KB)
+              </p>
+            )}
+            <div className="text-xs text-muted-foreground">
+              Or enter document URL:
+            </div>
+            <Input
+              value={documentUrl}
+              onChange={(e) => setDocumentUrl(e.target.value)}
+              placeholder="Enter document URL (optional if file uploaded)"
+              disabled={!!documentFile}
+            />
+          </div>
         </div>
       </div>
       <DialogFooter>
-        <Button variant="outline" onClick={onCancel}>
+        <Button variant="outline" onClick={onCancel} disabled={uploading}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit}>Add Contract</Button>
+        <Button onClick={handleSubmit} disabled={uploading}>
+          {uploading ? "Uploading..." : "Add Contract"}
+        </Button>
       </DialogFooter>
     </>
   )
 }
+
+
+
 
 
 

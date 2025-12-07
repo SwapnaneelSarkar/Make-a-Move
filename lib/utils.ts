@@ -17,3 +17,13 @@ export function formatDate(dateString: string | Date): string {
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
 }
+
+/**
+ * Get markup visibility setting for downloads
+ * @returns true if markup should be shown, false if hidden
+ */
+export function getMarkupVisibility(): boolean {
+  if (typeof window === 'undefined') return true // Default to showing markup on server
+  const stored = localStorage.getItem("download_markup_visibility")
+  return stored === null ? true : stored === "true" // Default to true if not set
+}

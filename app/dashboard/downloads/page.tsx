@@ -1,12 +1,15 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Download, Trash2, FileText, Loader2, XCircle, CheckCircle2 } from "lucide-react"
+import { Download, Trash2, FileText, Loader2, XCircle, CheckCircle2, FileSpreadsheet, FileJson } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 import { toast } from "sonner"
+import { bookingsDB, type Booking } from "@/lib/local-db"
+import { exportBookings } from "@/lib/export-utils"
 
 interface Report {
   id: string
@@ -53,6 +56,53 @@ const MOCK_REPORTS: Report[] = [
 ]
 
 export default function DownloadsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([])
+  const [loadingBookings, setLoadingBookings] = useState(false)
+
+  useEffect(() => {
+    loadBookings()
+  }, [])
+
+  const loadBookings = async () => {
+    try {
+      setLoadingBookings(true)
+      const allBookings = await bookingsDB.readAll()
+      setBookings(allBookings)
+    } catch (error) {
+      console.error("Failed to load bookings:", error)
+    } finally {
+      setLoadingBookings(false)
+    }
+  }
+
+  const handleExportBookings = async (format: "csv" | "excel" | "pdf" | "json") => {
+    try {
+      if (bookings.length === 0) {
+        toast.error("No bookings available to export")
+        return
+      }
+
+      // Transform bookings for export
+      const exportData = bookings.map((booking) => ({
+        bookingId: booking.bookingId,
+        pnr: booking.pnr,
+        type: booking.type,
+        status: booking.status,
+        date: booking.date,
+        amount: booking.amount,
+        agentName: booking.agentName,
+        createdAt: booking.createdAt,
+        updatedAt: booking.updatedAt,
+      }))
+
+      exportBookings(exportData, format)
+      toast.success(`Bookings exported to ${format.toUpperCase()}`)
+    } catch (error) {
+      console.error("Failed to export bookings:", error)
+      toast.error("Failed to export bookings")
+    }
+  }
+
   const handleDownload = (report: Report) => {
     if (report.status === "Ready") {
       toast.success(`Downloading ${report.name}`)
@@ -97,6 +147,56 @@ export default function DownloadsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Download Center</h1>
         <p className="text-muted-foreground">Access and manage your generated reports and documents.</p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Booking Data Export</CardTitle>
+          <CardDescription>
+            Export booking data in CSV, PDF, or JSON format. Includes Booking ID, PNR, passenger details, fare components, status, and timestamps.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={() => handleExportBookings("csv")}
+              disabled={loadingBookings || bookings.length === 0}
+              variant="outline"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Export CSV
+            </Button>
+            <Button
+              onClick={() => handleExportBookings("excel")}
+              disabled={loadingBookings || bookings.length === 0}
+              variant="outline"
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Export Excel
+            </Button>
+            <Button
+              onClick={() => handleExportBookings("pdf")}
+              disabled={loadingBookings || bookings.length === 0}
+              variant="outline"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Export PDF
+            </Button>
+            <Button
+              onClick={() => handleExportBookings("json")}
+              disabled={loadingBookings || bookings.length === 0}
+              variant="outline"
+            >
+              <FileJson className="mr-2 h-4 w-4" />
+              Export JSON
+            </Button>
+          </div>
+          {bookings.length > 0 && (
+            <p className="text-sm text-muted-foreground mt-3">
+              {bookings.length} booking{bookings.length !== 1 ? "s" : ""} available for export
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -154,6 +254,9 @@ export default function DownloadsPage() {
     </div>
   )
 }
+
+
+
 
 
 

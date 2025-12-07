@@ -2,6 +2,7 @@
 // Generates professional hotel voucher in PDF format
 
 import jsPDF from "jspdf"
+import { getMarkupVisibility } from "./utils"
 
 export interface HotelVoucherData {
   bookingId: string
@@ -38,6 +39,12 @@ export interface HotelVoucherData {
   paymentMode: string
   bookingDate: string
   specialRequests?: string
+  pricingBreakdown?: {
+    baseFare: number
+    taxes: number
+    markup?: number
+    markupPercent?: number
+  }
 }
 
 export function generateHotelVoucherPDF(data: HotelVoucherData) {
@@ -243,8 +250,13 @@ export function generateHotelVoucherPDF(data: HotelVoucherData) {
     yPos = 20
   }
 
+  const baseAmount = data.pricingBreakdown?.baseFare ?? data.totalAmount
+  const taxes = data.pricingBreakdown?.taxes ?? 0
+  const markup = data.pricingBreakdown?.markup ?? 0
+  const showMarkup = getMarkupVisibility() && markup > 0
+
   doc.setDrawColor(200, 200, 200)
-  doc.rect(14, yPos, pageWidth - 28, 50, "S")
+  doc.rect(14, yPos, pageWidth - 28, showMarkup ? 65 : 50, "S")
   yPos += 8
 
   doc.setFontSize(16)
@@ -255,8 +267,20 @@ export function generateHotelVoucherPDF(data: HotelVoucherData) {
   doc.setFontSize(10)
   doc.setFont("helvetica", "normal")
   doc.text(`Base Amount:`, 20, yPos)
-  doc.text(`₹${data.totalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+  doc.text(`₹${baseAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
   yPos += 7
+
+  if (taxes > 0) {
+    doc.text(`Taxes & Fees:`, 20, yPos)
+    doc.text(`₹${taxes.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+    yPos += 7
+  }
+
+  if (showMarkup) {
+    doc.text(`Markup (${data.pricingBreakdown?.markupPercent?.toFixed(2) || '0.00'}%):`, 20, yPos)
+    doc.text(`₹${markup.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+    yPos += 7
+  }
 
   if (data.totalAmount !== data.finalAmount) {
     const discount = data.totalAmount - data.finalAmount
@@ -273,7 +297,7 @@ export function generateHotelVoucherPDF(data: HotelVoucherData) {
 
   doc.setFontSize(14)
   doc.setFont("helvetica", "bold")
-  doc.text(`Total Amount:`, 20, yPos)
+  doc.text(`Final Payable Amount:`, 20, yPos)
   doc.text(`₹${data.finalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
   yPos += 8
 
@@ -307,6 +331,9 @@ export function generateHotelVoucherPDF(data: HotelVoucherData) {
 
   return filename
 }
+
+
+
 
 
 

@@ -1,0 +1,254 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/approvals",
+      "regex": "^/dashboard/approvals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/approvals(?:/)?$"
+    },
+    {
+      "page": "/dashboard/audit-logs",
+      "regex": "^/dashboard/audit\\-logs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/audit\\-logs(?:/)?$"
+    },
+    {
+      "page": "/dashboard/bookings",
+      "regex": "^/dashboard/bookings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/bookings(?:/)?$"
+    },
+    {
+      "page": "/dashboard/calendar",
+      "regex": "^/dashboard/calendar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/calendar(?:/)?$"
+    },
+    {
+      "page": "/dashboard/contracts",
+      "regex": "^/dashboard/contracts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/contracts(?:/)?$"
+    },
+    {
+      "page": "/dashboard/corporates",
+      "regex": "^/dashboard/corporates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/corporates(?:/)?$"
+    },
+    {
+      "page": "/dashboard/credit-control",
+      "regex": "^/dashboard/credit\\-control(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/credit\\-control(?:/)?$"
+    },
+    {
+      "page": "/dashboard/disputes",
+      "regex": "^/dashboard/disputes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/disputes(?:/)?$"
+    },
+    {
+      "page": "/dashboard/downloads",
+      "regex": "^/dashboard/downloads(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/downloads(?:/)?$"
+    },
+    {
+      "page": "/dashboard/employees",
+      "regex": "^/dashboard/employees(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/employees(?:/)?$"
+    },
+    {
+      "page": "/dashboard/financial-management",
+      "regex": "^/dashboard/financial\\-management(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/financial\\-management(?:/)?$"
+    },
+    {
+      "page": "/dashboard/flights",
+      "regex": "^/dashboard/flights(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/flights(?:/)?$"
+    },
+    {
+      "page": "/dashboard/flights/listing",
+      "regex": "^/dashboard/flights/listing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/flights/listing(?:/)?$"
+    },
+    {
+      "page": "/dashboard/hotels",
+      "regex": "^/dashboard/hotels(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/hotels(?:/)?$"
+    },
+    {
+      "page": "/dashboard/invoice-reconciliation",
+      "regex": "^/dashboard/invoice\\-reconciliation(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/invoice\\-reconciliation(?:/)?$"
+    },
+    {
+      "page": "/dashboard/kyc",
+      "regex": "^/dashboard/kyc(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/kyc(?:/)?$"
+    },
+    {
+      "page": "/dashboard/kyc/review",
+      "regex": "^/dashboard/kyc/review(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/kyc/review(?:/)?$"
+    },
+    {
+      "page": "/dashboard/ledger-reconciliation",
+      "regex": "^/dashboard/ledger\\-reconciliation(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/ledger\\-reconciliation(?:/)?$"
+    },
+    {
+      "page": "/dashboard/notifications",
+      "regex": "^/dashboard/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/notifications(?:/)?$"
+    },
+    {
+      "page": "/dashboard/policies",
+      "regex": "^/dashboard/policies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/policies(?:/)?$"
+    },
+    {
+      "page": "/dashboard/profile",
+      "regex": "^/dashboard/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/profile(?:/)?$"
+    },
+    {
+      "page": "/dashboard/profile/login-history",
+      "regex": "^/dashboard/profile/login\\-history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/profile/login\\-history(?:/)?$"
+    },
+    {
+      "page": "/dashboard/refunds",
+      "regex": "^/dashboard/refunds(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/refunds(?:/)?$"
+    },
+    {
+      "page": "/dashboard/reports",
+      "regex": "^/dashboard/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/reports(?:/)?$"
+    },
+    {
+      "page": "/dashboard/reports/scheduled",
+      "regex": "^/dashboard/reports/scheduled(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/reports/scheduled(?:/)?$"
+    },
+    {
+      "page": "/dashboard/schedule-escalations",
+      "regex": "^/dashboard/schedule\\-escalations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/schedule\\-escalations(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings",
+      "regex": "^/dashboard/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/dashboard/support-tickets",
+      "regex": "^/dashboard/support\\-tickets(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/support\\-tickets(?:/)?$"
+    },
+    {
+      "page": "/dashboard/system/errors",
+      "regex": "^/dashboard/system/errors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/system/errors(?:/)?$"
+    },
+    {
+      "page": "/dashboard/wallet",
+      "regex": "^/dashboard/wallet(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/wallet(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

@@ -64,9 +64,24 @@ export function exportToPDF<T extends Record<string, any>>(
   doc.save(`${filename}.pdf`)
 }
 
+// JSON Export
+export function exportToJSON<T extends Record<string, any>>(data: T[], filename: string) {
+  const json = JSON.stringify(data, null, 2)
+  const blob = new Blob([json], { type: "application/json;charset=utf-8;" })
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+
+  link.setAttribute("href", url)
+  link.setAttribute("download", `${filename}.json`)
+  link.style.visibility = "hidden"
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
 // Specific export functions for different data types
 
-export function exportBookings(bookings: any[], format: "csv" | "excel" | "pdf") {
+export function exportBookings(bookings: any[], format: "csv" | "excel" | "pdf" | "json") {
   const columns = [
     { header: "Booking ID", dataKey: "bookingId" },
     { header: "PNR", dataKey: "pnr" },
@@ -83,6 +98,8 @@ export function exportBookings(bookings: any[], format: "csv" | "excel" | "pdf")
     exportToCSV(bookings, filename, columns.map((c) => c.dataKey))
   } else if (format === "excel") {
     exportToExcel(bookings, filename)
+  } else if (format === "json") {
+    exportToJSON(bookings, filename)
   } else {
     exportToPDF(bookings, filename, "Bookings Report", columns)
   }
@@ -232,6 +249,9 @@ export function exportWalletStatement(
 
   doc.save(`wallet-statement-${period.from}-${period.to}.pdf`)
 }
+
+
+
 
 
 

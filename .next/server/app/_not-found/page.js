@@ -1,0 +1,13 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_not-found/page.js")
+R.c("server/chunks/ssr/Downloads_travel-booking-platform_7349f517._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__fe84d57e._.js")
+R.c("server/chunks/ssr/56a5d_next_dist_esm_build_templates_app-page_27ff9029.js")
+R.c("server/chunks/ssr/[root-of-the-server]__5ed48c6b._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__028381f8._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__16724cd0._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__ebfa016b._.js")
+R.c("server/chunks/ssr/56a5d_next_dist_client_components_1bd1692f._.js")
+R.c("server/chunks/ssr/56a5d_next_dist_client_components_builtin_forbidden_14fda015.js")
+R.c("server/chunks/ssr/640da_avel-booking-platform__next-internal_server_app__not-found_page_actions_331d297f.js")
+R.m(35377)
+module.exports=R.m(35377).exports

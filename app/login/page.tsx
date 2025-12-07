@@ -153,7 +153,13 @@ export default function LoginPage() {
         toast.success(`Welcome back, ${user.name}!`, {
           description: `Logged in as ${selectedRole.name}`,
         })
-        router.push("/dashboard")
+        // Redirect booking roles (AGENCY_ADMIN, AGENT, SUB_AGENT) directly to flights page
+        const bookingRoles = ["AGENCY_ADMIN", "AGENT", "SUB_AGENT"]
+        if (bookingRoles.includes(user.role)) {
+          router.push("/dashboard/flights")
+        } else {
+          router.push("/dashboard")
+        }
       }
     } else {
       toast.error("Invalid credentials", {
