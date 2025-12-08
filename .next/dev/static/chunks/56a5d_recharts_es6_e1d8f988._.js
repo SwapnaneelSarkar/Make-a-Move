@@ -32,6 +32,8 @@ __turbopack_context__.s([
     ()=>cartesianViewBoxToTrapezoid,
     "selectChartLayout",
     ()=>selectChartLayout,
+    "useCartesianChartLayout",
+    ()=>useCartesianChartLayout,
     "useChartHeight",
     ()=>useChartHeight,
     "useChartLayout",
@@ -120,6 +122,13 @@ var useMargin = ()=>{
 };
 var selectChartLayout = (state)=>state.layout.layoutType;
 var useChartLayout = ()=>(0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"])(selectChartLayout);
+var useCartesianChartLayout = ()=>{
+    var layout = useChartLayout();
+    if (layout === 'horizontal' || layout === 'vertical') {
+        return layout;
+    }
+    return undefined;
+};
 var useIsInChartContext = ()=>{
     /*
    * All charts provide a layout type in the chart context.
@@ -411,14 +420,15 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/tooltipSlice.js [app-client] (ecmascript)");
 ;
 ;
-var useMouseEnterItemDispatch = (onMouseEnterFromProps, dataKey)=>{
+var useMouseEnterItemDispatch = (onMouseEnterFromProps, dataKey, graphicalItemId)=>{
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     return (data, index)=>(event)=>{
             onMouseEnterFromProps === null || onMouseEnterFromProps === void 0 || onMouseEnterFromProps(data, index, event);
             dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setActiveMouseOverItemIndex"])({
                 activeIndex: String(index),
                 activeDataKey: dataKey,
-                activeCoordinate: data.tooltipPosition
+                activeCoordinate: data.tooltipPosition,
+                activeGraphicalItemId: graphicalItemId
             }));
         };
 };
@@ -429,14 +439,15 @@ var useMouseLeaveItemDispatch = (onMouseLeaveFromProps)=>{
             dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mouseLeaveItem"])());
         };
 };
-var useMouseClickItemDispatch = (onMouseClickFromProps, dataKey)=>{
+var useMouseClickItemDispatch = (onMouseClickFromProps, dataKey, graphicalItemId)=>{
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     return (data, index)=>(event)=>{
             onMouseClickFromProps === null || onMouseClickFromProps === void 0 || onMouseClickFromProps(data, index, event);
             dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setActiveClickItemIndex"])({
                 activeIndex: String(index),
                 activeDataKey: dataKey,
-                activeCoordinate: data.tooltipPosition
+                activeCoordinate: data.tooltipPosition,
+                activeGraphicalItemId: graphicalItemId
             }));
         };
 };
@@ -862,7 +873,9 @@ var Cross = (_ref)=>{
 
 __turbopack_context__.s([
     "Rectangle",
-    ()=>Rectangle
+    ()=>Rectangle,
+    "defaultRectangleProps",
+    ()=>defaultRectangleProps
 ]);
 /**
  * @fileOverview Rectangle
@@ -993,7 +1006,7 @@ var getRectanglePath = (x, y, width, height, radius)=>{
     }
     return path;
 };
-var defaultProps = {
+var defaultRectangleProps = {
     x: 0,
     y: 0,
     width: 0,
@@ -1009,7 +1022,7 @@ var defaultProps = {
     animationEasing: 'ease'
 };
 var Rectangle = (rectangleProps)=>{
-    var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(rectangleProps, defaultProps);
+    var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(rectangleProps, defaultRectangleProps);
     var pathRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     var [totalLength, setTotalLength] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(-1);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -1068,7 +1081,7 @@ var Rectangle = (rectangleProps)=>{
     var to = "".concat(totalLength, "px 0px");
     var transition = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$util$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getTransitionVal"])([
         'strokeDasharray'
-    ], animationDuration, typeof animationEasing === 'string' ? animationEasing : defaultProps.animationEasing);
+    ], animationDuration, typeof animationEasing === 'string' ? animationEasing : defaultRectangleProps.animationEasing);
     return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$JavascriptAnimate$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["JavascriptAnimate"], {
         animationId: animationId,
         key: animationId,
@@ -1119,7 +1132,9 @@ var Rectangle = (rectangleProps)=>{
 
 __turbopack_context__.s([
     "Sector",
-    ()=>Sector
+    ()=>Sector,
+    "defaultSectorProps",
+    ()=>defaultSectorProps
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/clsx/dist/clsx.mjs [app-client] (ecmascript)");
@@ -1243,10 +1258,7 @@ var getSectorWithCorner = (_ref3)=>{
     }
     return path;
 };
-/**
- * SVG cx, cy are `string | number | undefined`, but internally we use `number` so let's
- * override the types here.
- */ var defaultProps = {
+var defaultSectorProps = {
     cx: 0,
     cy: 0,
     innerRadius: 0,
@@ -1258,7 +1270,7 @@ var getSectorWithCorner = (_ref3)=>{
     cornerIsExternal: false
 };
 var Sector = (sectorProps)=>{
-    var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(sectorProps, defaultProps);
+    var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(sectorProps, defaultSectorProps);
     var { cx, cy, innerRadius, outerRadius, cornerRadius, forceCornerRadius, cornerIsExternal, startAngle, endAngle, className } = props;
     if (outerRadius < innerRadius || startAngle === endAngle) {
         return null;
@@ -1477,7 +1489,9 @@ Symbols.registerSymbol = registerSymbol;
 
 __turbopack_context__.s([
     "Trapezoid",
-    ()=>Trapezoid
+    ()=>Trapezoid,
+    "defaultTrapezoidProps",
+    ()=>defaultTrapezoidProps
 ]);
 /**
  * @fileOverview Rectangle
@@ -1554,7 +1568,7 @@ var getTrapezoidPath = (x, y, upperWidth, lowerWidth, height)=>{
     path += "L ".concat(x, ",").concat(y, " Z");
     return path;
 };
-var defaultProps = {
+var defaultTrapezoidProps = {
     x: 0,
     y: 0,
     upperWidth: 0,
@@ -1566,7 +1580,7 @@ var defaultProps = {
     animationEasing: 'ease'
 };
 var Trapezoid = (outsideProps)=>{
-    var trapezoidProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, defaultProps);
+    var trapezoidProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, defaultTrapezoidProps);
     var { x, y, upperWidth, lowerWidth, height, className } = trapezoidProps;
     var { animationEasing, animationDuration, animationBegin, isUpdateAnimationActive } = trapezoidProps;
     var pathRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -2221,6 +2235,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$configUpdate$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/animation/configUpdate.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$easing$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/animation/easing.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$useAnimationManager$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/animation/useAnimationManager.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Global$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/Global.js [app-client] (ecmascript)");
+;
 ;
 ;
 ;
@@ -2244,7 +2260,8 @@ var to = {
 };
 function JavascriptAnimate(outsideProps) {
     var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, defaultJavascriptAnimateProps);
-    var { isActive, canBegin, duration, easing, begin, onAnimationEnd, onAnimationStart, children } = props;
+    var { isActive: isActiveProp, canBegin, duration, easing, begin, onAnimationEnd, onAnimationStart, children } = props;
+    var isActive = isActiveProp === 'auto' ? !__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Global$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Global"].isSsr : isActiveProp;
     var animationManager = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$animation$2f$useAnimationManager$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAnimationManager"])(props.animationId, props.animationManager);
     var [style, setStyle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(isActive ? from : to);
     var stopJSAnimation = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -2532,7 +2549,9 @@ function ZIndexSvgPortal(_ref) {
         portalId,
         isPanorama
     ]);
+    // these g elements should not be tabbable
     return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createElement"]("g", {
+        tabIndex: -1,
         id: portalId
     });
 }
@@ -2587,6 +2606,7 @@ var defaultPolarAngleAxisProps = {
     // if I set this to false then Tooltip synchronisation stops working in Radar, wtf
     angleAxisId: 0,
     axisLine: true,
+    axisLineType: 'polygon',
     cx: 0,
     cy: 0,
     orientation: 'outer',
@@ -2614,9 +2634,8 @@ var defaultPolarRadiusAxisProps = {
     allowDuplicatedCategory: true,
     angle: 0,
     axisLine: true,
-    cx: 0,
-    cy: 0,
     includeHidden: false,
+    label: false,
     orientation: 'right',
     radiusAxisId: 0,
     reversed: false,
@@ -2819,7 +2838,8 @@ function useTooltipSyncEventsListener() {
                             dataKey: undefined,
                             index: null,
                             label: undefined,
-                            sourceViewBox: undefined
+                            sourceViewBox: undefined,
+                            graphicalItemId: undefined
                         }));
                         return;
                     }
@@ -2836,7 +2856,8 @@ function useTooltipSyncEventsListener() {
                         dataKey: action.payload.dataKey,
                         index: String(activeTick.index),
                         label: action.payload.label,
-                        sourceViewBox: action.payload.sourceViewBox
+                        sourceViewBox: action.payload.sourceViewBox,
+                        graphicalItemId: action.payload.graphicalItemId
                     });
                     dispatch(syncAction);
                 }
@@ -2942,7 +2963,8 @@ function useTooltipChartSynchronisation(tooltipEventType, trigger, activeCoordin
                 dataKey: activeDataKey,
                 index: activeIndex,
                 label: typeof activeLabel === 'number' ? String(activeLabel) : activeLabel,
-                sourceViewBox: viewBox
+                sourceViewBox: viewBox,
+                graphicalItemId: undefined
             });
             __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Events$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["eventCenter"].emit(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Events$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TOOLTIP_SYNC_EVENT"], syncId, syncAction, eventEmitterSymbol);
         }
@@ -3806,7 +3828,9 @@ var CategoricalChart = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proj
 
 __turbopack_context__.s([
     "CartesianChart",
-    ()=>CartesianChart
+    ()=>CartesianChart,
+    "defaultCartesianChartProps",
+    ()=>defaultCartesianChartProps
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$RechartsStoreProvider$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/RechartsStoreProvider.js [app-client] (ecmascript)");
@@ -3832,20 +3856,20 @@ var defaultMargin = {
     bottom: 5,
     left: 5
 };
-var defaultProps = {
+var defaultCartesianChartProps = {
     accessibilityLayer: true,
-    layout: 'horizontal',
-    stackOffset: 'none',
     barCategoryGap: '10%',
     barGap: 4,
+    layout: 'horizontal',
     margin: defaultMargin,
+    responsive: false,
     reverseStackOrder: false,
-    syncMethod: 'index',
-    responsive: false
+    stackOffset: 'none',
+    syncMethod: 'index'
 };
 var CartesianChart = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forwardRef"])(function CartesianChart(props, ref) {
     var _categoricalChartProp;
-    var rootChartProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(props.categoricalChartProps, defaultProps);
+    var rootChartProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(props.categoricalChartProps, defaultCartesianChartProps);
     var { chartName, defaultTooltipEventType, validateTooltipEventTypes, tooltipPayloadSearcher, categoricalChartProps } = props;
     var options = {
         chartName,
@@ -3874,7 +3898,8 @@ var CartesianChart = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
         barSize: rootChartProps.barSize,
         syncId: rootChartProps.syncId,
         syncMethod: rootChartProps.syncMethod,
-        className: rootChartProps.className
+        className: rootChartProps.className,
+        reverseStackOrder: rootChartProps.reverseStackOrder
     }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$CategoricalChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CategoricalChart"], _extends({}, rootChartProps, {
         ref: ref
     })));

@@ -54,7 +54,9 @@ __turbopack_context__.s([
     "Bar",
     ()=>Bar,
     "computeBarRectangles",
-    ()=>computeBarRectangles
+    ()=>computeBarRectangles,
+    "defaultBarProps",
+    ()=>defaultBarProps
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/clsx/dist/clsx.mjs [app-ssr] (ecmascript)");
@@ -63,7 +65,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$LabelList$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/component/LabelList.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$DataUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/DataUtils.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ReactUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ReactUtils.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Global$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/Global.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ChartUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ChartUtils.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$types$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/types.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$BarUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/BarUtils.js [app-ssr] (ecmascript)");
@@ -86,6 +87,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$zIndex$2f$ZIndexLayer$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/zIndex/ZIndexLayer.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$zIndex$2f$DefaultZIndexes$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/zIndex/DefaultZIndexes.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$zIndex$2f$getZIndexFromUnknown$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/zIndex/getZIndexFromUnknown.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$propsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/propsAreEqual.js [app-ssr] (ecmascript)");
 var _excluded = [
     "onMouseEnter",
     "onMouseLeave",
@@ -209,9 +211,9 @@ var computeLegendPayloadFromBarData = (props)=>{
         }
     ];
 };
-function getTooltipEntrySettings(props) {
-    var { dataKey, stroke, strokeWidth, fill, name, hide, unit } = props;
-    return {
+var SetBarTooltipEntrySettings = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"]((_ref)=>{
+    var { dataKey, stroke, strokeWidth, fill, name, hide, unit, tooltipType } = _ref;
+    var tooltipEntrySettings = {
         dataDefinedOnItem: undefined,
         positions: undefined,
         settings: {
@@ -222,12 +224,15 @@ function getTooltipEntrySettings(props) {
             nameKey: undefined,
             name: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ChartUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getTooltipNameProp"])(name, dataKey),
             hide,
-            type: props.tooltipType,
-            color: props.fill,
+            type: tooltipType,
+            color: fill,
             unit
         }
     };
-}
+    return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$SetTooltipEntrySettings$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SetTooltipEntrySettings"], {
+        tooltipEntrySettings: tooltipEntrySettings
+    });
+});
 function BarBackground(props) {
     var activeIndex = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAppSelector"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["selectActiveTooltipIndex"]);
     var { data, dataKey, background: backgroundFromProps, allOtherBarProps } = props;
@@ -274,8 +279,8 @@ function BarBackground(props) {
         }, barRectangleProps));
     }));
 }
-function BarLabelListProvider(_ref) {
-    var { showLabels, children, rects } = _ref;
+function BarLabelListProvider(_ref2) {
+    var { showLabels, children, rects } = _ref2;
     var labelListEntries = rects === null || rects === void 0 ? void 0 : rects.map((entry)=>{
         var viewBox = {
             x: entry.x,
@@ -343,10 +348,10 @@ function BarRectangleNeverActive(props) {
         dataKey: dataKey
     }));
 }
-function BarRectangles(_ref2) {
+function BarRectangles(_ref3) {
     var _svgPropertiesNoEvent;
-    var { data, props } = _ref2;
-    var _ref3 = (_svgPropertiesNoEvent = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$svgPropertiesNoEvents$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["svgPropertiesNoEvents"])(props)) !== null && _svgPropertiesNoEvent !== void 0 ? _svgPropertiesNoEvent : {}, { id } = _ref3, baseProps = _objectWithoutProperties(_ref3, _excluded3);
+    var { data, props } = _ref3;
+    var _ref4 = (_svgPropertiesNoEvent = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$svgPropertiesNoEvents$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["svgPropertiesNoEvents"])(props)) !== null && _svgPropertiesNoEvent !== void 0 ? _svgPropertiesNoEvent : {}, { id } = _ref4, baseProps = _objectWithoutProperties(_ref4, _excluded3);
     var { shape, dataKey, activeBar } = props;
     var { onMouseEnter: onMouseEnterFromProps, onClick: onItemClickFromProps, onMouseLeave: onMouseLeaveFromProps } = props, restOfAllOtherProps = _objectWithoutProperties(props, _excluded4);
     // @ts-expect-error bar mouse events are not compatible with recharts mouse events
@@ -391,8 +396,8 @@ function BarRectangles(_ref2) {
         }));
     }));
 }
-function RectanglesWithAnimation(_ref4) {
-    var { props, previousRectanglesRef } = _ref4;
+function RectanglesWithAnimation(_ref5) {
+    var { props, previousRectanglesRef } = _ref5;
     var { data, layout, isAnimationActive, animationBegin, animationDuration, animationEasing, onAnimationEnd, onAnimationStart } = props;
     var prevData = previousRectanglesRef.current;
     var animationId = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$useAnimationId$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAnimationId"])(props, 'recharts-bar-');
@@ -519,8 +524,10 @@ var defaultBarProps = {
     animationBegin: 0,
     animationDuration: 400,
     animationEasing: 'ease',
+    background: false,
     hide: false,
-    isAnimationActive: !__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$Global$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Global"].isSsr,
+    isAnimationActive: 'auto',
+    label: false,
     legendType: 'rect',
     minPointSize: defaultMinPointSize,
     xAxisId: 0,
@@ -566,8 +573,8 @@ function BarImpl(props) {
         isAnimationActive: isAnimationActive
     })));
 }
-function computeBarRectangles(_ref5) {
-    var { layout, barSettings: { dataKey, minPointSize: minPointSizeProp }, pos, bandSize, xAxis, yAxis, xAxisTicks, yAxisTicks, stackedData, displayedData, offset, cells, parentViewBox, dataStartIndex } = _ref5;
+function computeBarRectangles(_ref6) {
+    var { layout, barSettings: { dataKey, minPointSize: minPointSizeProp }, pos, bandSize, xAxis, yAxis, xAxisTicks, yAxisTicks, stackedData, displayedData, offset, cells, parentViewBox, dataStartIndex } = _ref6;
     var numericAxis = layout === 'horizontal' ? yAxis : xAxis;
     // @ts-expect-error this assumes that the domain is always numeric, but doesn't check for it
     var stackedDomain = stackedData ? numericAxis.scale.domain() : null;
@@ -591,7 +598,7 @@ function computeBarRectangles(_ref5) {
         }
         var minPointSize = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$BarUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minPointSizeCallback"])(minPointSizeProp, defaultMinPointSize)(value[1], index);
         if (layout === 'horizontal') {
-            var _ref6;
+            var _ref7;
             var [baseValueScale, currentValueScale] = [
                 yAxis.scale(value[0]),
                 yAxis.scale(value[1])
@@ -604,7 +611,7 @@ function computeBarRectangles(_ref5) {
                 entry,
                 index
             });
-            y = (_ref6 = currentValueScale !== null && currentValueScale !== void 0 ? currentValueScale : baseValueScale) !== null && _ref6 !== void 0 ? _ref6 : undefined;
+            y = (_ref7 = currentValueScale !== null && currentValueScale !== void 0 ? currentValueScale : baseValueScale) !== null && _ref7 !== void 0 ? _ref7 : undefined;
             width = pos.size;
             var computedHeight = baseValueScale - currentValueScale;
             height = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$DataUtils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["isNan"])(computedHeight) ? 0 : computedHeight;
@@ -676,9 +683,15 @@ function BarFn(outsideProps) {
         type: "bar"
     }, (id)=>/*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], null, /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$SetLegendPayload$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SetLegendPayload"], {
             legendPayload: computeLegendPayloadFromBarData(props)
-        }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$SetTooltipEntrySettings$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SetTooltipEntrySettings"], {
-            fn: getTooltipEntrySettings,
-            args: props
+        }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](SetBarTooltipEntrySettings, {
+            dataKey: props.dataKey,
+            stroke: props.stroke,
+            strokeWidth: props.strokeWidth,
+            fill: props.fill,
+            name: props.name,
+            hide: props.hide,
+            unit: props.unit,
+            tooltipType: props.tooltipType
         }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$SetGraphicalItem$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SetCartesianGraphicalItem"], {
             type: "bar",
             id: id,
@@ -699,7 +712,7 @@ function BarFn(outsideProps) {
             id: id
         })))));
 }
-var Bar = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](BarFn);
+var Bar = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](BarFn, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$propsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["propsAreEqual"]);
 Bar.displayName = 'Bar';
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/getEquidistantTicks.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -976,7 +989,6 @@ __turbopack_context__.s([
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$es$2d$toolkit$2f$compat$2f$get$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/es-toolkit/compat/get.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/clsx/dist/clsx.mjs [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ShallowEqual.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$container$2f$Layer$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/container/Layer.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/component/Text.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Label$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/component/Label.js [app-ssr] (ecmascript)");
@@ -996,10 +1008,6 @@ var _excluded = [
     "hide",
     "ticks",
     "axisType"
-], _excluded2 = [
-    "viewBox"
-], _excluded3 = [
-    "viewBox"
 ];
 function _objectWithoutProperties(e, t) {
     if (null == e) return {};
@@ -1065,7 +1073,6 @@ function _toPrimitive(t, r) {
     }
     return ("string" === r ? String : Number)(t);
 }
-;
 ;
 ;
 ;
@@ -1415,14 +1422,9 @@ var CartesianAxisComponent = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5
         labelRef: props.labelRef
     }), props.children)));
 });
-var MemoCartesianAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](CartesianAxisComponent, (prevProps, nextProps)=>{
-    var { viewBox: prevViewBox } = prevProps, prevRestProps = _objectWithoutProperties(prevProps, _excluded2);
-    var { viewBox: nextViewBox } = nextProps, nextRestProps = _objectWithoutProperties(nextProps, _excluded3);
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])(prevViewBox, nextViewBox) && (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])(prevRestProps, nextRestProps);
-});
 var CartesianAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["forwardRef"]((outsideProps, ref)=>{
     var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, defaultCartesianAxisProps);
-    return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](MemoCartesianAxis, _extends({}, props, {
+    return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](CartesianAxisComponent, _extends({}, props, {
         ref: ref
     }));
 });
@@ -1433,7 +1435,9 @@ CartesianAxis.displayName = 'CartesianAxis';
 
 __turbopack_context__.s([
     "XAxis",
-    ()=>XAxis
+    ()=>XAxis,
+    "xAxisDefaultProps",
+    ()=>xAxisDefaultProps
 ]);
 /**
  * @fileOverview X Axis
@@ -1445,17 +1449,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/axisSelectors.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectChartOffsetInternal$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/selectChartOffsetInternal.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$PanoramaContext$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/context/PanoramaContext.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ShallowEqual.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/resolveDefaultProps.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$axisPropsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/axisPropsAreEqual.js [app-ssr] (ecmascript)");
 var _excluded = [
     "dangerouslySetInnerHTML",
     "ticks"
 ], _excluded2 = [
     "id"
-], _excluded3 = [
-    "domain"
-], _excluded4 = [
-    "domain"
 ];
 function _extends() {
     return _extends = ("TURBOPACK compile-time truthy", 1) ? Object.assign.bind() : "TURBOPACK unreachable", _extends.apply(null, arguments);
@@ -1491,13 +1491,29 @@ function _objectWithoutPropertiesLoose(r, e) {
 ;
 function SetXAxisSettings(settings) {
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAppDispatch"])();
+    var prevSettingsRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useLayoutEffect"])(()=>{
-        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addXAxis"])(settings));
-        return ()=>{
-            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["removeXAxis"])(settings));
-        };
+        if (prevSettingsRef.current === null) {
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addXAxis"])(settings));
+        } else if (prevSettingsRef.current !== settings) {
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["replaceXAxis"])({
+                prev: prevSettingsRef.current,
+                next: settings
+            }));
+        }
+        prevSettingsRef.current = settings;
     }, [
         settings,
+        dispatch
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useLayoutEffect"])(()=>{
+        return ()=>{
+            if (prevSettingsRef.current) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["removeXAxis"])(prevSettingsRef.current));
+                prevSettingsRef.current = null;
+            }
+        };
+    }, [
         dispatch
     ]);
     return null;
@@ -1538,63 +1554,55 @@ var xAxisDefaultProps = {
     allowDataOverflow: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].allowDataOverflow,
     allowDecimals: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].allowDecimals,
     allowDuplicatedCategory: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].allowDuplicatedCategory,
+    angle: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].angle,
+    axisLine: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].axisLine,
     height: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].height,
     hide: false,
+    includeHidden: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].includeHidden,
+    interval: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].interval,
+    minTickGap: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].minTickGap,
     mirror: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].mirror,
     orientation: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].orientation,
     padding: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].padding,
     reversed: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].reversed,
     scale: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].scale,
+    tick: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].tick,
     tickCount: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].tickCount,
+    tickLine: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].tickLine,
+    tickSize: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].tickSize,
     type: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitXAxis"].type,
     xAxisId: 0
 };
 var XAxisSettingsDispatcher = (outsideProps)=>{
-    var _props$interval, _props$includeHidden, _props$angle, _props$minTickGap, _props$tick;
     var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, xAxisDefaultProps);
     return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], null, /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](SetXAxisSettings, {
-        interval: (_props$interval = props.interval) !== null && _props$interval !== void 0 ? _props$interval : 'preserveEnd',
-        id: props.xAxisId,
-        scale: props.scale,
-        type: props.type,
-        padding: props.padding,
         allowDataOverflow: props.allowDataOverflow,
-        domain: props.domain,
-        dataKey: props.dataKey,
-        allowDuplicatedCategory: props.allowDuplicatedCategory,
         allowDecimals: props.allowDecimals,
-        tickCount: props.tickCount,
-        includeHidden: (_props$includeHidden = props.includeHidden) !== null && _props$includeHidden !== void 0 ? _props$includeHidden : false,
-        reversed: props.reversed,
-        ticks: props.ticks,
+        allowDuplicatedCategory: props.allowDuplicatedCategory,
+        angle: props.angle,
+        dataKey: props.dataKey,
+        domain: props.domain,
         height: props.height,
-        orientation: props.orientation,
-        mirror: props.mirror,
         hide: props.hide,
-        unit: props.unit,
+        id: props.xAxisId,
+        includeHidden: props.includeHidden,
+        interval: props.interval,
+        minTickGap: props.minTickGap,
+        mirror: props.mirror,
         name: props.name,
-        angle: (_props$angle = props.angle) !== null && _props$angle !== void 0 ? _props$angle : 0,
-        minTickGap: (_props$minTickGap = props.minTickGap) !== null && _props$minTickGap !== void 0 ? _props$minTickGap : 5,
-        tick: (_props$tick = props.tick) !== null && _props$tick !== void 0 ? _props$tick : true,
-        tickFormatter: props.tickFormatter
+        orientation: props.orientation,
+        padding: props.padding,
+        reversed: props.reversed,
+        scale: props.scale,
+        tick: props.tick,
+        tickCount: props.tickCount,
+        tickFormatter: props.tickFormatter,
+        ticks: props.ticks,
+        type: props.type,
+        unit: props.unit
     }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](XAxisImpl, props));
 };
-var XAxisMemoComparator = (prevProps, nextProps)=>{
-    var { domain: prevDomain } = prevProps, prevRest = _objectWithoutProperties(prevProps, _excluded3);
-    var { domain: nextDomain } = nextProps, nextRest = _objectWithoutProperties(nextProps, _excluded4);
-    if (!(0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])(prevRest, nextRest)) {
-        return false;
-    }
-    if (Array.isArray(prevDomain) && prevDomain.length === 2 && Array.isArray(nextDomain) && nextDomain.length === 2) {
-        return prevDomain[0] === nextDomain[0] && prevDomain[1] === nextDomain[1];
-    }
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])({
-        domain: prevDomain
-    }, {
-        domain: nextDomain
-    });
-};
-var XAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](XAxisSettingsDispatcher, XAxisMemoComparator);
+var XAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](XAxisSettingsDispatcher, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$axisPropsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["axisPropsAreEqual"]);
 XAxis.displayName = 'XAxis';
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/YAxis.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -1615,17 +1623,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectChartOffsetInternal$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/selectChartOffsetInternal.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$PanoramaContext$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/context/PanoramaContext.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Label$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/component/Label.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ShallowEqual.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/resolveDefaultProps.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$axisPropsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/axisPropsAreEqual.js [app-ssr] (ecmascript)");
 var _excluded = [
     "dangerouslySetInnerHTML",
     "ticks"
 ], _excluded2 = [
     "id"
-], _excluded3 = [
-    "domain"
-], _excluded4 = [
-    "domain"
 ];
 function _extends() {
     return _extends = ("TURBOPACK compile-time truthy", 1) ? Object.assign.bind() : "TURBOPACK unreachable", _extends.apply(null, arguments);
@@ -1662,13 +1666,29 @@ function _objectWithoutPropertiesLoose(r, e) {
 ;
 function SetYAxisSettings(settings) {
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAppDispatch"])();
+    var prevSettingsRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useLayoutEffect"])(()=>{
-        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addYAxis"])(settings));
-        return ()=>{
-            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["removeYAxis"])(settings));
-        };
+        if (prevSettingsRef.current === null) {
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addYAxis"])(settings));
+        } else if (prevSettingsRef.current !== settings) {
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["replaceYAxis"])({
+                prev: prevSettingsRef.current,
+                next: settings
+            }));
+        }
+        prevSettingsRef.current = settings;
     }, [
         settings,
+        dispatch
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useLayoutEffect"])(()=>{
+        return ()=>{
+            if (prevSettingsRef.current) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$cartesianAxisSlice$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["removeYAxis"])(prevSettingsRef.current));
+                prevSettingsRef.current = null;
+            }
+        };
+    }, [
         dispatch
     ]);
     return null;
@@ -1749,22 +1769,29 @@ var yAxisDefaultProps = {
     allowDataOverflow: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].allowDataOverflow,
     allowDecimals: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].allowDecimals,
     allowDuplicatedCategory: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].allowDuplicatedCategory,
+    angle: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].angle,
+    axisLine: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].axisLine,
     hide: false,
+    includeHidden: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].includeHidden,
+    interval: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].interval,
+    minTickGap: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].minTickGap,
     mirror: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].mirror,
     orientation: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].orientation,
     padding: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].padding,
     reversed: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].reversed,
     scale: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].scale,
+    tick: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].tick,
     tickCount: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].tickCount,
+    tickLine: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].tickLine,
+    tickSize: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianAxis$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["defaultCartesianAxisProps"].tickSize,
     type: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].type,
     width: __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["implicitYAxis"].width,
     yAxisId: 0
 };
 var YAxisSettingsDispatcher = (outsideProps)=>{
-    var _props$interval, _props$includeHidden, _props$angle, _props$minTickGap, _props$tick;
     var props = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$resolveDefaultProps$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["resolveDefaultProps"])(outsideProps, yAxisDefaultProps);
     return /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], null, /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](SetYAxisSettings, {
-        interval: (_props$interval = props.interval) !== null && _props$interval !== void 0 ? _props$interval : 'preserveEnd',
+        interval: props.interval,
         id: props.yAxisId,
         scale: props.scale,
         type: props.type,
@@ -1775,7 +1802,7 @@ var YAxisSettingsDispatcher = (outsideProps)=>{
         allowDecimals: props.allowDecimals,
         tickCount: props.tickCount,
         padding: props.padding,
-        includeHidden: (_props$includeHidden = props.includeHidden) !== null && _props$includeHidden !== void 0 ? _props$includeHidden : false,
+        includeHidden: props.includeHidden,
         reversed: props.reversed,
         ticks: props.ticks,
         width: props.width,
@@ -1784,28 +1811,13 @@ var YAxisSettingsDispatcher = (outsideProps)=>{
         hide: props.hide,
         unit: props.unit,
         name: props.name,
-        angle: (_props$angle = props.angle) !== null && _props$angle !== void 0 ? _props$angle : 0,
-        minTickGap: (_props$minTickGap = props.minTickGap) !== null && _props$minTickGap !== void 0 ? _props$minTickGap : 5,
-        tick: (_props$tick = props.tick) !== null && _props$tick !== void 0 ? _props$tick : true,
+        angle: props.angle,
+        minTickGap: props.minTickGap,
+        tick: props.tick,
         tickFormatter: props.tickFormatter
     }), /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createElement"](YAxisImpl, props));
 };
-var YAxisMemoComparator = (prevProps, nextProps)=>{
-    var { domain: prevDomain } = prevProps, prevRest = _objectWithoutProperties(prevProps, _excluded3);
-    var { domain: nextDomain } = nextProps, nextRest = _objectWithoutProperties(nextProps, _excluded4);
-    if (!(0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])(prevRest, nextRest)) {
-        return false;
-    }
-    if (Array.isArray(prevDomain) && prevDomain.length === 2 && Array.isArray(nextDomain) && nextDomain.length === 2) {
-        return prevDomain[0] === nextDomain[0] && prevDomain[1] === nextDomain[1];
-    }
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ShallowEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["shallowEqual"])({
-        domain: prevDomain
-    }, {
-        domain: nextDomain
-    });
-};
-var YAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](YAxisSettingsDispatcher, YAxisMemoComparator);
+var YAxis = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["memo"](YAxisSettingsDispatcher, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$axisPropsAreEqual$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["axisPropsAreEqual"]);
 YAxis.displayName = 'YAxis';
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/cartesian/CartesianGrid.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -1813,7 +1825,9 @@ YAxis.displayName = 'YAxis';
 
 __turbopack_context__.s([
     "CartesianGrid",
-    ()=>CartesianGrid
+    ()=>CartesianGrid,
+    "defaultCartesianGridProps",
+    ()=>defaultCartesianGridProps
 ]);
 /**
  * @fileOverview Cartesian Grid

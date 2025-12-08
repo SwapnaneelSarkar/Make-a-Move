@@ -388,6 +388,8 @@ __turbopack_context__.s([
     ()=>selectChartName,
     "selectEventEmitter",
     ()=>selectEventEmitter,
+    "selectReverseStackOrder",
+    ()=>selectReverseStackOrder,
     "selectRootBarSize",
     ()=>selectRootBarSize,
     "selectRootMaxBarSize",
@@ -404,6 +406,7 @@ var selectBarGap = (state)=>state.rootProps.barGap;
 var selectBarCategoryGap = (state)=>state.rootProps.barCategoryGap;
 var selectRootBarSize = (state)=>state.rootProps.barSize;
 var selectStackOffsetType = (state)=>state.rootProps.stackOffset;
+var selectReverseStackOrder = (state)=>state.rootProps.reverseStackOrder;
 var selectChartName = (state)=>state.options.chartName;
 var selectSyncId = (state)=>state.rootProps.syncId;
 var selectSyncMethod = (state)=>state.rootProps.syncMethod;
@@ -861,6 +864,8 @@ __turbopack_context__.s([
     ()=>combineXAxisRange,
     "combineYAxisRange",
     ()=>combineYAxisRange,
+    "defaultNumericDomain",
+    ()=>defaultNumericDomain,
     "filterGraphicalNotStackedItems",
     ()=>filterGraphicalNotStackedItems,
     "filterReferenceElements",
@@ -1463,7 +1468,7 @@ var selectDisplayedStackedData = (0, __TURBOPACK__imported__module__$5b$project$
     __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$dataSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectChartDataWithIndexesIfNotInPanorama"],
     selectTooltipAxis
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineDisplayedStackedData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineDisplayedStackedData"]);
-var combineStackGroups = (displayedData, items, stackOffsetType)=>{
+var combineStackGroups = (displayedData, items, stackOffsetType, reverseStackOrder)=>{
     var initialItemsGroups = {};
     var itemsGroup = items.reduce((acc, item)=>{
         if (item.stackId == null) {
@@ -1477,13 +1482,16 @@ var combineStackGroups = (displayedData, items, stackOffsetType)=>{
     }, initialItemsGroups);
     return Object.fromEntries(Object.entries(itemsGroup).map((_ref2)=>{
         var [stackId, graphicalItems] = _ref2;
-        var dataKeys = graphicalItems.map(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$stacks$2f$getStackSeriesIdentifier$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStackSeriesIdentifier"]);
+        var orderedGraphicalItems = reverseStackOrder ? [
+            ...graphicalItems
+        ].reverse() : graphicalItems;
+        var dataKeys = orderedGraphicalItems.map(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$stacks$2f$getStackSeriesIdentifier$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStackSeriesIdentifier"]);
         return [
             stackId,
             {
                 // @ts-expect-error getStackedData requires that the input is array of objects, Recharts does not test for that
                 stackedData: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ChartUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getStackedData"])(displayedData, dataKeys, stackOffsetType),
-                graphicalItems
+                graphicalItems: orderedGraphicalItems
             }
         ];
     }));
@@ -1491,7 +1499,8 @@ var combineStackGroups = (displayedData, items, stackOffsetType)=>{
 var selectStackGroups = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectDisplayedStackedData,
     selectStackedCartesianItemsSettings,
-    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectStackOffsetType"]
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectStackOffsetType"],
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectReverseStackOrder"]
 ], combineStackGroups);
 var combineDomainOfStackGroups = (stackGroups, _ref3, axisType, domainFromUserPreference)=>{
     var { dataStartIndex, dataEndIndex } = _ref3;
@@ -2540,6 +2549,8 @@ __turbopack_context__.s([
     ()=>noInteraction,
     "removeTooltipEntrySettings",
     ()=>removeTooltipEntrySettings,
+    "replaceTooltipEntrySettings",
+    ()=>replaceTooltipEntrySettings,
     "setActiveClickItemIndex",
     ()=>setActiveClickItemIndex,
     "setActiveMouseOverItemIndex",
@@ -2559,12 +2570,14 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
 ;
 ;
 var noInteraction = {
     active: false,
     index: null,
     dataKey: undefined,
+    graphicalItemId: undefined,
     coordinate: undefined
 };
 var initialState = {
@@ -2583,7 +2596,8 @@ var initialState = {
         dataKey: undefined,
         label: undefined,
         coordinate: undefined,
-        sourceViewBox: undefined
+        sourceViewBox: undefined,
+        graphicalItemId: undefined
     },
     tooltipItemPayloads: [],
     settings: {
@@ -2600,13 +2614,23 @@ var tooltipSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads
     reducers: {
         addTooltipEntrySettings: {
             reducer (state, action) {
-                state.tooltipItemPayloads.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                state.tooltipItemPayloads.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+            },
+            prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
+        },
+        replaceTooltipEntrySettings: {
+            reducer (state, action) {
+                var { prev, next } = action.payload;
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).tooltipItemPayloads.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(prev));
+                if (index > -1) {
+                    state.tooltipItemPayloads[index] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
         removeTooltipEntrySettings: {
             reducer (state, action) {
-                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).tooltipItemPayloads.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).tooltipItemPayloads.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
                 if (index > -1) {
                     state.tooltipItemPayloads.splice(index, 1);
                 }
@@ -2622,6 +2646,7 @@ var tooltipSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads
             state.itemInteraction.hover.active = true;
             state.itemInteraction.hover.index = action.payload.activeIndex;
             state.itemInteraction.hover.dataKey = action.payload.activeDataKey;
+            state.itemInteraction.hover.graphicalItemId = action.payload.activeGraphicalItemId;
             state.itemInteraction.hover.coordinate = action.payload.activeCoordinate;
         },
         mouseLeaveChart (state) {
@@ -2643,6 +2668,7 @@ var tooltipSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads
             state.keyboardInteraction.active = false;
             state.itemInteraction.click.index = action.payload.activeIndex;
             state.itemInteraction.click.dataKey = action.payload.activeDataKey;
+            state.itemInteraction.click.graphicalItemId = action.payload.activeGraphicalItemId;
             state.itemInteraction.click.coordinate = action.payload.activeCoordinate;
         },
         setMouseOverAxisIndex (state, action) {
@@ -2672,7 +2698,7 @@ var tooltipSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads
         }
     }
 });
-var { addTooltipEntrySettings, removeTooltipEntrySettings, setTooltipSettingsState, setActiveMouseOverItemIndex, mouseLeaveItem, mouseLeaveChart, setActiveClickItemIndex, setMouseOverAxisIndex, setMouseClickAxisIndex, setSyncInteraction, setKeyboardInteraction } = tooltipSlice.actions;
+var { addTooltipEntrySettings, replaceTooltipEntrySettings, removeTooltipEntrySettings, setTooltipSettingsState, setActiveMouseOverItemIndex, mouseLeaveItem, mouseLeaveChart, setActiveClickItemIndex, setMouseOverAxisIndex, setMouseClickAxisIndex, setSyncInteraction, setKeyboardInteraction } = tooltipSlice.actions;
 var tooltipReducer = tooltipSlice.reducer;
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/combiners/combineTooltipInteractionState.js [app-client] (ecmascript)", ((__turbopack_context__) => {
@@ -2771,7 +2797,8 @@ var combineTooltipInteractionState = (tooltipState, tooltipEventType, trigger, d
             active: true,
             coordinate: undefined,
             dataKey: undefined,
-            index: defaultIndex
+            index: defaultIndex,
+            graphicalItemId: undefined
         };
     }
     return _objectSpread(_objectSpread({}, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["noInteraction"]), {}, {
@@ -2787,8 +2814,47 @@ __turbopack_context__.s([
     ()=>combineActiveTooltipIndex
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$isWellBehavedNumber$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/isWellBehavedNumber.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ChartUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/ChartUtils.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$isDomainSpecifiedByUser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/isDomainSpecifiedByUser.js [app-client] (ecmascript)");
 ;
-var combineActiveTooltipIndex = (tooltipInteraction, chartData)=>{
+;
+;
+function toFiniteNumber(value) {
+    if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : undefined;
+    }
+    if (value instanceof Date) {
+        var numericValue = value.valueOf();
+        return Number.isFinite(numericValue) ? numericValue : undefined;
+    }
+    var parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+}
+function isValueWithinNumberDomain(value, domain) {
+    var numericValue = toFiniteNumber(value);
+    var lowerBound = domain[0];
+    var upperBound = domain[1];
+    if (numericValue === undefined) {
+        return false;
+    }
+    var min = Math.min(lowerBound, upperBound);
+    var max = Math.max(lowerBound, upperBound);
+    return numericValue >= min && numericValue <= max;
+}
+function isValueWithinDomain(entry, axisDataKey, domain) {
+    if (domain == null || axisDataKey == null) {
+        return true;
+    }
+    var value = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$ChartUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getValueByDataKey"])(entry, axisDataKey);
+    if (value == null) {
+        return true;
+    }
+    if (!(0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$isDomainSpecifiedByUser$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isWellFormedNumberDomain"])(domain)) {
+        return true;
+    }
+    return isValueWithinNumberDomain(value, domain);
+}
+var combineActiveTooltipIndex = (tooltipInteraction, chartData, axisDataKey, domain)=>{
     var desiredIndex = tooltipInteraction === null || tooltipInteraction === void 0 ? void 0 : tooltipInteraction.index;
     if (desiredIndex == null) {
         return null;
@@ -2807,7 +2873,15 @@ var combineActiveTooltipIndex = (tooltipInteraction, chartData)=>{
         upperLimit = chartData.length - 1;
     }
     // now let's clamp the desiredIndex between the limits
-    return String(Math.max(lowerLimit, Math.min(indexAsNumber, upperLimit)));
+    var clampedIndex = Math.max(lowerLimit, Math.min(indexAsNumber, upperLimit));
+    var entry = chartData[clampedIndex];
+    if (entry == null) {
+        return String(clampedIndex);
+    }
+    if (!isValueWithinDomain(entry, axisDataKey, domain)) {
+        return null;
+    }
+    return String(clampedIndex);
 };
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/combiners/combineCoordinateForDefaultIndex.js [app-client] (ecmascript)", ((__turbopack_context__) => {
@@ -3066,6 +3140,8 @@ __turbopack_context__.s([
     ()=>selectActiveTooltipDataKey,
     "selectActiveTooltipDataPoints",
     ()=>selectActiveTooltipDataPoints,
+    "selectActiveTooltipGraphicalItemId",
+    ()=>selectActiveTooltipGraphicalItemId,
     "selectActiveTooltipIndex",
     ()=>selectActiveTooltipIndex,
     "selectActiveTooltipPayload",
@@ -3216,7 +3292,8 @@ var selectAllStackedGraphicalItems = (0, __TURBOPACK__imported__module__$5b$proj
 var selectTooltipStackGroups = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectTooltipStackedData,
     selectAllStackedGraphicalItems,
-    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectStackOffsetType"]
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectStackOffsetType"],
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$rootPropsSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectReverseStackOrder"]
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineStackGroups"]);
 var selectTooltipDomainOfStackGroups = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectTooltipStackGroups,
@@ -3382,7 +3459,9 @@ var selectTooltipInteractionState = (0, __TURBOPACK__imported__module__$5b$proje
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineTooltipInteractionState$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineTooltipInteractionState"]);
 var selectActiveTooltipIndex = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectTooltipInteractionState,
-    selectTooltipDisplayedData
+    selectTooltipDisplayedData,
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisDataKey"],
+    selectTooltipAxisDomain
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineActiveTooltipIndex$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineActiveTooltipIndex"]);
 var selectActiveLabel = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectTooltipAxisTicks,
@@ -3395,6 +3474,14 @@ var selectActiveTooltipDataKey = (0, __TURBOPACK__imported__module__$5b$project$
         return undefined;
     }
     return tooltipInteraction.dataKey;
+});
+var selectActiveTooltipGraphicalItemId = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
+    selectTooltipInteractionState
+], (tooltipInteraction)=>{
+    if (!tooltipInteraction) {
+        return undefined;
+    }
+    return tooltipInteraction.graphicalItemId;
 });
 var selectTooltipPayloadConfigurations = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectTooltipState$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipState"],
@@ -3529,7 +3616,9 @@ var selectTooltipInteractionState = (0, __TURBOPACK__imported__module__$5b$proje
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineTooltipInteractionState$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineTooltipInteractionState"]);
 var selectActiveIndex = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
     selectTooltipInteractionState,
-    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipDisplayedData"]
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipDisplayedData"],
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisDataKey"],
+    __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisDomain"]
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineActiveTooltipIndex$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineActiveTooltipIndex"]);
 var selectTooltipDataKey = (state, tooltipEventType, trigger)=>{
     if (tooltipEventType == null) {
@@ -3584,11 +3673,12 @@ var selectTooltipPayload = (0, __TURBOPACK__imported__module__$5b$project$5d2f$D
     pickTooltipEventType
 ], __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineTooltipPayload$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineTooltipPayload"]);
 var selectIsTooltipActive = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$reselect$2f$dist$2f$reselect$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createSelector"])([
-    selectTooltipInteractionState
-], (tooltipInteractionState)=>{
+    selectTooltipInteractionState,
+    selectActiveIndex
+], (tooltipInteractionState, activeIndex)=>{
     return {
-        isActive: tooltipInteractionState.active,
-        activeIndex: tooltipInteractionState.index
+        isActive: tooltipInteractionState.active && activeIndex != null,
+        activeIndex
     };
 });
 var combineActiveCartesianProps = (chartEvent, layout, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset)=>{
@@ -3893,6 +3983,8 @@ __turbopack_context__.s([
     ()=>legendReducer,
     "removeLegendPayload",
     ()=>removeLegendPayload,
+    "replaceLegendPayload",
+    ()=>replaceLegendPayload,
     "setLegendSettings",
     ()=>setLegendSettings,
     "setLegendSize",
@@ -3900,6 +3992,7 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
 ;
 ;
 /**
@@ -3937,13 +4030,23 @@ var legendSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$
         },
         addLegendPayload: {
             reducer (state, action) {
-                state.payload.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                state.payload.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+            },
+            prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
+        },
+        replaceLegendPayload: {
+            reducer (state, action) {
+                var { prev, next } = action.payload;
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).payload.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(prev));
+                if (index > -1) {
+                    state.payload[index] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
         removeLegendPayload: {
             reducer (state, action) {
-                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).payload.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).payload.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
                 if (index > -1) {
                     state.payload.splice(index, 1);
                 }
@@ -3952,7 +4055,7 @@ var legendSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$
         }
     }
 });
-var { setLegendSize, setLegendSettings, addLegendPayload, removeLegendPayload } = legendSlice.actions;
+var { setLegendSize, setLegendSettings, addLegendPayload, replaceLegendPayload, removeLegendPayload } = legendSlice.actions;
 var legendReducer = legendSlice.reducer;
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/selectors/selectActivePropsFromChartPointer.js [app-client] (ecmascript)", ((__turbopack_context__) => {
@@ -4030,26 +4133,43 @@ mouseClickMiddleware.startListening({
 });
 var mouseMoveAction = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createAction"])('mouseMove');
 var mouseMoveMiddleware = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createListenerMiddleware"])();
+/*
+ * This single rafId is safe because:
+ * 1. Each chart has its own Redux store instance with its own middleware
+ * 2. mouseMoveAction only fires from one DOM element (the chart wrapper)
+ * 3. Rapid mousemove events from the same element SHOULD debounce - we only care about the latest position
+ * This is different from externalEventsMiddleware which handles multiple event types
+ * (click, mouseenter, mouseleave, etc.) that should NOT cancel each other.
+ */ var rafId = null;
 mouseMoveMiddleware.startListening({
     actionCreator: mouseMoveAction,
     effect: (action, listenerApi)=>{
         var mousePointer = action.payload;
-        var state = listenerApi.getState();
-        var tooltipEventType = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectTooltipEventType$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipEventType"])(state, state.tooltip.settings.shared);
-        var activeProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectActivePropsFromChartPointer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActivePropsFromChartPointer"])(state, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$getChartPointer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getChartPointer"])(mousePointer));
-        // this functionality only applies to charts that have axes
-        if (tooltipEventType === 'axis') {
-            if ((activeProps === null || activeProps === void 0 ? void 0 : activeProps.activeIndex) != null) {
-                listenerApi.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setMouseOverAxisIndex"])({
-                    activeIndex: activeProps.activeIndex,
-                    activeDataKey: undefined,
-                    activeCoordinate: activeProps.activeCoordinate
-                }));
-            } else {
-                // this is needed to clear tooltip state when the mouse moves out of the inRange (svg - offset) function, but not yet out of the svg
-                listenerApi.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mouseLeaveChart"])());
-            }
+        // Cancel any pending animation frame
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
         }
+        var chartPointer = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$getChartPointer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getChartPointer"])(mousePointer);
+        // Schedule the dispatch for the next animation frame
+        rafId = requestAnimationFrame(()=>{
+            var state = listenerApi.getState();
+            var tooltipEventType = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectTooltipEventType$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipEventType"])(state, state.tooltip.settings.shared);
+            // this functionality only applies to charts that have axes
+            if (tooltipEventType === 'axis') {
+                var activeProps = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectActivePropsFromChartPointer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActivePropsFromChartPointer"])(state, chartPointer);
+                if ((activeProps === null || activeProps === void 0 ? void 0 : activeProps.activeIndex) != null) {
+                    listenerApi.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setMouseOverAxisIndex"])({
+                        activeIndex: activeProps.activeIndex,
+                        activeDataKey: undefined,
+                        activeCoordinate: activeProps.activeCoordinate
+                    }));
+                } else {
+                    // this is needed to clear tooltip state when the mouse moves out of the inRange (svg - offset) function, but not yet out of the svg
+                    listenerApi.dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mouseLeaveChart"])());
+                }
+            }
+            rafId = null;
+        });
     }
 });
 }),
@@ -4060,12 +4180,15 @@ __turbopack_context__.s([
     "reduxDevtoolsJsonStringifyReplacer",
     ()=>reduxDevtoolsJsonStringifyReplacer
 ]);
-function reduxDevtoolsJsonStringifyReplacer(_key, value) {
+function reduxDevtoolsJsonStringifyReplacer(key, value) {
     if (value instanceof HTMLElement) {
         return "HTMLElement <".concat(value.tagName, " class=\"").concat(value.className, "\">");
     }
     if (value === window) {
         return 'global.window';
+    }
+    if (key === 'children' && typeof value === 'object' && value !== null) {
+        return '<<CHILDREN>>';
     }
     return value;
 }
@@ -4090,11 +4213,17 @@ __turbopack_context__.s([
     ()=>removeYAxis,
     "removeZAxis",
     ()=>removeZAxis,
+    "replaceXAxis",
+    ()=>replaceXAxis,
+    "replaceYAxis",
+    ()=>replaceYAxis,
+    "replaceZAxis",
+    ()=>replaceZAxis,
     "updateYAxisWidth",
     ()=>updateYAxisWidth
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
 function ownKeys(e, r) {
     var t = Object.keys(e);
     if (Object.getOwnPropertySymbols) {
@@ -4165,7 +4294,19 @@ var defaultAxisId = 0;
     reducers: {
         addXAxis: {
             reducer (state, action) {
-                state.xAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+                state.xAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+            },
+            prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
+        },
+        replaceXAxis: {
+            reducer (state, action) {
+                var { prev, next } = action.payload;
+                if (state.xAxis[prev.id] !== undefined) {
+                    if (prev.id !== next.id) {
+                        delete state.xAxis[prev.id];
+                    }
+                    state.xAxis[next.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
@@ -4177,7 +4318,19 @@ var defaultAxisId = 0;
         },
         addYAxis: {
             reducer (state, action) {
-                state.yAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+                state.yAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+            },
+            prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
+        },
+        replaceYAxis: {
+            reducer (state, action) {
+                var { prev, next } = action.payload;
+                if (state.yAxis[prev.id] !== undefined) {
+                    if (prev.id !== next.id) {
+                        delete state.yAxis[prev.id];
+                    }
+                    state.yAxis[next.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
@@ -4189,7 +4342,19 @@ var defaultAxisId = 0;
         },
         addZAxis: {
             reducer (state, action) {
-                state.zAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+                state.zAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+            },
+            prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
+        },
+        replaceZAxis: {
+            reducer (state, action) {
+                var { prev, next } = action.payload;
+                if (state.zAxis[prev.id] !== undefined) {
+                    if (prev.id !== next.id) {
+                        delete state.zAxis[prev.id];
+                    }
+                    state.zAxis[next.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
@@ -4221,7 +4386,7 @@ var defaultAxisId = 0;
         }
     }
 });
-var { addXAxis, removeXAxis, addYAxis, removeYAxis, addZAxis, removeZAxis, updateYAxisWidth } = cartesianAxisSlice.actions;
+var { addXAxis, replaceXAxis, removeXAxis, addYAxis, replaceYAxis, removeYAxis, addZAxis, replaceZAxis, removeZAxis, updateYAxisWidth } = cartesianAxisSlice.actions;
 var cartesianAxisReducer = cartesianAxisSlice.reducer;
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/graphicalItemsSlice.js [app-client] (ecmascript)", ((__turbopack_context__) => {
@@ -4243,6 +4408,7 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
 ;
 ;
 /**
@@ -4259,23 +4425,23 @@ var graphicalItemsSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Do
     reducers: {
         addCartesianGraphicalItem: {
             reducer (state, action) {
-                state.cartesianItems.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                state.cartesianItems.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
         replaceCartesianGraphicalItem: {
             reducer (state, action) {
                 var { prev, next } = action.payload;
-                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).cartesianItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(prev));
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).cartesianItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(prev));
                 if (index > -1) {
-                    state.cartesianItems[index] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
+                    state.cartesianItems[index] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(next);
                 }
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
         removeCartesianGraphicalItem: {
             reducer (state, action) {
-                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).cartesianItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).cartesianItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
                 if (index > -1) {
                     state.cartesianItems.splice(index, 1);
                 }
@@ -4284,13 +4450,13 @@ var graphicalItemsSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Do
         },
         addPolarGraphicalItem: {
             reducer (state, action) {
-                state.polarItems.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                state.polarItems.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
             },
             prepare: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["prepareAutoBatched"])()
         },
         removePolarGraphicalItem: {
             reducer (state, action) {
-                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).polarItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
+                var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).polarItems.indexOf((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
                 if (index > -1) {
                     state.polarItems.splice(index, 1);
                 }
@@ -4325,6 +4491,8 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+;
 ;
 var initialState = {
     dots: [],
@@ -4354,7 +4522,7 @@ var referenceElementsSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f
             }
         },
         addLine: (state, action)=>{
-            state.lines.push(action.payload);
+            state.lines.push((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload));
         },
         removeLine: (state, action)=>{
             var index = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["current"])(state).lines.findIndex((line)=>line === action.payload);
@@ -4433,7 +4601,8 @@ var initialState = {
     stackOffset: 'none',
     syncId: undefined,
     syncMethod: 'index',
-    baseValue: undefined
+    baseValue: undefined,
+    reverseStackOrder: false
 };
 var rootPropsSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
     name: 'rootProps',
@@ -4451,6 +4620,7 @@ var rootPropsSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloa
             state.syncMethod = action.payload.syncMethod;
             state.className = action.payload.className;
             state.baseValue = action.payload.baseValue;
+            state.reverseStackOrder = action.payload.reverseStackOrder;
         }
     }
 });
@@ -4473,7 +4643,7 @@ __turbopack_context__.s([
     ()=>removeRadiusAxis
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/node_modules/immer/dist/immer.mjs [app-client] (ecmascript)");
 ;
 ;
 var initialState = {
@@ -4485,13 +4655,13 @@ var polarAxisSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloa
     initialState,
     reducers: {
         addRadiusAxis (state, action) {
-            state.radiusAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+            state.radiusAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
         },
         removeRadiusAxis (state, action) {
             delete state.radiusAxis[action.payload.id];
         },
         addAngleAxis (state, action) {
-            state.angleAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
+            state.angleAxis[action.payload.id] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$node_modules$2f$immer$2f$dist$2f$immer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["castDraft"])(action.payload);
         },
         removeAngleAxis (state, action) {
             delete state.angleAxis[action.payload.id];
@@ -4564,7 +4734,11 @@ keyboardEventsMiddleware.startListening({
             return;
         }
         // TODO this is lacking index for charts that do not support numeric indexes
-        var currentIndex = Number((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineActiveTooltipIndex$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineActiveTooltipIndex"])(keyboardInteraction, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipDisplayedData"])(state)));
+        var resolvedIndex = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$combiners$2f$combineActiveTooltipIndex$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["combineActiveTooltipIndex"])(keyboardInteraction, (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipDisplayedData"])(state), (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$axisSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisDataKey"])(state), (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisDomain"])(state));
+        var currentIndex = resolvedIndex == null ? -1 : Number(resolvedIndex);
+        if (!Number.isFinite(currentIndex) || currentIndex < 0) {
+            return;
+        }
         var tooltipTicks = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectTooltipAxisTicks"])(state);
         if (key === 'Enter') {
             var _coordinate = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$selectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectCoordinateForDefaultIndex"])(state, 'axis', 'hover', String(keyboardInteraction.index));
@@ -4632,22 +4806,49 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 ;
 var externalEventAction = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createAction"])('externalEvent');
 var externalEventsMiddleware = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createListenerMiddleware"])();
+/*
+ * We need a Map keyed by event type because this middleware handles MULTIPLE different event types
+ * (click, mouseenter, mouseleave, mousedown, mouseup, contextmenu, dblclick, touchstart, touchmove, touchend)
+ * from the same DOM element. Different event types should NOT cancel each other's animation frames.
+ * For example, a click event and a mousemove event can happen in quick succession and both should be processed.
+ * This is different from mouseMoveMiddleware which only handles one event type and uses a single rafId.
+ */ var rafIdMap = new Map();
 externalEventsMiddleware.startListening({
     actionCreator: externalEventAction,
     effect: (action, listenerApi)=>{
-        if (action.payload.handler == null) {
+        var { handler, reactEvent } = action.payload;
+        if (handler == null) {
             return;
         }
-        var state = listenerApi.getState();
-        var nextState = {
-            activeCoordinate: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipCoordinate"])(state),
-            activeDataKey: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipDataKey"])(state),
-            activeIndex: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipIndex"])(state),
-            activeLabel: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveLabel"])(state),
-            activeTooltipIndex: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipIndex"])(state),
-            isTooltipActive: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectIsTooltipActive"])(state)
-        };
-        action.payload.handler(nextState, action.payload.reactEvent);
+        reactEvent.persist();
+        var eventType = reactEvent.type;
+        // Cancel any pending animation frame for this event type
+        var existingRafId = rafIdMap.get(eventType);
+        if (existingRafId !== undefined) {
+            cancelAnimationFrame(existingRafId);
+        }
+        var rafId = requestAnimationFrame(()=>{
+            try {
+                /*
+         * Here it is important that we get the latest state inside the animation frame callback,
+         * not from the outer scope, because there may have been other actions dispatched
+         * between the time the event was fired and the animation frame callback is executed.
+         * One of those actions is the one that actually sets the active tooltip state!
+         */ var state = listenerApi.getState();
+                var nextState = {
+                    activeCoordinate: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipCoordinate"])(state),
+                    activeDataKey: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipDataKey"])(state),
+                    activeIndex: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipIndex"])(state),
+                    activeLabel: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveLabel"])(state),
+                    activeTooltipIndex: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectActiveTooltipIndex"])(state),
+                    isTooltipActive: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$selectors$2f$tooltipSelectors$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectIsTooltipActive"])(state)
+                };
+                handler(nextState, reactEvent);
+            } finally{
+                rafIdMap.delete(eventType);
+            }
+        });
+        rafIdMap.set(eventType, rafId);
     }
 });
 }),
@@ -4878,15 +5079,23 @@ var createRechartsStore = function createRechartsStore(preloadedState) {
         // redux-toolkit v1 types are unhappy with the preloadedState type. Remove the `as any` when bumping to v2
         preloadedState: preloadedState,
         // @ts-expect-error redux-toolkit v1 types are unhappy with the middleware array. Remove this comment when bumping to v2
-        middleware: (getDefaultMiddleware)=>getDefaultMiddleware({
-                serializableCheck: false
+        middleware: (getDefaultMiddleware)=>{
+            var _process$env$NODE_ENV;
+            return getDefaultMiddleware({
+                serializableCheck: false,
+                immutableCheck: ![
+                    'commonjs',
+                    'es6',
+                    'production'
+                ].includes((_process$env$NODE_ENV = "es6") !== null && _process$env$NODE_ENV !== void 0 ? _process$env$NODE_ENV : '')
             }).concat([
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$mouseEventsMiddleware$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mouseClickMiddleware"].middleware,
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$mouseEventsMiddleware$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mouseMoveMiddleware"].middleware,
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$keyboardEventsMiddleware$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["keyboardEventsMiddleware"].middleware,
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$externalEventsMiddleware$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["externalEventsMiddleware"].middleware,
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$touchEventsMiddleware$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["touchEventMiddleware"].middleware
-            ]),
+            ]);
+        },
         /*
      * I can't find out how to satisfy typescript here.
      * We return `EnhancerArray<[StoreEnhancer<{}, {}>, StoreEnhancer]>` from this function,
@@ -4981,11 +5190,16 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$PanoramaContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/context/PanoramaContext.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$layoutSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/layoutSlice.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/hooks.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$propsAreEqual$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/propsAreEqual.js [app-client] (ecmascript)");
 ;
 ;
 ;
 ;
-function ReportMainChartProps(_ref) {
+;
+/**
+ * "Main" props are props that are only accepted on the main chart,
+ * as opposed to the small panorama chart inside a Brush.
+ */ function ReportMainChartPropsImpl(_ref) {
     var { layout, margin } = _ref;
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     /*
@@ -5000,13 +5214,13 @@ function ReportMainChartProps(_ref) {
    *
    * Reported in https://github.com/recharts/recharts/issues/5514
    */ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "ReportMainChartProps.useEffect": ()=>{
+        "ReportMainChartPropsImpl.useEffect": ()=>{
             if (!isPanorama) {
                 dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$layoutSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLayout"])(layout));
                 dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$layoutSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setMargin"])(margin));
             }
         }
-    }["ReportMainChartProps.useEffect"], [
+    }["ReportMainChartPropsImpl.useEffect"], [
         dispatch,
         isPanorama,
         layout,
@@ -5014,6 +5228,7 @@ function ReportMainChartProps(_ref) {
     ]);
     return null;
 }
+var ReportMainChartProps = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["memo"])(ReportMainChartPropsImpl, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$propsAreEqual$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["propsAreEqual"]);
 }),
 "[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/ReportChartProps.js [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
@@ -5108,28 +5323,44 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 ;
 ;
 function SetTooltipEntrySettings(_ref) {
-    var { fn, args } = _ref;
+    var { tooltipEntrySettings } = _ref;
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     var isPanorama = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$PanoramaContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useIsPanorama"])();
+    var prevSettingsRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
         "SetTooltipEntrySettings.useLayoutEffect": ()=>{
             if (isPanorama) {
                 // Panorama graphical items should never contribute to Tooltip payload.
-                return undefined;
+                return;
             }
-            var tooltipEntrySettings = fn(args);
-            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addTooltipEntrySettings"])(tooltipEntrySettings));
+            if (prevSettingsRef.current === null) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addTooltipEntrySettings"])(tooltipEntrySettings));
+            } else if (prevSettingsRef.current !== tooltipEntrySettings) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["replaceTooltipEntrySettings"])({
+                    prev: prevSettingsRef.current,
+                    next: tooltipEntrySettings
+                }));
+            }
+            prevSettingsRef.current = tooltipEntrySettings;
+        }
+    }["SetTooltipEntrySettings.useLayoutEffect"], [
+        tooltipEntrySettings,
+        dispatch,
+        isPanorama
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
+        "SetTooltipEntrySettings.useLayoutEffect": ()=>{
             return ({
                 "SetTooltipEntrySettings.useLayoutEffect": ()=>{
-                    dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeTooltipEntrySettings"])(tooltipEntrySettings));
+                    if (prevSettingsRef.current) {
+                        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$tooltipSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeTooltipEntrySettings"])(prevSettingsRef.current));
+                        prevSettingsRef.current = null;
+                    }
                 }
             })["SetTooltipEntrySettings.useLayoutEffect"];
         }
     }["SetTooltipEntrySettings.useLayoutEffect"], [
-        fn,
-        args,
-        dispatch,
-        isPanorama
+        dispatch
     ]);
     return null;
 }
@@ -5541,8 +5772,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$chartLayoutContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/context/chartLayoutContext.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/hooks.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/state/legendSlice.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$DataUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/recharts/es6/util/DataUtils.js [app-client] (ecmascript)");
-;
 ;
 ;
 ;
@@ -5552,22 +5781,40 @@ function SetLegendPayload(_ref) {
     var { legendPayload } = _ref;
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     var isPanorama = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$PanoramaContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useIsPanorama"])();
+    var prevPayloadRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
         "SetLegendPayload.useLayoutEffect": ()=>{
             if (isPanorama) {
-                return __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$DataUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["noop"];
+                return;
             }
-            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addLegendPayload"])(legendPayload));
-            return ({
-                "SetLegendPayload.useLayoutEffect": ()=>{
-                    dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeLegendPayload"])(legendPayload));
-                }
-            })["SetLegendPayload.useLayoutEffect"];
+            if (prevPayloadRef.current === null) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addLegendPayload"])(legendPayload));
+            } else if (prevPayloadRef.current !== legendPayload) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["replaceLegendPayload"])({
+                    prev: prevPayloadRef.current,
+                    next: legendPayload
+                }));
+            }
+            prevPayloadRef.current = legendPayload;
         }
     }["SetLegendPayload.useLayoutEffect"], [
         dispatch,
         isPanorama,
         legendPayload
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
+        "SetLegendPayload.useLayoutEffect": ()=>{
+            return ({
+                "SetLegendPayload.useLayoutEffect": ()=>{
+                    if (prevPayloadRef.current) {
+                        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeLegendPayload"])(prevPayloadRef.current));
+                        prevPayloadRef.current = null;
+                    }
+                }
+            })["SetLegendPayload.useLayoutEffect"];
+        }
+    }["SetLegendPayload.useLayoutEffect"], [
+        dispatch
     ]);
     return null;
 }
@@ -5575,22 +5822,40 @@ function SetPolarLegendPayload(_ref2) {
     var { legendPayload } = _ref2;
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     var layout = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$context$2f$chartLayoutContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["selectChartLayout"]);
+    var prevPayloadRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
         "SetPolarLegendPayload.useLayoutEffect": ()=>{
             if (layout !== 'centric' && layout !== 'radial') {
-                return __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$util$2f$DataUtils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["noop"];
+                return;
             }
-            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addLegendPayload"])(legendPayload));
-            return ({
-                "SetPolarLegendPayload.useLayoutEffect": ()=>{
-                    dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeLegendPayload"])(legendPayload));
-                }
-            })["SetPolarLegendPayload.useLayoutEffect"];
+            if (prevPayloadRef.current === null) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addLegendPayload"])(legendPayload));
+            } else if (prevPayloadRef.current !== legendPayload) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["replaceLegendPayload"])({
+                    prev: prevPayloadRef.current,
+                    next: legendPayload
+                }));
+            }
+            prevPayloadRef.current = legendPayload;
         }
     }["SetPolarLegendPayload.useLayoutEffect"], [
         dispatch,
         layout,
         legendPayload
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
+        "SetPolarLegendPayload.useLayoutEffect": ()=>{
+            return ({
+                "SetPolarLegendPayload.useLayoutEffect": ()=>{
+                    if (prevPayloadRef.current) {
+                        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$legendSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeLegendPayload"])(prevPayloadRef.current));
+                        prevPayloadRef.current = null;
+                    }
+                }
+            })["SetPolarLegendPayload.useLayoutEffect"];
+        }
+    }["SetPolarLegendPayload.useLayoutEffect"], [
+        dispatch
     ]);
     return null;
 }
@@ -5610,11 +5875,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 ;
 ;
 ;
-function SetCartesianGraphicalItem(props) {
+var SetCartesianGraphicalItemImpl = (props)=>{
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     var prevPropsRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
-        "SetCartesianGraphicalItem.useLayoutEffect": ()=>{
+        "SetCartesianGraphicalItemImpl.useLayoutEffect": ()=>{
             if (prevPropsRef.current === null) {
                 dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$graphicalItemsSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addCartesianGraphicalItem"])(props));
             } else if (prevPropsRef.current !== props) {
@@ -5625,14 +5890,14 @@ function SetCartesianGraphicalItem(props) {
             }
             prevPropsRef.current = props;
         }
-    }["SetCartesianGraphicalItem.useLayoutEffect"], [
+    }["SetCartesianGraphicalItemImpl.useLayoutEffect"], [
         dispatch,
         props
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({
-        "SetCartesianGraphicalItem.useLayoutEffect": ()=>{
+        "SetCartesianGraphicalItemImpl.useLayoutEffect": ()=>{
             return ({
-                "SetCartesianGraphicalItem.useLayoutEffect": ()=>{
+                "SetCartesianGraphicalItemImpl.useLayoutEffect": ()=>{
                     if (prevPropsRef.current) {
                         dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$graphicalItemsSlice$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["removeCartesianGraphicalItem"])(prevPropsRef.current));
                         /*
@@ -5650,13 +5915,14 @@ function SetCartesianGraphicalItem(props) {
          */ prevPropsRef.current = null;
                     }
                 }
-            })["SetCartesianGraphicalItem.useLayoutEffect"];
+            })["SetCartesianGraphicalItemImpl.useLayoutEffect"];
         }
-    }["SetCartesianGraphicalItem.useLayoutEffect"], [
+    }["SetCartesianGraphicalItemImpl.useLayoutEffect"], [
         dispatch
     ]);
     return null;
-}
+};
+var SetCartesianGraphicalItem = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["memo"])(SetCartesianGraphicalItemImpl);
 function SetPolarGraphicalItem(props) {
     var dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$recharts$2f$es6$2f$state$2f$hooks$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useLayoutEffect"])({

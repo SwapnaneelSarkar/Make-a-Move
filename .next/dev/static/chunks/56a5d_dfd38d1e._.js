@@ -4746,6 +4746,13 @@ function RemoveScrollSideCar(props) {
             if ('touches' in event && moveDirection === 'h' && target.type === 'range') {
                 return false;
             }
+            // allow drag selection (iOS); check if selection's anchorNode is the same as target or contains target
+            var selection = window.getSelection();
+            var anchorNode = selection && selection.anchorNode;
+            var isTouchingSelection = anchorNode ? anchorNode === target || anchorNode.contains(target) : false;
+            if (isTouchingSelection) {
+                return false;
+            }
             var canBeScrolledInMainDirection = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$react$2d$remove$2d$scroll$2f$dist$2f$es2015$2f$handleScroll$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["locationCouldBeScrolled"])(moveDirection, target);
             if (!canBeScrolledInMainDirection) {
                 return true;
