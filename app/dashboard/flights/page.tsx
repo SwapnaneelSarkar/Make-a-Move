@@ -619,7 +619,12 @@ export default function FlightsPage() {
         toast.error("Please fill all passenger details")
         return
       }
-      stageData = { ...passengerDetails, passengerCount }
+      const fullName = [passengerDetails.firstName, passengerDetails.lastName].filter(Boolean).join(" ").trim()
+      stageData = {
+        ...passengerDetails,
+        name: fullName || passengerDetails.firstName || passengerDetails.lastName || "",
+        passengerCount,
+      }
     } else if (currentStage === "Ancillaries") {
       stageData = { ancillaries }
     } else if (currentStage === "Payment Pending") {
@@ -850,34 +855,35 @@ export default function FlightsPage() {
       </div>
 
       {/* Stage 0: Search */}
-      <div className={cn("transition-all duration-300", currentStage !== "Search" && "opacity-50 pointer-events-none grayscale")}>
-        <div className="flex items-center gap-2 mb-4">
-          {currentStage !== "Search" && <Lock className="w-5 h-5 text-muted-foreground" />}
-          <h2 className="text-2xl font-bold">Search Criteria</h2>
+      {currentStage === "Search" && (
+        <div className="transition-all duration-300">
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-2xl font-bold">Search Criteria</h2>
+          </div>
+          <FlightSearch
+            tripType={searchData.tripType}
+            origin={searchData.origin}
+            destination={searchData.destination}
+            departureDate={searchData.departureDate}
+            returnDate={searchData.returnDate}
+            travellers={searchData.travellers}
+            class={searchData.class}
+            flightType={isInternational ? "international" : "domestic"}
+            onTripTypeChange={(value) => setSearchData({ ...searchData, tripType: value })}
+            onOriginChange={(value) => setSearchData({ ...searchData, origin: value })}
+            onDestinationChange={(value) => setSearchData({ ...searchData, destination: value })}
+            onDepartureDateChange={(date) => setSearchData({ ...searchData, departureDate: date })}
+            onReturnDateChange={(date) => setSearchData({ ...searchData, returnDate: date })}
+            onTravellersChange={(value) => setSearchData({ ...searchData, travellers: value })}
+            onClassChange={(value) => setSearchData({ ...searchData, class: value })}
+            specialFare={searchData.specialFare}
+            onSpecialFareChange={(value) => setSearchData({ ...searchData, specialFare: value })}
+            onFlightTypeChange={(value) => setIsInternational(value === "international")}
+            onSearch={handleSearch}
+            errors={searchErrors}
+          />
         </div>
-        <FlightSearch
-          tripType={searchData.tripType}
-          origin={searchData.origin}
-          destination={searchData.destination}
-          departureDate={searchData.departureDate}
-          returnDate={searchData.returnDate}
-          travellers={searchData.travellers}
-          class={searchData.class}
-          flightType={isInternational ? "international" : "domestic"}
-          onTripTypeChange={(value) => setSearchData({ ...searchData, tripType: value })}
-          onOriginChange={(value) => setSearchData({ ...searchData, origin: value })}
-          onDestinationChange={(value) => setSearchData({ ...searchData, destination: value })}
-          onDepartureDateChange={(date) => setSearchData({ ...searchData, departureDate: date })}
-          onReturnDateChange={(date) => setSearchData({ ...searchData, returnDate: date })}
-          onTravellersChange={(value) => setSearchData({ ...searchData, travellers: value })}
-          onClassChange={(value) => setSearchData({ ...searchData, class: value })}
-          specialFare={searchData.specialFare}
-          onSpecialFareChange={(value) => setSearchData({ ...searchData, specialFare: value })}
-          onFlightTypeChange={(value) => setIsInternational(value === "international")}
-          onSearch={handleSearch}
-          errors={searchErrors}
-        />
-      </div>
+      )}
 
       {/* Listing is now on a separate page - removed from here */}
 
@@ -1045,16 +1051,11 @@ export default function FlightsPage() {
       )}
 
       {/* Stage 3: Passenger Details */}
-      <div
-        className={cn(
-          "border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all",
-          getCurrentStageIndex() < 3 ? "hidden" : getCurrentStageIndex() > 3 ? "opacity-50 pointer-events-none" : "",
-        )}
-      >
-        <div className="flex items-center gap-2 mb-2">
-          {getCurrentStageIndex() > 3 && <Lock className="w-5 h-5 text-muted-foreground" />}
-          <h3 className="text-2xl font-bold">Passenger Details</h3>
-        </div>
+      {currentStage === "Passenger Details" && (
+        <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-2xl font-bold">Passenger Details</h3>
+          </div>
 
         {/* Passenger Count Selection */}
         <div className="border-2 rounded-xl p-5 bg-gradient-to-br from-muted/50 to-muted/30 mb-6">
@@ -1330,25 +1331,18 @@ export default function FlightsPage() {
           )}
         </div>
 
-        {currentStage === "Passenger Details" && (
           <div className="flex justify-end pt-4">
             <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
               Continue to Ancillaries <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Stage 4: Ancillaries */}
-      {getCurrentStageIndex() >= 4 && (
-        <div
-          className={cn(
-            "border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all",
-            getCurrentStageIndex() > 4 ? "opacity-50 pointer-events-none" : "",
-          )}
-        >
+      {currentStage === "Ancillaries" && (
+        <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all">
           <div className="flex items-center gap-2 mb-2">
-            {getCurrentStageIndex() > 4 && <Lock className="w-5 h-5 text-muted-foreground" />}
             <h3 className="text-2xl font-bold">Ancillaries</h3>
             <p className="text-sm text-muted-foreground ml-2">(Optional)</p>
           </div>
@@ -1483,13 +1477,11 @@ export default function FlightsPage() {
               </div>
             </div>
           )}
-          {currentStage === "Ancillaries" && (
-            <div className="flex justify-end pt-4">
-              <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
-                Continue to Payment <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-end pt-4">
+            <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
+              Continue to Payment <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </div>
       )}
 

@@ -134,5 +134,14 @@ export function FlightCard({ flight, onBook, userRole }: FlightCardProps) {
 }
 
 function formatTime(dateStr: string) {
-  return new Date(dateStr).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  const date = new Date(dateStr)
+  if (Number.isNaN(date.getTime())) return "--:--"
+
+  // Use fixed locale and UTC timezone to avoid SSR/CSR mismatches
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(date)
 }

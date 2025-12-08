@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FlightCard } from "@/components/booking/flight-card"
 import { MOCK_FLIGHTS, type Flight } from "@/lib/mock-data"
@@ -15,6 +15,89 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/lib/store"
 import { toast } from "sonner"
+
+const CITY_LOOKUP: Record<string, string> = {
+  DEL: "New Delhi",
+  BOM: "Mumbai",
+  BLR: "Bangalore",
+  MAA: "Chennai",
+  CCU: "Kolkata",
+  HYD: "Hyderabad",
+  DXB: "Dubai",
+  LHR: "London Heathrow",
+  SIN: "Singapore",
+  JFK: "New York",
+  FRA: "Frankfurt",
+  SYD: "Sydney",
+}
+
+const buildDateTime = (dateString: string | null, hourOffset: number) => {
+  const base = dateString ? new Date(dateString) : new Date()
+  const safeBase = isNaN(base.getTime()) ? new Date() : base
+  const adjusted = new Date(safeBase)
+  adjusted.setHours(adjusted.getHours() + hourOffset)
+  return adjusted.toISOString()
+}
+
+const generateTestFlights = (
+  originCode: string,
+  destinationCode: string,
+  isInternational: boolean,
+  departureDate: string,
+): Flight[] => {
+  const from = originCode || (isInternational ? "DEL" : "DEL")
+  const to = destinationCode || (isInternational ? "DXB" : "BOM")
+  const type: Flight["type"] = isInternational ? "INTERNATIONAL" : "DOMESTIC"
+  const basePrice = isInternational ? 34000 : 12500
+
+  return [
+    {
+      id: `test-${from}-${to}-1`,
+      airline: isInternational ? "Test Global Air" : "Test Domestic Air",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "TG" : "TD"}-${from}${to}-101`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 24) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 27) },
+      duration: "3h 00m",
+      price: basePrice,
+      currency: "INR",
+      policyCompliant: true,
+      stops: 0,
+      type,
+      baggage: "20kg",
+    },
+    {
+      id: `test-${from}-${to}-2`,
+      airline: isInternational ? "Aero Sandbox" : "Metro Shuttle",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "AS" : "MS"}-${from}${to}-205`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 30) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 34) },
+      duration: "4h 00m",
+      price: basePrice + 1800,
+      currency: "INR",
+      policyCompliant: true,
+      stops: 1,
+      type,
+      baggage: "15kg",
+    },
+    {
+      id: `test-${from}-${to}-3`,
+      airline: isInternational ? "Sandbox Connect" : "Corporate Wings",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "SC" : "CW"}-${from}${to}-309`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 36) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 39) },
+      duration: "3h 30m",
+      price: basePrice + 3200,
+      currency: "INR",
+      policyCompliant: false,
+      stops: 0,
+      type,
+      baggage: "30kg",
+    },
+  ]
+}
 
 export default function FlightListingPage() {
   const router = useRouter()
@@ -41,6 +124,11 @@ export default function FlightListingPage() {
   
   // Sorting state - default to "Price: Low to High"
   const [sortBy, setSortBy] = useState<string>("price-low-to-high")
+
+  const fallbackFlights = useMemo(
+    () => generateTestFlights(origin, destination, isInternational, departureDate),
+    [origin, destination, isInternational, departureDate],
+  )
 
   // Get unique airlines from flights
   const availableAirlines = useMemo(() => {
@@ -92,55 +180,47 @@ export default function FlightListingPage() {
     }
   }, [priceRangeFromFlights])
 
+  const matchesFilters = useCallback((flight: Flight) => {
+    const flightIsInternational = flight.type === "INTERNATIONAL"
+    if (isInternational ? !flightIsInternational : flightIsInternational) {
+      return false
+    }
+
+    if (origin && flight.departure.code !== origin) return false
+    if (destination && flight.arrival.code !== destination) return false
+
+    if (baggageFilter.length > 0) {
+      const flightBaggage = flight.baggage || "No baggage"
+      if (!baggageFilter.includes(flightBaggage)) return false
+    }
+
+    if (flightNumberFilter.trim()) {
+      const searchTerm = flightNumberFilter.trim().toLowerCase()
+      const matchesFlightNumber = flight.flightNumber.toLowerCase().includes(searchTerm)
+      const matchesAirline = flight.airline.toLowerCase().includes(searchTerm)
+      if (!matchesFlightNumber && !matchesAirline) return false
+    }
+
+    if (flight.price < priceRange[0] || flight.price > priceRange[1]) return false
+
+    if (selectedAirlines.length > 0 && !selectedAirlines.includes(flight.airline)) {
+      return false
+    }
+
+    return true
+  }, [
+    isInternational,
+    origin,
+    destination,
+    baggageFilter,
+    flightNumberFilter,
+    priceRange,
+    selectedAirlines,
+  ])
+
   // Filter and sort flights
   const filteredFlights = useMemo(() => {
-    let filtered = MOCK_FLIGHTS.filter((flight) => {
-      // Filter by international/domestic
-      const flightIsInternational = flight.type === "INTERNATIONAL"
-      if (isInternational ? !flightIsInternational : flightIsInternational) {
-        return false
-      }
-
-      // Filter by origin and destination if provided
-      if (origin && flight.departure.code !== origin) {
-        return false
-      }
-      if (destination && flight.arrival.code !== destination) {
-        return false
-      }
-
-      // Filter by baggage
-      if (baggageFilter.length > 0) {
-        const flightBaggage = flight.baggage || "No baggage"
-        if (!baggageFilter.includes(flightBaggage)) {
-          return false
-        }
-      }
-
-      // Filter by flight number or airline name
-      if (flightNumberFilter.trim()) {
-        const searchTerm = flightNumberFilter.trim().toLowerCase()
-        const matchesFlightNumber = flight.flightNumber.toLowerCase().includes(searchTerm)
-        const matchesAirline = flight.airline.toLowerCase().includes(searchTerm)
-        if (!matchesFlightNumber && !matchesAirline) {
-          return false
-        }
-      }
-
-      // Filter by price range
-      if (flight.price < priceRange[0] || flight.price > priceRange[1]) {
-        return false
-      }
-
-      // Filter by airlines
-      if (selectedAirlines.length > 0) {
-        if (!selectedAirlines.includes(flight.airline)) {
-          return false
-        }
-      }
-
-      return true
-    })
+    let filtered = MOCK_FLIGHTS.filter(matchesFilters)
 
     // Apply sorting
     if (sortBy === "price-low-to-high") {
@@ -148,7 +228,19 @@ export default function FlightListingPage() {
     }
 
     return filtered
-  }, [isInternational, origin, destination, baggageFilter, flightNumberFilter, priceRange, selectedAirlines, sortBy])
+  }, [matchesFilters, sortBy])
+
+  const filteredFallbackFlights = useMemo(() => {
+    let filtered = fallbackFlights.filter(matchesFilters)
+
+    if (sortBy === "price-low-to-high") {
+      filtered = [...filtered].sort((a, b) => a.price - b.price)
+    }
+
+    return filtered
+  }, [fallbackFlights, matchesFilters, sortBy])
+
+  const flightsToDisplay = filteredFlights.length > 0 ? filteredFlights : filteredFallbackFlights
 
   const handleBook = (flight: Flight) => {
     setSelectedFlight(flight)
@@ -302,7 +394,7 @@ export default function FlightListingPage() {
         <div className="col-span-3 space-y-4">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h2 className="text-2xl font-bold">{filteredFlights.length} Flights Found</h2>
+              <h2 className="text-2xl font-bold">{flightsToDisplay.length} Flights Found</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {isInternational ? "Showing international routes" : "Showing domestic routes"}
               </p>
@@ -324,13 +416,13 @@ export default function FlightListingPage() {
             </div>
           </div>
 
-          {filteredFlights.length === 0 ? (
+          {flightsToDisplay.length === 0 ? (
             <div className="rounded-xl border-2 border-dashed p-6 text-center text-sm text-muted-foreground">
               No {isInternational ? "international" : "domestic"} flights available right now. Try adjusting your search.
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredFlights.map((flight) => (
+              {flightsToDisplay.map((flight) => (
                 <FlightCard key={flight.id} flight={flight} onBook={handleBook} userRole={currentUser.role} />
               ))}
             </div>
