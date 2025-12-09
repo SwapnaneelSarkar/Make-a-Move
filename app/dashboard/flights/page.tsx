@@ -33,6 +33,90 @@ import { hasSufficientBalance, getWalletBalance, createTransaction } from "@/lib
 import { calculatePricingBreakdown, type PricingBreakdown } from "@/lib/pricing-utils"
 import { getMarkupVisibility } from "@/lib/utils"
 
+// Fallback flight generator (kept in sync with listing page)
+const CITY_LOOKUP: Record<string, string> = {
+  DEL: "New Delhi",
+  BOM: "Mumbai",
+  BLR: "Bangalore",
+  MAA: "Chennai",
+  CCU: "Kolkata",
+  HYD: "Hyderabad",
+  DXB: "Dubai",
+  LHR: "London Heathrow",
+  SIN: "Singapore",
+  JFK: "New York",
+  FRA: "Frankfurt",
+  SYD: "Sydney",
+}
+
+const buildDateTime = (dateString: string | null, hourOffset: number) => {
+  const base = dateString ? new Date(dateString) : new Date()
+  const safeBase = isNaN(base.getTime()) ? new Date() : base
+  const adjusted = new Date(safeBase)
+  adjusted.setHours(adjusted.getHours() + hourOffset)
+  return adjusted.toISOString()
+}
+
+const generateFallbackFlights = (
+  originCode: string,
+  destinationCode: string,
+  isInternational: boolean,
+  departureDate: string,
+) => {
+  const from = originCode || (isInternational ? "DEL" : "DEL")
+  const to = destinationCode || (isInternational ? "DXB" : "BOM")
+  const type: Flight["type"] = isInternational ? "INTERNATIONAL" : "DOMESTIC"
+  const basePrice = isInternational ? 34000 : 12500
+
+  return [
+    {
+      id: `test-${from}-${to}-1`,
+      airline: isInternational ? "Test Global Air" : "Test Domestic Air",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "TG" : "TD"}-${from}${to}-101`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 24) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 27) },
+      duration: "3h 00m",
+      price: basePrice,
+      currency: "INR",
+      policyCompliant: true,
+      stops: 0,
+      type,
+      baggage: "20kg",
+    },
+    {
+      id: `test-${from}-${to}-2`,
+      airline: isInternational ? "Aero Sandbox" : "Metro Shuttle",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "AS" : "MS"}-${from}${to}-205`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 30) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 34) },
+      duration: "4h 00m",
+      price: basePrice + 1800,
+      currency: "INR",
+      policyCompliant: true,
+      stops: 1,
+      type,
+      baggage: "15kg",
+    },
+    {
+      id: `test-${from}-${to}-3`,
+      airline: isInternational ? "Sandbox Connect" : "Corporate Wings",
+      airlineLogo: "/placeholder-logo.svg",
+      flightNumber: `${isInternational ? "SC" : "CW"}-${from}${to}-309`,
+      departure: { code: from, city: CITY_LOOKUP[from] || from, time: buildDateTime(departureDate, 36) },
+      arrival: { code: to, city: CITY_LOOKUP[to] || to, time: buildDateTime(departureDate, 39) },
+      duration: "3h 30m",
+      price: basePrice + 3200,
+      currency: "INR",
+      policyCompliant: false,
+      stops: 0,
+      type,
+      baggage: "30kg",
+    },
+  ]
+}
+
 const BOOKING_STAGES = [
   { id: "Search", label: "Search" },
   { id: "Listing", label: "Listing" },
@@ -143,7 +227,18 @@ export default function FlightsPage() {
   // Handle flight selection from listing page
   useEffect(() => {
     if (selectedFlightId) {
-      const flight = MOCK_FLIGHTS.find((f) => f.id === selectedFlightId)
+      let flight = MOCK_FLIGHTS.find((f) => f.id === selectedFlightId)
+
+      // If no mock flight matches, try generated fallback flights (matches listing page fallback)
+      if (!flight) {
+        const origin = searchParams.get("origin") || ""
+        const destination = searchParams.get("destination") || ""
+        const departureDate = searchParams.get("departureDate") || ""
+        const isIntl = searchParams.get("isInternational") === "true"
+        const fallbackFlights = generateFallbackFlights(origin, destination, isIntl, departureDate)
+        flight = fallbackFlights.find((f) => f.id === selectedFlightId) || null
+      }
+
       if (flight) {
         setSelectedFlight(flight)
         const newListingData = {
@@ -205,6 +300,11 @@ export default function FlightsPage() {
         }
         
         // Clear the selectedFlight param from URL
+        const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete("selectedFlight")
+        router.replace(`/dashboard/flights?${newParams.toString()}`)
+      } else {
+        toast.error("Selected flight is no longer available. Please search again.")
         const newParams = new URLSearchParams(searchParams.toString())
         newParams.delete("selectedFlight")
         router.replace(`/dashboard/flights?${newParams.toString()}`)
