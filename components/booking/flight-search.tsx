@@ -314,11 +314,11 @@ export function FlightSearch({
               <Input
                 type="number"
                 min="1"
-                max="20"
+                max="200"
                 value={travellers}
                 onChange={(e) => {
                   const value = e.target.value
-                  if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= 20)) {
+                  if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= 200)) {
                     onTravellersChange?.(value || "1")
                   }
                 }}
@@ -330,16 +330,16 @@ export function FlightSearch({
                 size="icon"
                 onClick={() => {
                   const current = parseInt(travellers) || 1
-                  const newValue = Math.min(20, current + 1)
+                  const newValue = Math.min(200, current + 1)
                   onTravellersChange?.(newValue.toString())
                 }}
-                disabled={parseInt(travellers) >= 20}
+                disabled={parseInt(travellers) >= 200}
                 className="h-11 w-11 transition-all hover:border-primary/50"
               >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">1-20 passengers</p>
+            <p className="text-xs text-muted-foreground">1-200 passengers (10+ will be handled as group booking)</p>
           </div>
 
           <div className="space-y-2">

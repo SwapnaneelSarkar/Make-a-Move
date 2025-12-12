@@ -11,6 +11,9 @@ import { usePermissions } from "@/hooks/use-permissions"
 import { AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 import { Switch } from "@/components/ui/switch"
+import { loadMarkupPreferences, persistMarkupPreferences, DEFAULT_AGENT_MARKUP, DEFAULT_SUPER_ADMIN_MARKUP } from "@/lib/markup-settings"
+import { MOCK_USERS } from "@/lib/mock-data"
+import { bookingsDB } from "@/lib/local-db"
 
 export default function SettingsPage() {
   const { canView } = usePermissions()
@@ -39,7 +42,9 @@ export default function SettingsPage() {
 
       <div className="grid gap-6">
         <DownloadMarkupSettings />
+        <MarkupGovernance />
         <MarkupRules />
+        <MarkupSummary />
         <CommissionRules />
         <PromotionalBanners />
                 </div>
@@ -87,6 +92,221 @@ function DownloadMarkupSettings() {
             checked={showMarkupInDownloads}
             onCheckedChange={handleToggle}
           />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function MarkupGovernance() {
+  const { role, canEdit } = usePermissions()
+  const [prefs, setPrefs] = useState(loadMarkupPreferences())
+  const agents = MOCK_USERS.filter((user) => user.role === "AGENT" || user.role === "SUB_AGENT")
+
+  useEffect(() => {
+    setPrefs(loadMarkupPreferences())
+  }, [])
+
+  if (!canEdit("markups")) return null
+
+  const handleSave = () => {
+    const cleanOverrides = Object.fromEntries(
+      Object.entries(prefs.agentOverrides || {}).filter(([, value]) => typeof value === "number"),
+    ) as Record<string, number>
+    persistMarkupPreferences({ ...prefs, agentOverrides: cleanOverrides })
+    toast.success("Markup defaults updated")
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Agent Admin Markup Controls</CardTitle>
+        <CardDescription>Set platform default (Super Admin) and agent/sub-agent overrides.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className={`grid gap-4 ${role === "SUPER_ADMIN" ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
+          {role === "SUPER_ADMIN" && (
+            <div className="space-y-2">
+              <Label>Super Admin Default (₹)</Label>
+              <Input
+                type="number"
+                value={prefs.superAdminMarkup ?? DEFAULT_SUPER_ADMIN_MARKUP}
+                onChange={(e) =>
+                  setPrefs((prev) => ({
+                    ...prev,
+                    superAdminMarkup: Math.max(0, parseFloat(e.target.value) || 0),
+                  }))
+                }
+              />
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label>Default Agent Markup (₹)</Label>
+            <Input
+              type="number"
+              value={prefs.defaultAgentMarkup ?? DEFAULT_AGENT_MARKUP}
+              onChange={(e) =>
+                setPrefs((prev) => ({
+                  ...prev,
+                  defaultAgentMarkup: Math.max(0, parseFloat(e.target.value) || 0),
+                }))
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Allow Agents to Edit</Label>
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={prefs.allowAgentOverride}
+                onCheckedChange={(checked) =>
+                  setPrefs((prev) => ({ ...prev, allowAgentOverride: checked }))
+                }
+              />
+              <span className="text-sm text-muted-foreground">Enable markup change during booking</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="border rounded-md">
+          <div className="px-4 py-2 border-b bg-muted/50 flex items-center justify-between">
+            <div>
+              <p className="font-semibold">Agent/Sub-Agent Overrides</p>
+              <p className="text-sm text-muted-foreground">Customize markup per agent when needed.</p>
+            </div>
+            <Button size="sm" onClick={handleSave}>
+              Save Defaults & Overrides
+            </Button>
+          </div>
+          <div className="divide-y">
+            {agents.map((agent) => (
+              <div key={agent.id} className="grid grid-cols-3 gap-4 items-center px-4 py-3">
+                <div>
+                  <p className="font-medium">{agent.name}</p>
+                  <p className="text-xs text-muted-foreground">{agent.role.toLowerCase()}</p>
+                </div>
+                <Input
+                  type="number"
+                  value={prefs.agentOverrides?.[agent.id] ?? ""}
+                  placeholder={`${prefs.defaultAgentMarkup ?? DEFAULT_AGENT_MARKUP}`}
+                  onChange={(e) =>
+                    setPrefs((prev) => ({
+                      ...prev,
+                      agentOverrides: {
+                        ...prev.agentOverrides,
+                        [agent.id]: e.target.value === "" ? undefined : Math.max(0, parseFloat(e.target.value) || 0),
+                      },
+                    }))
+                  }
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    setPrefs((prev) => {
+                      const next = { ...prev.agentOverrides }
+                      delete next[agent.id]
+                      return { ...prev, agentOverrides: next }
+                    })
+                  }
+                >
+                  Clear
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function MarkupSummary() {
+  const { role } = usePermissions()
+  const [summary, setSummary] = useState<{
+    totalWithMarkup: number
+    totalWithoutMarkup: number
+    perAgent: Array<{ agentId: string; agentName: string; withMarkup: number; withoutMarkup: number }>
+  }>({ totalWithMarkup: 0, totalWithoutMarkup: 0, perAgent: [] })
+
+  useEffect(() => {
+    bookingsDB.readAll().then((bookings) => {
+      const perAgentMap: Record<string, { agentName: string; withMarkup: number; withoutMarkup: number }> = {}
+      let withMarkup = 0
+      let withoutMarkup = 0
+
+      bookings.forEach((booking) => {
+        const applied = booking.details?.markup?.applied && (booking.details?.markup?.totalMarkup ?? 0) > 0
+        if (applied) withMarkup += 1
+        else withoutMarkup += 1
+
+        if (!perAgentMap[booking.agentId]) {
+          perAgentMap[booking.agentId] = {
+            agentName: booking.agentName,
+            withMarkup: 0,
+            withoutMarkup: 0,
+          }
+        }
+        if (applied) perAgentMap[booking.agentId].withMarkup += 1
+        else perAgentMap[booking.agentId].withoutMarkup += 1
+      })
+
+      setSummary({
+        totalWithMarkup: withMarkup,
+        totalWithoutMarkup: withoutMarkup,
+        perAgent: Object.entries(perAgentMap).map(([agentId, data]) => ({ agentId, ...data })),
+      })
+    })
+  }, [])
+
+  if (role !== "SUPER_ADMIN") return null
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Super Admin Markup Summary</CardTitle>
+        <CardDescription>Visibility into bookings with and without markup plus agent history.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="rounded-lg border p-4">
+            <p className="text-sm text-muted-foreground">Bookings with markup</p>
+            <p className="text-3xl font-bold text-primary">{summary.totalWithMarkup}</p>
+          </div>
+          <div className="rounded-lg border p-4">
+            <p className="text-sm text-muted-foreground">Bookings without markup</p>
+            <p className="text-3xl font-bold">{summary.totalWithoutMarkup}</p>
+          </div>
+        </div>
+
+        <div className="rounded-md border">
+          <div className="px-4 py-2 border-b bg-muted/50">
+            <p className="font-semibold">Markup history by agent</p>
+          </div>
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left">
+              <tr>
+                <th className="p-3 font-medium">Agent</th>
+                <th className="p-3 font-medium">With Markup</th>
+                <th className="p-3 font-medium">Without Markup</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summary.perAgent.length === 0 && (
+                <tr>
+                  <td className="p-3 text-muted-foreground" colSpan={3}>
+                    No bookings recorded yet.
+                  </td>
+                </tr>
+              )}
+              {summary.perAgent.map((agent) => (
+                <tr key={agent.agentId} className="border-t">
+                  <td className="p-3">{agent.agentName}</td>
+                  <td className="p-3">{agent.withMarkup}</td>
+                  <td className="p-3">{agent.withoutMarkup}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </CardContent>
     </Card>

@@ -6395,6 +6395,13 @@ function RemoveScrollSideCar(props) {
         if ('touches' in event && moveDirection === 'h' && target.type === 'range') {
             return false;
         }
+        // allow drag selection (iOS); check if selection's anchorNode is the same as target or contains target
+        var selection = window.getSelection();
+        var anchorNode = selection && selection.anchorNode;
+        var isTouchingSelection = anchorNode ? anchorNode === target || anchorNode.contains(target) : false;
+        if (isTouchingSelection) {
+            return false;
+        }
         var canBeScrolledInMainDirection = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$react$2d$remove$2d$scroll$2f$dist$2f$es2015$2f$handleScroll$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["locationCouldBeScrolled"])(moveDirection, target);
         if (!canBeScrolledInMainDirection) {
             return true;
@@ -13037,7 +13044,7 @@ if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
 function doMpaNavigation(url) {
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$esm$2f$client$2f$route$2d$params$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["urlToUrlWithoutFlightMarker"])(new URL(url, location.origin)).toString();
 }
-let abortController = new AbortController();
+let isPageUnloading = false;
 if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
 ;
 async function fetchServerResponse(url, options) {
@@ -13078,7 +13085,7 @@ async function fetchServerResponse(url, options) {
         // TODO: Remove this check once the old PPR flag is removed
         const isLegacyPPR = ("TURBOPACK compile-time value", false) && !("TURBOPACK compile-time value", false);
         const shouldImmediatelyDecode = !isLegacyPPR;
-        const res = await createFetch(url, headers, fetchPriority, shouldImmediatelyDecode, abortController.signal);
+        const res = await createFetch(url, headers, fetchPriority, shouldImmediatelyDecode);
         const responseUrl = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$esm$2f$client$2f$route$2d$params$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["urlToUrlWithoutFlightMarker"])(new URL(res.url));
         const canonicalUrl = res.redirected ? responseUrl : originalUrl;
         const contentType = res.headers.get('content-type') || '';
@@ -13136,7 +13143,7 @@ async function fetchServerResponse(url, options) {
             debugInfo: flightResponsePromise._debugInfo ?? null
         };
     } catch (err) {
-        if (!abortController.signal.aborted) {
+        if (!isPageUnloading) {
             console.error(`Failed to fetch RSC payload for ${originalUrl}. Falling back to browser navigation.`, err);
         }
         // If fetch fails handle it like a mpa navigation

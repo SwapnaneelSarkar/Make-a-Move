@@ -50,7 +50,7 @@ export interface TicketData {
   }
 }
 
-export function generateTicketHTML(data: TicketData): string {
+export function generateTicketHTML(data: TicketData, options?: { showMarkup?: boolean }): string {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     return date.toLocaleDateString("en-IN", {
@@ -79,7 +79,7 @@ export function generateTicketHTML(data: TicketData): string {
   const baseFare = data.pricingBreakdown?.baseFare ?? (data.totalAmount - 3750 - ancillariesTotal)
   const taxes = data.pricingBreakdown?.taxes ?? 3750
   const markup = data.pricingBreakdown?.markup ?? 0
-  const showMarkup = getMarkupVisibility() && markup > 0
+  const showMarkup = (options?.showMarkup ?? getMarkupVisibility()) && markup > 0
 
   return `
 <!DOCTYPE html>
@@ -474,8 +474,8 @@ export function generateTicketHTML(data: TicketData): string {
   `
 }
 
-export function downloadTicket(data: TicketData) {
-  const html = generateTicketHTML(data)
+export function downloadTicket(data: TicketData, options?: { showMarkup?: boolean }) {
+  const html = generateTicketHTML(data, options)
   const blob = new Blob([html], { type: "text/html" })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")

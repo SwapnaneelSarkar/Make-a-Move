@@ -176,9 +176,9 @@ const PERMISSIONS: Record<Role, Permissions> = {
     guestDetails: { view: true, edit: true, approve: false }, // Before payment/confirmation
 
     // Wallet & Financial
-    wallet: { view: true, edit: false, approve: false }, // Balance only
+    wallet: { view: true, edit: true, approve: false }, // Can manage own balance
     walletTransactions: { view: true, edit: false, approve: false },
-    walletTopUps: { view: false, edit: false, approve: false },
+    walletTopUps: { view: true, edit: true, approve: false },
     refunds: { view: true, edit: false, approve: false }, // Status only
     invoices: { view: true, edit: false, approve: false },
     financialReports: { view: false, edit: false, approve: false },
@@ -228,9 +228,9 @@ const PERMISSIONS: Record<Role, Permissions> = {
     guestDetails: { view: true, edit: true, approve: false }, // Before booking
 
     // Wallet & Financial
-    wallet: { view: true, edit: false, approve: false }, // Assigned balance only
+    wallet: { view: true, edit: true, approve: false }, // Can add money to own wallet
     walletTransactions: { view: true, edit: false, approve: false },
-    walletTopUps: { view: false, edit: false, approve: false },
+    walletTopUps: { view: true, edit: true, approve: false },
     refunds: { view: true, edit: false, approve: false },
     invoices: { view: true, edit: false, approve: false },
     financialReports: { view: false, edit: false, approve: false },

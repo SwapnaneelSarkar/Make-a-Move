@@ -9,6 +9,8 @@ __turbopack_context__.s([
     ()=>Form,
     "FormProvider",
     ()=>FormProvider,
+    "FormStateSubscribe",
+    ()=>FormStateSubscribe,
     "Watch",
     ()=>Watch,
     "appendErrors",
@@ -450,7 +452,7 @@ function deepEqual(object1, object2, _internal_visited = new WeakSet()) {
  * ```
  */ function useController(props) {
     const methods = useFormContext();
-    const { name, disabled, control = methods.control, shouldUnregister, defaultValue } = props;
+    const { name, disabled, control = methods.control, shouldUnregister, defaultValue, exact = true } = props;
     const isArrayField = isNameInFieldArray(control._names.array, name);
     const defaultValueMemo = __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useMemo(()=>get(control._formValues, name, get(control._defaultValues, name, defaultValue)), [
         control,
@@ -461,12 +463,12 @@ function deepEqual(object1, object2, _internal_visited = new WeakSet()) {
         control,
         name,
         defaultValue: defaultValueMemo,
-        exact: true
+        exact
     });
     const formState = useFormState({
         control,
         name,
-        exact: true
+        exact
     });
     const _props = __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useRef(props);
     const _previousNameRef = __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useRef(undefined);
@@ -773,6 +775,12 @@ const POST_REQUEST = 'post';
         ...rest
     }, children);
 }
+const FormStateSubscribe = ({ control, disabled, exact, name, render })=>render(useFormState({
+        control,
+        name,
+        disabled,
+        exact
+    }));
 var appendErrors = (name, validateAllFieldCriteria, errors, type, message)=>validateAllFieldCriteria ? {
         ...errors[name],
         types: {
@@ -2043,6 +2051,13 @@ function createFormControl(props = {}) {
         };
         _state.mount = !_proxyFormState.isValid || !!keepStateOptions.keepIsValid || !!keepStateOptions.keepDirtyValues || !_options.shouldUnregister && !isEmptyObject(values);
         _state.watch = !!_options.shouldUnregister;
+        _state.action = false;
+        // Clear errors synchronously to prevent validation errors on subsequent submissions
+        // This fixes the issue where form.reset() causes validation errors on subsequent
+        // submissions in Next.js 16 with Server Actions
+        if (!keepStateOptions.keepErrors) {
+            _formState.errors = {};
+        }
         _subjects.state.next({
             submitCount: keepStateOptions.keepSubmitCount ? _formState.submitCount : 0,
             isDirty: isEmptyResetValues ? false : keepStateOptions.keepDirty ? _formState.isDirty : !!(keepStateOptions.keepDefaultValues && !deepEqual(formValues, _defaultValues)),

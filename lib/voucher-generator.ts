@@ -47,7 +47,7 @@ export interface HotelVoucherData {
   }
 }
 
-export function generateHotelVoucherPDF(data: HotelVoucherData) {
+export function generateHotelVoucherPDF(data: HotelVoucherData, options?: { showMarkup?: boolean }) {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -253,7 +253,7 @@ export function generateHotelVoucherPDF(data: HotelVoucherData) {
   const baseAmount = data.pricingBreakdown?.baseFare ?? data.totalAmount
   const taxes = data.pricingBreakdown?.taxes ?? 0
   const markup = data.pricingBreakdown?.markup ?? 0
-  const showMarkup = getMarkupVisibility() && markup > 0
+  const showMarkup = (options?.showMarkup ?? getMarkupVisibility()) && markup > 0
 
   doc.setDrawColor(200, 200, 200)
   doc.rect(14, yPos, pageWidth - 28, showMarkup ? 65 : 50, "S")

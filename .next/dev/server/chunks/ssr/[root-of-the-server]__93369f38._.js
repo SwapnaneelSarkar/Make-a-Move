@@ -27,8 +27,10 @@ __turbopack_context__.s([
     ()=>generateHotelVoucherPDF
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$jspdf$2f$dist$2f$jspdf$2e$node$2e$min$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/jspdf/dist/jspdf.node.min.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/lib/utils.ts [app-ssr] (ecmascript)");
 ;
-function generateHotelVoucherPDF(data) {
+;
+function generateHotelVoucherPDF(data, options) {
     const doc = new __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$jspdf$2f$dist$2f$jspdf$2e$node$2e$min$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -200,8 +202,12 @@ function generateHotelVoucherPDF(data) {
         doc.addPage();
         yPos = 20;
     }
+    const baseAmount = data.pricingBreakdown?.baseFare ?? data.totalAmount;
+    const taxes = data.pricingBreakdown?.taxes ?? 0;
+    const markup = data.pricingBreakdown?.markup ?? 0;
+    const showMarkup = (options?.showMarkup ?? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getMarkupVisibility"])()) && markup > 0;
     doc.setDrawColor(200, 200, 200);
-    doc.rect(14, yPos, pageWidth - 28, 50, "S");
+    doc.rect(14, yPos, pageWidth - 28, showMarkup ? 65 : 50, "S");
     yPos += 8;
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
@@ -210,10 +216,24 @@ function generateHotelVoucherPDF(data) {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`Base Amount:`, 20, yPos);
-    doc.text(`₹${data.totalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, {
+    doc.text(`₹${baseAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, {
         align: "right"
     });
     yPos += 7;
+    if (taxes > 0) {
+        doc.text(`Taxes & Fees:`, 20, yPos);
+        doc.text(`₹${taxes.toLocaleString("en-IN")}`, pageWidth - 20, yPos, {
+            align: "right"
+        });
+        yPos += 7;
+    }
+    if (showMarkup) {
+        doc.text(`Markup (${data.pricingBreakdown?.markupPercent?.toFixed(2) || '0.00'}%):`, 20, yPos);
+        doc.text(`₹${markup.toLocaleString("en-IN")}`, pageWidth - 20, yPos, {
+            align: "right"
+        });
+        yPos += 7;
+    }
     if (data.totalAmount !== data.finalAmount) {
         const discount = data.totalAmount - data.finalAmount;
         doc.text(`Discount:`, 20, yPos);
@@ -229,7 +249,7 @@ function generateHotelVoucherPDF(data) {
     yPos += 7;
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text(`Total Amount:`, 20, yPos);
+    doc.text(`Final Payable Amount:`, 20, yPos);
     doc.text(`₹${data.finalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, {
         align: "right"
     });

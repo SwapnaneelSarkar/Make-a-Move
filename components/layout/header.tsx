@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { toast } from "sonner"
 import {
   CommandDialog,
@@ -33,11 +33,17 @@ import {
   CommandSeparator,
 } from "@/components/ui/command"
 import { MOCK_BOOKINGS, MOCK_FLIGHTS, MOCK_HOTELS } from "@/lib/mock-data"
+import { getLastUpdatedTimestamp, getWalletBalance, formatTimeAgo } from "@/lib/wallet-utils"
+import { RefreshCw, Wallet } from "lucide-react"
 
 export function Header() {
   const { currentUser, setRole } = useAppStore()
   const router = useRouter()
   const [openSearch, setOpenSearch] = useState(false)
+  const [walletBalance, setWalletBalance] = useState(0)
+  const [walletUpdatedAt, setWalletUpdatedAt] = useState<Date | null>(null)
+  const [isWalletRefreshing, setIsWalletRefreshing] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Keyboard shortcut to open search
   useEffect(() => {
@@ -50,6 +56,33 @@ export function Header() {
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [])
+
+  // Load wallet balance for agents/sub-agents in header
+  useEffect(() => {
+    setIsMounted(true)
+    setWalletBalance(getWalletBalance())
+    setWalletUpdatedAt(getLastUpdatedTimestamp())
+  }, [])
+
+  const refreshWallet = useCallback(async () => {
+    setIsWalletRefreshing(true)
+    try {
+      // Simulate async fetch; currently sourced from local storage
+      await new Promise((resolve) => setTimeout(resolve, 200))
+      setWalletBalance(getWalletBalance())
+      setWalletUpdatedAt(getLastUpdatedTimestamp())
+    } finally {
+      setIsWalletRefreshing(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted) return
+    const interval = setInterval(() => {
+      refreshWallet()
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [isMounted, refreshWallet])
 
   const handleLogout = () => {
     localStorage.removeItem("session_user")
@@ -140,6 +173,23 @@ export function Header() {
       </CommandDialog>
 
       <div className="flex items-center gap-4">
+        {isMounted && (currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT") && (
+          <div className="flex items-center gap-2 rounded-full border bg-muted px-3 py-1">
+            <Wallet className="h-4 w-4 text-primary" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm font-semibold">
+                ₹{walletBalance.toLocaleString("en-IN")}
+              </span>
+              <span className="text-[11px] text-muted-foreground">
+                {walletUpdatedAt ? `Updated ${formatTimeAgo(walletUpdatedAt)}` : "Loading..."}
+              </span>
+            </div>
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={refreshWallet} disabled={isWalletRefreshing}>
+              <RefreshCw className={`h-3.5 w-3.5 ${isWalletRefreshing ? "animate-spin" : ""}`} />
+            </Button>
+          </div>
+        )}
+
         {/* Role Switcher for Demo Purposes */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

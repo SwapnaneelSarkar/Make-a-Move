@@ -115,6 +115,8 @@ export default function FlightListingPage() {
   const isInternational = searchParams.get("isInternational") === "true"
 
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
+  const totalTravellers = parseInt(travellers || "0") || 0
+  const isGroupBooking = totalTravellers > 9
 
   // Filter state
   const [baggageFilter, setBaggageFilter] = useState<string[]>([])
@@ -244,6 +246,23 @@ export default function FlightListingPage() {
 
   const handleBook = (flight: Flight) => {
     setSelectedFlight(flight)
+
+    if (isGroupBooking) {
+      const params = new URLSearchParams({
+        flightId: flight.id,
+        origin,
+        destination,
+        departureDate,
+        returnDate,
+        travellers,
+        class: classType,
+        tripType,
+        isInternational: isInternational.toString(),
+      })
+      router.push(`/dashboard/flights/group-enquiry?${params.toString()}`)
+      return
+    }
+
     // Navigate back to main flights page with selected flight and search params
     const params = new URLSearchParams(searchParams.toString())
     params.set("selectedFlight", flight.id)
@@ -415,6 +434,13 @@ export default function FlightListingPage() {
               </Button>
             </div>
           </div>
+
+          {isGroupBooking && (
+            <div className="rounded-xl border-2 border-amber-400/70 bg-amber-50 p-4 text-sm text-amber-800 shadow-sm">
+              Group booking detected (travellers: {totalTravellers}). Selecting a flight will open the Group Booking
+              Enquiry form so the support team can share a custom quote and payment steps.
+            </div>
+          )}
 
           {flightsToDisplay.length === 0 ? (
             <div className="rounded-xl border-2 border-dashed p-6 text-center text-sm text-muted-foreground">

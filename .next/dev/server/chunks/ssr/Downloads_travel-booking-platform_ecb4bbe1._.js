@@ -364,7 +364,7 @@ const PERMISSIONS = {
         // Wallet & Financial
         wallet: {
             view: true,
-            edit: false,
+            edit: true,
             approve: false
         },
         walletTransactions: {
@@ -373,8 +373,8 @@ const PERMISSIONS = {
             approve: false
         },
         walletTopUps: {
-            view: false,
-            edit: false,
+            view: true,
+            edit: true,
             approve: false
         },
         refunds: {
@@ -523,7 +523,7 @@ const PERMISSIONS = {
         // Wallet & Financial
         wallet: {
             view: true,
-            edit: false,
+            edit: true,
             approve: false
         },
         walletTransactions: {
@@ -532,8 +532,8 @@ const PERMISSIONS = {
             approve: false
         },
         walletTopUps: {
-            view: false,
-            edit: false,
+            view: true,
+            edit: true,
             approve: false
         },
         refunds: {

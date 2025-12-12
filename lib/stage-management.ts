@@ -9,6 +9,7 @@ export const FLIGHT_STAGES = [
   "Listing",
   "Fare Review",
   "Passenger Details",
+  "Seat Selection",
   "Ancillaries",
   "Payment Pending",
   "Booking Confirmed",
@@ -66,7 +67,8 @@ export const STAGE_TRANSITIONS: Record<ModuleType, Record<string, string[]>> = {
     Search: ["Listing"],
     Listing: ["Fare Review"],
     "Fare Review": ["Passenger Details"],
-    "Passenger Details": ["Ancillaries"],
+    "Passenger Details": ["Seat Selection"],
+    "Seat Selection": ["Ancillaries"],
     Ancillaries: ["Payment Pending"],
     "Payment Pending": ["Booking Confirmed"],
     "Booking Confirmed": ["Ticketed"],
@@ -120,6 +122,7 @@ export const STAGE_MANDATORY_FIELDS: Record<ModuleType, MandatoryFields> = {
     Listing: ["selectedFlight", "fareType", "airline", "time", "price"],
     "Fare Review": ["fareAccepted"], // Must accept fare before proceeding
     "Passenger Details": ["name", "dob", "gender", "mobile", "email"],
+    "Seat Selection": ["seatSelections"],
     Ancillaries: [], // Optional, but if selected, validate
     "Payment Pending": ["paymentMethod", "payableAmount", "acceptTerms"],
   },

@@ -39,6 +39,7 @@ import {
   validateName,
 } from "@/lib/policy-utils"
 import { calculatePricingBreakdown } from "@/lib/pricing-utils"
+import { loadMarkupPreferences, resolveAgentMarkup } from "@/lib/markup-settings"
 import { getMarkupVisibility } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -148,10 +149,30 @@ export default function HotelsPage() {
     walletUsage: false,
     walletAmount: 0,
   })
+  const [markupControls, setMarkupControls] = useState({
+    applyMarkup: true,
+    agentMarkup: 500,
+    includeAgentMarkupInDocs: true,
+  })
+  const [resolvedMarkup, setResolvedMarkup] = useState(() =>
+    resolveAgentMarkup(currentUser.id, currentUser.role)
+  )
 
   // Booking confirmation data
   const [bookingId, setBookingId] = useState<string>("")
   const [voucherNumber, setVoucherNumber] = useState<string>("")
+
+  useEffect(() => {
+    loadMarkupPreferences()
+    const resolved = resolveAgentMarkup(currentUser.id, currentUser.role)
+    setResolvedMarkup(resolved)
+    setMarkupControls((prev) => ({
+      ...prev,
+      agentMarkup: resolved.agentMarkup,
+      applyMarkup: true,
+      includeAgentMarkupInDocs: true,
+    }))
+  }, [currentUser.id, currentUser.role])
 
   // Stage 1: Search Validation
   const validateSearch = (): boolean => {
@@ -298,7 +319,7 @@ export default function HotelsPage() {
     // Wallet validation
     if (paymentData.paymentMode === "Prepay via Wallet" || paymentData.walletUsage) {
       const walletBalance = getWalletBalance()
-      const totalAmount = calculateTotalAmount()
+      const totalAmount = calculateFinalAmount()
 
       if (!hasSufficientBalance(totalAmount)) {
         newErrors.wallet = `Insufficient wallet balance. Required: ₹${totalAmount.toLocaleString("en-IN")}, Available: ₹${walletBalance.toLocaleString("en-IN")}. Please add funds to continue.`
@@ -348,12 +369,28 @@ export default function HotelsPage() {
     return baseAmount
   }
 
+  const calculatePricingWithMarkup = (baseAmount: number) =>
+    calculatePricingBreakdown(
+      baseAmount,
+      0,
+      "hotels",
+      "Domestic",
+      "Regular",
+      "INR",
+      {
+        superAdminMarkup: resolvedMarkup.superAdminMarkup,
+        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+        applyMarkup: true,
+      },
+    )
+
   // Calculate final amount after discounts
   const calculateFinalAmount = (): number => {
     const total = calculateTotalAmount()
+    const breakdown = calculatePricingWithMarkup(total)
     // Apply coupon discount if any (mock: 10% discount)
-    const discount = paymentData.couponCode ? total * 0.1 : 0
-    return total - discount - paymentData.walletAmount
+    const discount = paymentData.couponCode ? breakdown.totalAmount * 0.1 : 0
+    return breakdown.totalAmount - discount - paymentData.walletAmount
   }
 
   // Handle search
@@ -448,6 +485,7 @@ export default function HotelsPage() {
       )
 
       const totalAmount = calculateTotalAmount()
+      const breakdown = calculatePricingWithMarkup(totalAmount)
       const finalAmount = calculateFinalAmount()
 
       // Policy compliance check
@@ -481,6 +519,13 @@ export default function HotelsPage() {
           voucherNumber: newVoucherNumber,
           policyCompliant: policyCheck.compliant,
           policyViolations: policyCheck.violations,
+          markup: {
+            applied: markupControls.applyMarkup,
+            superAdminMarkup: breakdown.superAdminMarkup ?? 0,
+            agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+            totalMarkup: breakdown.markup,
+            showOnDocs: markupControls.includeAgentMarkupInDocs,
+          },
         },
         date: format(searchData.checkIn, "yyyy-MM-dd"),
         amount: finalAmount,
@@ -1266,6 +1311,94 @@ export default function HotelsPage() {
               </div>
             )}
 
+            <div className="grid gap-4 md:grid-cols-2 border rounded-lg p-4 bg-muted/40">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="hotelApplyMarkup"
+                    checked={markupControls.applyMarkup}
+                    onCheckedChange={(checked) =>
+                      setMarkupControls((prev) => ({ ...prev, applyMarkup: checked as boolean }))
+                    }
+                  />
+                  <div>
+                    <Label htmlFor="hotelApplyMarkup" className="font-semibold">
+                      Add surcharges before final confirmation
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      Platform surcharge + your agent service fee
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {isSuperAdmin && (
+                    <div className="space-y-1">
+                      <Label>Platform surcharge (₹)</Label>
+                      <Input value={resolvedMarkup.superAdminMarkup} readOnly />
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <Label>Agent service fee (₹)</Label>
+                    <Input
+                      type="number"
+                      value={markupControls.agentMarkup}
+                      onChange={(e) =>
+                        setMarkupControls((prev) => ({
+                          ...prev,
+                          agentMarkup: Math.max(0, parseFloat(e.target.value) || 0),
+                        }))
+                      }
+                      disabled={!markupControls.applyMarkup || !resolvedMarkup.allowAgentOverride}
+                      min={0}
+                    />
+                    {!resolvedMarkup.allowAgentOverride && (
+                      <p className="text-xs text-muted-foreground">Locked by Agent Admin</p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="hotelIncludeMarkupDocs"
+                    checked={markupControls.includeAgentMarkupInDocs}
+                    onCheckedChange={(checked) =>
+                      setMarkupControls((prev) => ({ ...prev, includeAgentMarkupInDocs: checked as boolean }))
+                    }
+                  />
+                  <Label htmlFor="hotelIncludeMarkupDocs" className="cursor-pointer">
+                    Include agent surcharge on voucher/invoice
+                  </Label>
+                </div>
+              </div>
+
+              <div className="space-y-1 rounded-md border bg-card p-3">
+                {(() => {
+                  const baseAmount = calculateTotalAmount()
+                  const breakdown = calculatePricingWithMarkup(baseAmount)
+                  const surchargeTotal = markupControls.applyMarkup ? breakdown.markup : 0
+                  const netFare = baseAmount
+                  return (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span>Net price (API fare)</span>
+                        <span className="font-semibold">₹{netFare.toLocaleString("en-IN")}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Surcharges (platform + agent)</span>
+                        <span className="font-semibold text-primary">
+                          ₹{surchargeTotal.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <Separator className="my-1" />
+                      <div className="flex justify-between font-bold">
+                        <span>Customer payable (pre-discount)</span>
+                        <span>₹{breakdown.totalAmount.toLocaleString("en-IN")}</span>
+                      </div>
+                    </>
+                  )
+                })()}
+              </div>
+            </div>
+
             <Separator />
 
             <div>
@@ -1273,15 +1406,8 @@ export default function HotelsPage() {
               <div className="space-y-2">
                 {(() => {
                   const baseAmount = calculateTotalAmount()
-                  const breakdown = calculatePricingBreakdown(
-                    baseAmount,
-                    0, // Hotels typically include taxes in base price
-                    "hotels",
-                    "Domestic", // Can be enhanced to detect international hotels
-                    "Regular",
-                    "INR"
-                  )
-                  const showMarkup = getMarkupVisibility() && breakdown.markup > 0
+                  const breakdown = calculatePricingWithMarkup(baseAmount)
+                  const showMarkup = markupControls.applyMarkup && getMarkupVisibility() && breakdown.markup > 0
                   
                   return (
                     <>
@@ -1297,9 +1423,7 @@ export default function HotelsPage() {
                       )}
                       {showMarkup && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">
-                            Markup ({breakdown.markupPercent.toFixed(2)}%)
-                          </span>
+                          <span className="text-muted-foreground">Surcharges (platform + agent)</span>
                           <span>₹{breakdown.markup.toLocaleString("en-IN")}</span>
                         </div>
                       )}
@@ -1383,14 +1507,11 @@ export default function HotelsPage() {
                     )
                     import("@/lib/voucher-generator").then(({ generateHotelVoucherPDF }) => {
                       const baseAmount = calculateTotalAmount()
-                      const breakdown = calculatePricingBreakdown(
-                        baseAmount,
-                        0,
-                        "hotels",
-                        "Domestic",
-                        "Regular",
-                        "INR"
-                      )
+                      const breakdown = calculatePricingWithMarkup(baseAmount)
+                      const agentMarkupForDocs = markupControls.includeAgentMarkupInDocs ? markupControls.agentMarkup : 0
+                      const markupForDocs = Math.max(breakdown.markup - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0), 0)
+                      const totalForDocs = breakdown.totalAmount - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0)
+
                       generateHotelVoucherPDF({
                       bookingId,
                       voucherNumber,
@@ -1409,7 +1530,7 @@ export default function HotelsPage() {
                         price: r.price,
                       })),
                       addOns,
-                      totalAmount: breakdown.totalAmount,
+                      totalAmount: totalForDocs,
                       finalAmount: calculateFinalAmount(),
                       paymentMode: paymentData.paymentMode,
                       bookingDate: new Date().toISOString(),
@@ -1417,10 +1538,10 @@ export default function HotelsPage() {
                       pricingBreakdown: {
                         baseFare: breakdown.baseFare,
                         taxes: breakdown.taxes,
-                        markup: breakdown.markup,
+                        markup: markupForDocs,
                         markupPercent: breakdown.markupPercent,
                       },
-                      })
+                      }, { showMarkup: true })
                       toast.success("Voucher downloaded", {
                         description: "Your hotel voucher has been downloaded as PDF.",
                       })

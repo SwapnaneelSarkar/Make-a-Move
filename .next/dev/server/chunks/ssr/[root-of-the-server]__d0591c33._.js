@@ -414,7 +414,8 @@ const MOCK_FLIGHTS = [
         price: 10000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     {
         id: "f2",
@@ -435,7 +436,8 @@ const MOCK_FLIGHTS = [
         price: 12000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "20kg"
     },
     {
         id: "f3",
@@ -456,7 +458,8 @@ const MOCK_FLIGHTS = [
         price: 17500,
         currency: "INR",
         policyCompliant: false,
-        stops: 0
+        stops: 0,
+        baggage: "30kg"
     },
     {
         id: "f4",
@@ -477,7 +480,8 @@ const MOCK_FLIGHTS = [
         price: 9500,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     {
         id: "f5",
@@ -498,7 +502,8 @@ const MOCK_FLIGHTS = [
         price: 8800,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "No baggage"
     },
     {
         id: "f6",
@@ -519,7 +524,8 @@ const MOCK_FLIGHTS = [
         price: 9200,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     // Delhi to Bangalore routes
     {
@@ -541,7 +547,8 @@ const MOCK_FLIGHTS = [
         price: 11000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     {
         id: "f8",
@@ -562,7 +569,8 @@ const MOCK_FLIGHTS = [
         price: 13000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "20kg"
     },
     {
         id: "f9",
@@ -583,7 +591,8 @@ const MOCK_FLIGHTS = [
         price: 16000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "25kg"
     },
     // Mumbai to Bangalore routes
     {
@@ -605,7 +614,8 @@ const MOCK_FLIGHTS = [
         price: 7500,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     {
         id: "f11",
@@ -626,7 +636,8 @@ const MOCK_FLIGHTS = [
         price: 7200,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "No baggage"
     },
     // Delhi to Chennai routes
     {
@@ -648,7 +659,8 @@ const MOCK_FLIGHTS = [
         price: 10500,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     {
         id: "f13",
@@ -669,7 +681,8 @@ const MOCK_FLIGHTS = [
         price: 12500,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "20kg"
     },
     // Mumbai to Chennai routes
     {
@@ -691,7 +704,8 @@ const MOCK_FLIGHTS = [
         price: 8000,
         currency: "INR",
         policyCompliant: true,
-        stops: 0
+        stops: 0,
+        baggage: "15kg"
     },
     // Routes with stops
     {
@@ -713,7 +727,8 @@ const MOCK_FLIGHTS = [
         price: 8500,
         currency: "INR",
         policyCompliant: true,
-        stops: 1
+        stops: 1,
+        baggage: "No baggage"
     },
     {
         id: "f16",
@@ -734,7 +749,8 @@ const MOCK_FLIGHTS = [
         price: 7800,
         currency: "INR",
         policyCompliant: true,
-        stops: 1
+        stops: 1,
+        baggage: "15kg"
     },
     // Premium/Business class options
     {
@@ -756,7 +772,8 @@ const MOCK_FLIGHTS = [
         price: 25000,
         currency: "INR",
         policyCompliant: false,
-        stops: 0
+        stops: 0,
+        baggage: "30kg"
     },
     {
         id: "f18",
@@ -777,7 +794,8 @@ const MOCK_FLIGHTS = [
         price: 22000,
         currency: "INR",
         policyCompliant: false,
-        stops: 0
+        stops: 0,
+        baggage: "25kg"
     },
     // International routes
     {
@@ -800,7 +818,8 @@ const MOCK_FLIGHTS = [
         currency: "INR",
         policyCompliant: false,
         stops: 0,
-        type: "INTERNATIONAL"
+        type: "INTERNATIONAL",
+        baggage: "30kg"
     },
     {
         id: "f20",
@@ -822,7 +841,8 @@ const MOCK_FLIGHTS = [
         currency: "INR",
         policyCompliant: true,
         stops: 0,
-        type: "INTERNATIONAL"
+        type: "INTERNATIONAL",
+        baggage: "25kg"
     },
     {
         id: "f21",
@@ -844,7 +864,8 @@ const MOCK_FLIGHTS = [
         currency: "INR",
         policyCompliant: true,
         stops: 0,
-        type: "INTERNATIONAL"
+        type: "INTERNATIONAL",
+        baggage: "30kg"
     },
     {
         id: "f22",
@@ -866,7 +887,8 @@ const MOCK_FLIGHTS = [
         currency: "INR",
         policyCompliant: true,
         stops: 0,
-        type: "INTERNATIONAL"
+        type: "INTERNATIONAL",
+        baggage: "25kg"
     },
     {
         id: "f23",
@@ -888,7 +910,8 @@ const MOCK_FLIGHTS = [
         currency: "INR",
         policyCompliant: false,
         stops: 0,
-        type: "INTERNATIONAL"
+        type: "INTERNATIONAL",
+        baggage: "30kg"
     }
 ];
 const MOCK_BOOKINGS = [
@@ -966,7 +989,9 @@ __turbopack_context__.s([
     "cn",
     ()=>cn,
     "formatDate",
-    ()=>formatDate
+    ()=>formatDate,
+    "getMarkupVisibility",
+    ()=>getMarkupVisibility
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/clsx/dist/clsx.mjs [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/tailwind-merge/dist/bundle-mjs.mjs [app-ssr] (ecmascript)");
@@ -982,6 +1007,13 @@ function formatDate(dateString) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+}
+function getMarkupVisibility() {
+    if ("TURBOPACK compile-time truthy", 1) return true // Default to showing markup on server
+    ;
+    //TURBOPACK unreachable
+    ;
+    const stored = undefined;
 }
 }),
 "[project]/Downloads/travel-booking-platform/components/ui/button.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {

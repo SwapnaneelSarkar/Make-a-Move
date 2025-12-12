@@ -25,6 +25,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { agentStatusDB, type AgentStatus } from "@/lib/local-db"
 import { audit } from "@/lib/audit-utils"
+import {
+  type AgentAccessMatrix,
+  getAgentAccess,
+  getDefaultAccessForRole,
+  resetAgentAccess,
+  upsertAgentAccess,
+} from "@/lib/agent-access"
+import { Switch } from "@/components/ui/switch"
 
 export default function EmployeesPage() {
   const { currentUser } = useAppStore()
@@ -39,6 +47,9 @@ export default function EmployeesPage() {
   const [blacklistStatuses, setBlacklistStatuses] = useState<Record<string, "Blacklisted" | "Whitelisted" | "Normal">>({})
   const [blacklistDialogOpen, setBlacklistDialogOpen] = useState(false)
   const [whitelistDialogOpen, setWhitelistDialogOpen] = useState(false)
+  const [permissionDialogOpen, setPermissionDialogOpen] = useState(false)
+  const [accessDraft, setAccessDraft] = useState<AgentAccessMatrix | null>(null)
+  const [accessCache, setAccessCache] = useState<Record<string, AgentAccessMatrix>>({})
 
   // Super Admin sees Agent Admins, Agent Admin sees Agents/Sub Agents
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
@@ -61,6 +72,11 @@ export default function EmployeesPage() {
       return false
     })
     setEmployees(filtered)
+    const mapped: Record<string, AgentAccessMatrix> = {}
+    filtered.forEach((emp) => {
+      mapped[emp.id] = getAgentAccess(emp.id, emp.role)
+    })
+    setAccessCache(mapped)
 
     // Load agent statuses
     try {
@@ -144,6 +160,14 @@ export default function EmployeesPage() {
     )
   })
 
+  useEffect(() => {
+    const mapped: Record<string, AgentAccessMatrix> = {}
+    employees.forEach((emp) => {
+      mapped[emp.id] = getAgentAccess(emp.id, emp.role)
+    })
+    setAccessCache(mapped)
+  }, [employees])
+
   // Function to refresh employees list
   const refreshEmployees = () => {
     const filtered = MOCK_USERS.filter((u) => {
@@ -155,9 +179,42 @@ export default function EmployeesPage() {
       return false
     })
     setEmployees(filtered)
+    const mapped: Record<string, AgentAccessMatrix> = {}
+    filtered.forEach((emp) => {
+      mapped[emp.id] = getAgentAccess(emp.id, emp.role)
+    })
+    setAccessCache(mapped)
   }
 
   const canAddUser = (isSuperAdmin && canEdit("agents")) || (isAgencyAdmin && canEdit("agents"))
+
+  const handleOpenPermissions = (employee: User) => {
+    setSelectedEmployee(employee)
+    setAccessDraft(getAgentAccess(employee.id, employee.role))
+    setPermissionDialogOpen(true)
+  }
+
+  const handleSavePermissions = () => {
+    if (!selectedEmployee || !accessDraft) return
+    const updated = upsertAgentAccess(selectedEmployee.id, selectedEmployee.role, accessDraft)
+    setAccessCache((prev) => ({ ...prev, [selectedEmployee.id]: updated }))
+    audit.create("agents", selectedEmployee.id, {
+      action: "PERMISSIONS_UPDATED",
+      updatedBy: currentUser.name,
+      newValue: updated,
+    })
+    toast.success("Permissions updated")
+    setPermissionDialogOpen(false)
+  }
+
+  const handleResetPermissions = () => {
+    if (!selectedEmployee) return
+    resetAgentAccess(selectedEmployee.id)
+    const defaults = getDefaultAccessForRole(selectedEmployee.role)
+    setAccessCache((prev) => ({ ...prev, [selectedEmployee.id]: defaults }))
+    setAccessDraft(defaults)
+    toast.success("Permissions reset to role defaults")
+  }
 
   return (
     <div className="space-y-6">
@@ -205,6 +262,7 @@ export default function EmployeesPage() {
               <TableHead>Department</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Policy</TableHead>
+              <TableHead>Access</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -212,7 +270,7 @@ export default function EmployeesPage() {
           <TableBody>
             {filteredEmployees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   {searchQuery ? "No employees found matching your search." : "No employees found."}
                 </TableCell>
               </TableRow>
@@ -244,6 +302,27 @@ export default function EmployeesPage() {
                 </TableCell>
                 <TableCell>Standard Policy</TableCell>
                 <TableCell>
+                  {(() => {
+                    const access = accessCache[employee.id] || getAgentAccess(employee.id, employee.role)
+                    return (
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant={access.flights.book ? "default" : "outline"} className="text-xs">
+                          Flights: {access.flights.book ? "Book" : access.flights.view ? "View" : "No access"}
+                        </Badge>
+                        <Badge variant={access.hotels.book ? "default" : "outline"} className="text-xs">
+                          Hotels: {access.hotels.book ? "Book" : access.hotels.view ? "View" : "No access"}
+                        </Badge>
+                        <Badge variant={access.wallet.debit ? "default" : "outline"} className="text-xs">
+                          Wallet: {access.wallet.debit ? "Pay" : access.wallet.view ? "View" : "Blocked"}
+                        </Badge>
+                        <Badge variant={access.markups.edit ? "default" : "outline"} className="text-xs">
+                          Markups: {access.markups.edit ? "Edit" : access.markups.view ? "View" : "Hidden"}
+                        </Badge>
+                      </div>
+                    )
+                  })()}
+                </TableCell>
+                <TableCell>
                   <div className="flex flex-col gap-1">
                     {getAgentStatus(employee.id) === "Suspended" ? (
                       <Badge className="bg-red-500 hover:bg-red-600">Suspended</Badge>
@@ -269,6 +348,12 @@ export default function EmployeesPage() {
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem>View Profile</DropdownMenuItem>
                       <DropdownMenuItem>Edit Details</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      {(isAgencyAdmin || isSuperAdmin) && (
+                        <DropdownMenuItem onClick={() => handleOpenPermissions(employee)}>
+                          Manage Permissions
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuSeparator />
                       {getAgentStatus(employee.id) === "Active" ? (
                         <DropdownMenuItem 
@@ -381,6 +466,16 @@ export default function EmployeesPage() {
         onOpenChange={setWhitelistDialogOpen}
         employee={selectedEmployee}
         onWhitelist={handleWhitelist}
+      />
+
+      <PermissionDialog
+        open={permissionDialogOpen}
+        onOpenChange={setPermissionDialogOpen}
+        employee={selectedEmployee}
+        accessDraft={accessDraft}
+        onChangeAccess={setAccessDraft}
+        onSave={handleSavePermissions}
+        onReset={handleResetPermissions}
       />
     </div>
   )
@@ -816,5 +911,137 @@ function WhitelistDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function PermissionDialog({
+  open,
+  onOpenChange,
+  employee,
+  accessDraft,
+  onChangeAccess,
+  onSave,
+  onReset,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employee: User | null
+  accessDraft: AgentAccessMatrix | null
+  onChangeAccess: (matrix: AgentAccessMatrix | null) => void
+  onSave: () => void
+  onReset: () => void
+}) {
+  const updateAccess = (
+    section: keyof AgentAccessMatrix,
+    key: keyof AgentAccessMatrix[keyof AgentAccessMatrix],
+    value: boolean,
+  ) => {
+    if (!accessDraft) return
+    onChangeAccess({
+      ...accessDraft,
+      [section]: {
+        ...(accessDraft[section] as Record<string, boolean>),
+        [key]: value,
+      },
+    } as AgentAccessMatrix)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Manage permissions</DialogTitle>
+          <DialogDescription>
+            Control what {employee?.name || "this agent"} can view and perform across modules.
+          </DialogDescription>
+        </DialogHeader>
+        {accessDraft && (
+          <div className="space-y-4">
+            <PermissionSection
+              title="Flights"
+              description="Control flight search, booking, and cancellations."
+              values={accessDraft.flights}
+              onChange={(key, value) => updateAccess("flights", key, value)}
+            />
+            <PermissionSection
+              title="Hotels"
+              description="Control hotel search, booking, and cancellations."
+              values={accessDraft.hotels}
+              onChange={(key, value) => updateAccess("hotels", key, value)}
+            />
+            <PermissionSection
+              title="Wallet"
+              description="Allow viewing balance and paying with wallet."
+              values={accessDraft.wallet}
+              labels={{ view: "View balance", debit: "Pay using wallet" }}
+              onChange={(key, value) => updateAccess("wallet", key, value)}
+            />
+            <PermissionSection
+              title="Markups"
+              description="Allow viewing or editing markups on bookings."
+              values={accessDraft.markups}
+              labels={{ view: "View markups", edit: "Edit markups" }}
+              onChange={(key, value) => updateAccess("markups", key, value)}
+            />
+            <PermissionSection
+              title="Reports"
+              description="Allow accessing dashboards and exports."
+              values={accessDraft.reports}
+              labels={{ view: "View reports", download: "Download/export" }}
+              onChange={(key, value) => updateAccess("reports", key, value)}
+            />
+          </div>
+        )}
+        <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Button variant="outline" onClick={onReset} disabled={!employee}>
+            Reset to defaults
+          </Button>
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button onClick={onSave} disabled={!employee}>
+              Save permissions
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function PermissionSection({
+  title,
+  description,
+  values,
+  labels,
+  onChange,
+}: {
+  title: string
+  description: string
+  values: Record<string, boolean>
+  labels?: Record<string, string>
+  onChange: (key: string, value: boolean) => void
+}) {
+  return (
+    <div className="rounded-lg border p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-semibold">{title}</p>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </div>
+      </div>
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {Object.entries(values).map(([key, value]) => (
+          <div key={key} className="flex items-center justify-between rounded-md border px-3 py-2">
+            <div>
+              <p className="text-sm font-medium capitalize">{labels?.[key] || key}</p>
+              <p className="text-xs text-muted-foreground">{value ? "Allowed" : "Restricted"}</p>
+            </div>
+            <Switch checked={value} onCheckedChange={(checked) => onChange(key, !!checked)} />
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }

@@ -31,7 +31,9 @@ import { checkFlightPolicyCompliance, generateBookingId, generatePNR } from "@/l
 import { downloadTicket, type TicketData } from "@/lib/ticket-generator"
 import { hasSufficientBalance, getWalletBalance, createTransaction } from "@/lib/wallet-utils"
 import { calculatePricingBreakdown, type PricingBreakdown } from "@/lib/pricing-utils"
+import { loadMarkupPreferences, resolveAgentMarkup } from "@/lib/markup-settings"
 import { getMarkupVisibility } from "@/lib/utils"
+import { getAgentAccess, type AgentAccessMatrix } from "@/lib/agent-access"
 
 // Fallback flight generator (kept in sync with listing page)
 const CITY_LOOKUP: Record<string, string> = {
@@ -122,6 +124,7 @@ const BOOKING_STAGES = [
   { id: "Listing", label: "Listing" },
   { id: "Fare Review", label: "Fare Review" },
   { id: "Passenger Details", label: "Passenger Details" },
+  { id: "Seat Selection", label: "Seat Selection" },
   { id: "Ancillaries", label: "Ancillaries" },
   { id: "Payment Pending", label: "Payment Pending" },
   { id: "Booking Confirmed", label: "Booking Confirmed" },
@@ -132,9 +135,22 @@ export default function FlightsPage() {
   const searchParams = useSearchParams()
   const { currentUser } = useAppStore()
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
+  const [agentAccess, setAgentAccess] = useState<AgentAccessMatrix>(() =>
+    getAgentAccess(currentUser.id, currentUser.role),
+  )
+  const canViewFlights = agentAccess.flights.view
+  const canBookFlights = agentAccess.flights.book
+  const canUseWallet = agentAccess.wallet.debit
+  const canViewWallet = agentAccess.wallet.view
+  const canEditMarkups = agentAccess.markups.edit
+  const canViewMarkups = agentAccess.markups.view
   
   // Check if we're coming from listing page with a selected flight
   const selectedFlightId = searchParams.get("selectedFlight")
+
+  useEffect(() => {
+    setAgentAccess(getAgentAccess(currentUser.id, currentUser.role))
+  }, [currentUser.id, currentUser.role])
   
   const [currentStage, setCurrentStage] = useState<FlightStage>("Search")
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
@@ -191,8 +207,10 @@ export default function FlightsPage() {
     mealSelection: false,
     mealPrice: 1200,
     seatSelection: false,
-    seatPrice: 800,
+    seatPrice: 0,
   })
+  const [seatSelections, setSeatSelections] = useState<string[]>([])
+  const seatPricePerSeat = 800
 
   // Payment State
   const [paymentData, setPaymentData] = useState({
@@ -201,9 +219,54 @@ export default function FlightsPage() {
     walletUsage: false,
     acceptTerms: false,
   })
+  const [markupControls, setMarkupControls] = useState({
+    applyMarkup: true, // agent markup applied to totals
+    agentMarkup: 500,
+    includeAgentMarkupInDocs: true, // agent markup visibility + amount on documents
+  })
+  const [resolvedMarkup, setResolvedMarkup] = useState(() =>
+    resolveAgentMarkup(currentUser.id, currentUser.role)
+  )
   const [paymentTimeout, setPaymentTimeout] = useState<number | null>(null)
   const paymentTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const fareReviewStartTimeRef = useRef<number | null>(null)
+  const passengerLabels = useMemo(() => {
+    const labels: string[] = []
+    for (let i = 1; i <= passengerCount.adults; i++) labels.push(`Adult ${i}`)
+    for (let i = 1; i <= passengerCount.children; i++) labels.push(`Child ${i}`)
+    return labels
+  }, [passengerCount])
+  
+  useEffect(() => {
+    const prefs = loadMarkupPreferences()
+    const resolved = resolveAgentMarkup(currentUser.id, currentUser.role)
+    setResolvedMarkup(resolved)
+    setMarkupControls((prev) => ({
+      ...prev,
+      agentMarkup: resolved.agentMarkup,
+      applyMarkup: true,
+      includeAgentMarkupInDocs: true,
+    }))
+  }, [currentUser.id, currentUser.role])
+
+  useEffect(() => {
+    if (!agentAccess.markups.view) {
+      setMarkupControls((prev) => ({
+        ...prev,
+        applyMarkup: false,
+        agentMarkup: 0,
+        includeAgentMarkupInDocs: false,
+      }))
+    }
+
+    if (!agentAccess.wallet.debit) {
+      setPaymentData((prev) => ({
+        ...prev,
+        paymentMethod: prev.paymentMethod === "wallet" ? "" : prev.paymentMethod,
+        walletUsage: false,
+      }))
+    }
+  }, [agentAccess.markups.view, agentAccess.markups.edit, agentAccess.wallet.debit])
   
   // Calculate pricing breakdown using useMemo
   const pricingBreakdown = useMemo(() => {
@@ -218,11 +281,26 @@ export default function FlightsPage() {
       "flights",
       isInternational ? "International" : "Domestic",
       searchData.specialFare || "Regular",
-      selectedFlight.currency || "INR"
+      selectedFlight.currency || "INR",
+      {
+        superAdminMarkup: resolvedMarkup.superAdminMarkup,
+        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+        applyMarkup: true,
+      }
     )
-  }, [selectedFlight, isInternational, searchData.specialFare])
+  }, [selectedFlight, isInternational, searchData.specialFare, markupControls.applyMarkup, markupControls.agentMarkup, resolvedMarkup.superAdminMarkup])
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    // Keep ancillaries seat pricing in sync with selections
+    const totalSeatPrice = seatSelections.length * seatPricePerSeat
+    setAncillaries((prev) => ({
+      ...prev,
+      seatSelection: seatSelections.length > 0,
+      seatPrice: totalSeatPrice,
+    }))
+  }, [seatSelections, seatPricePerSeat])
 
   // Handle flight selection from listing page
   useEffect(() => {
@@ -236,7 +314,7 @@ export default function FlightsPage() {
         const departureDate = searchParams.get("departureDate") || ""
         const isIntl = searchParams.get("isInternational") === "true"
         const fallbackFlights = generateFallbackFlights(origin, destination, isIntl, departureDate)
-        flight = fallbackFlights.find((f) => f.id === selectedFlightId) || null
+        flight = fallbackFlights.find((f) => f.id === selectedFlightId) || undefined
       }
 
       if (flight) {
@@ -395,8 +473,8 @@ export default function FlightsPage() {
     if (passengerCount.adults < 1) {
       newErrors.passengers = "At least 1 adult passenger is required"
     }
-    if (totalPassengers > 20) {
-      newErrors.passengers = "Maximum 20 passengers allowed per booking"
+    if (totalPassengers > 200) {
+      newErrors.passengers = "Maximum 200 passengers allowed per search"
     }
 
     setSearchErrors(newErrors)
@@ -416,10 +494,16 @@ export default function FlightsPage() {
       setSearchData((prev) => ({ ...prev, class: "Premium" }))
     }
     
-    return Math.min(20, Math.max(1, adults))
+    return Math.min(200, Math.max(1, adults))
   }
 
   const handleSearch = () => {
+    if (!canViewFlights) {
+      toast.error("Flight search disabled", {
+        description: "Your admin has restricted flight visibility for this account.",
+      })
+      return
+    }
     if (!validateSearch()) {
       toast.error("Please fix search errors", {
         description: "Check all required fields and ensure dates are valid",
@@ -475,6 +559,12 @@ export default function FlightsPage() {
   }
 
   const handleBook = (flight: Flight) => {
+    if (!canBookFlights) {
+      toast.error("Booking disabled", {
+        description: "Your admin has limited you to view-only access for flights.",
+      })
+      return
+    }
     if (isSuperAdmin) {
       toast.error("Super Admins cannot initiate flight bookings.", {
         description: "Switch to an agency role to create bookings.",
@@ -486,6 +576,24 @@ export default function FlightsPage() {
       toast.error("Cannot book flight", {
         description: "Please complete the search first to view flight listings.",
       })
+      return
+    }
+
+    const totalTravellers = parseInt(searchData.travellers || "0") || 0
+    if (totalTravellers > 9) {
+      const params = new URLSearchParams({
+        flightId: flight.id,
+        origin: searchData.origin,
+        destination: searchData.destination,
+        departureDate: searchData.departureDate?.toISOString() || "",
+        returnDate: searchData.returnDate?.toISOString() || "",
+        travellers: searchData.travellers || "0",
+        class: searchData.class || "Economy",
+        tripType: searchData.tripType || "one-way",
+        isInternational: isInternational.toString(),
+      })
+      toast.info("Group booking detected - redirecting to enquiry form")
+      router.push(`/dashboard/flights/group-enquiry?${params.toString()}`)
       return
     }
 
@@ -681,6 +789,13 @@ export default function FlightsPage() {
 
     const nextStage = BOOKING_STAGES[currentIndex + 1].id as FlightStage
 
+    if (!canBookFlights && nextStage !== "Listing") {
+      toast.error("Booking restricted", {
+        description: "Your admin has limited flights to view-only access.",
+      })
+      return
+    }
+
     // Check if transition is allowed
     const transitionCheck = canTransitionStage("FLIGHT", currentStage, nextStage)
     if (!transitionCheck.allowed) {
@@ -725,11 +840,26 @@ export default function FlightsPage() {
         name: fullName || passengerDetails.firstName || passengerDetails.lastName || "",
         passengerCount,
       }
+    } else if (currentStage === "Seat Selection") {
+      const travellersNeedingSeats = passengerCount.adults + passengerCount.children
+      if (seatSelections.length < travellersNeedingSeats) {
+        toast.error("Select seats for all passengers", {
+          description: `Seats selected for ${seatSelections.length}/${travellersNeedingSeats} passengers.`,
+        })
+        return
+      }
+      stageData = { seatSelections }
     } else if (currentStage === "Ancillaries") {
       stageData = { ancillaries }
     } else if (currentStage === "Payment Pending") {
       if (!paymentData.paymentMethod) {
         toast.error("Please select payment method")
+        return
+      }
+      if (paymentData.walletUsage && !canUseWallet) {
+        toast.error("Wallet payments are disabled", {
+          description: "Your admin has restricted wallet usage for flight bookings.",
+        })
         return
       }
       if (!paymentData.acceptTerms) {
@@ -755,7 +885,12 @@ export default function FlightsPage() {
           "flights",
           isInternational ? "International" : "Domestic",
           searchData.specialFare || "Regular",
-          selectedFlight.currency || "INR"
+          selectedFlight.currency || "INR",
+          {
+            superAdminMarkup: markupControls.applyMarkup ? resolvedMarkup.superAdminMarkup : 0,
+            agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+            applyMarkup: markupControls.applyMarkup,
+          }
         )
         totalAmount = breakdown.totalAmount + ancillariesTotal
       }
@@ -808,6 +943,29 @@ export default function FlightsPage() {
 
         // Save booking to IndexedDB
         try {
+          const ancillariesTotal =
+            (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+            (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+            (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+          const fallbackPricing = selectedFlight
+            ? calculatePricingBreakdown(
+                selectedFlight.price,
+                3750,
+                "flights",
+                isInternational ? "International" : "Domestic",
+                searchData.specialFare || "Regular",
+                selectedFlight.currency || "INR",
+                {
+                  superAdminMarkup: resolvedMarkup.superAdminMarkup,
+                  agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                  applyMarkup: true,
+                }
+              )
+            : null
+          const finalPricingBreakdown = pricingBreakdown ?? fallbackPricing
+          const bookingTotal =
+            (finalPricingBreakdown?.totalAmount || selectedFlight?.price || 0) + ancillariesTotal
+
           const booking = await bookingsDB.create({
             type: "FLIGHT",
             status: policyCheckResult?.requiresApproval ? "PENDING_APPROVAL" : "CONFIRMED",
@@ -819,9 +977,17 @@ export default function FlightsPage() {
               passengerCount,
               ancillaries,
               policyCompliant: policyCheckResult?.compliant ?? true,
+                seatSelections,
+                markup: {
+                  applied: markupControls.applyMarkup,
+                  superAdminMarkup: finalPricingBreakdown?.superAdminMarkup ?? 0,
+                  agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                  totalMarkup: finalPricingBreakdown?.markup ?? 0,
+                  showOnDocs: markupControls.includeAgentMarkupInDocs,
+                },
             },
             date: new Date().toISOString().split("T")[0],
-            amount: selectedFlight?.price || 0,
+            amount: bookingTotal,
             agentName: currentUser.name,
             agentId: currentUser.id,
             approvalStatus: policyCheckResult?.requiresApproval ? "PENDING" : "APPROVED",
@@ -829,26 +995,7 @@ export default function FlightsPage() {
 
           // Create transaction
           if (paymentData.walletUsage && selectedFlight) {
-            const ancillariesTotal =
-              (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-              (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-              (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-            
-            // Use pricing breakdown for accurate total
-            let totalAmount = 0
-            if (pricingBreakdown) {
-              totalAmount = pricingBreakdown.totalAmount + ancillariesTotal
-            } else {
-              const breakdown = calculatePricingBreakdown(
-                selectedFlight.price,
-                3750,
-                "flights",
-                isInternational ? "International" : "Domestic",
-                searchData.specialFare || "Regular",
-                selectedFlight.currency || "INR"
-              )
-              totalAmount = breakdown.totalAmount + ancillariesTotal
-            }
+            const totalAmount = bookingTotal
             await createTransaction({
               date: new Date().toISOString().split("T")[0],
               description: `Flight Booking ${booking.bookingId}`,
@@ -902,6 +1049,25 @@ export default function FlightsPage() {
             <AlertDescription>
               Super Admins supervise agencies but cannot create flight bookings from this workspace.
               Switch to an agency role (Agency Admin, Agent, or Sub Agent) to access flight booking tools.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    )
+  }
+
+  if (!canViewFlights) {
+    return (
+      <div className="px-6 py-10">
+        <div className="max-w-2xl mx-auto">
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              Flight access restricted
+            </AlertTitle>
+            <AlertDescription>
+              Your Agent Admin has disabled flight access for this account. Contact an admin to enable
+              flight search or bookings.
             </AlertDescription>
           </Alert>
         </div>
@@ -1098,11 +1264,26 @@ export default function FlightsPage() {
                 </div>
                 {showMarkup && (
                   <>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        Markup ({pricingBreakdown.markupPercent.toFixed(2)}%)
-                      </p>
-                      <p className="text-xl font-bold">₹{pricingBreakdown.markup.toLocaleString("en-IN")}</p>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-muted-foreground">Surcharges (includes platform + agent fee)</p>
+                        <p className="text-xl font-bold">₹{pricingBreakdown.markup.toLocaleString("en-IN")}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-xs text-muted-foreground">Adjust agent service fee (₹)</Label>
+                        <Input
+                          type="number"
+                          value={markupControls.agentMarkup}
+                          onChange={(e) =>
+                            setMarkupControls((prev) => ({
+                              ...prev,
+                              agentMarkup: Math.max(0, parseFloat(e.target.value) || 0),
+                            }))
+                          }
+                          className="h-8 w-28"
+                          min={0}
+                        />
+                      </div>
                     </div>
                     <div className="space-y-1"></div>
                   </>
@@ -1433,13 +1614,13 @@ export default function FlightsPage() {
 
           <div className="flex justify-end pt-4">
             <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
-              Continue to Ancillaries <ChevronRight className="w-4 h-4 ml-2" />
+              Continue to Seat Selection <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </div>
       )}
 
-      {/* Stage 4: Ancillaries */}
+      {/* Stage 5: Ancillaries */}
       {currentStage === "Ancillaries" && (
         <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all">
           <div className="flex items-center gap-2 mb-2">
@@ -1585,7 +1766,99 @@ export default function FlightsPage() {
         </div>
       )}
 
-      {/* Stage 5: Payment */}
+      {/* Stage 4: Seat Selection */}
+      {currentStage === "Seat Selection" && (
+        <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg transition-all">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-2xl font-bold">Seat Selection</h3>
+            <Badge variant="outline">Mandatory</Badge>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Select seats for each passenger. Seat price ₹{seatPricePerSeat} per seat applies when chosen.
+          </p>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="space-y-3">
+              <p className="text-sm font-semibold">Passengers</p>
+              <div className="space-y-2">
+                {passengerLabels.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Add passengers to continue.</p>
+                ) : (
+                  passengerLabels.map((label, idx) => (
+                    <div key={label} className="flex items-center justify-between rounded-md border p-2">
+                      <span className="text-sm font-medium">{label}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {seatSelections[idx] ? `Seat ${seatSelections[idx]}` : "No seat selected"}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-semibold">Flight layout</p>
+              <div className="rounded-lg border p-4 bg-muted/40">
+                <div className="grid grid-cols-7 gap-2">
+                  <div className="col-span-7 text-center text-xs text-muted-foreground pb-1">
+                    A B C  &nbsp; | &nbsp;  D E F
+                  </div>
+                  {Array.from({ length: 12 }).map((_, rowIdx) => {
+                    const rowNumber = rowIdx + 1
+                    const seatsInRow = ["A", "B", "C", "D", "E", "F"]
+                    return (
+                      <div key={rowNumber} className="col-span-7 grid grid-cols-7 gap-1 items-center">
+                        <div className="text-xs font-semibold text-muted-foreground text-right pr-1">{rowNumber}</div>
+                        {seatsInRow.map((seat, seatIdx) => {
+                          const seatId = `${rowNumber}${seat}`
+                          const isSelected = seatSelections.includes(seatId)
+                          const isAisle = seatIdx === 3
+                          return isAisle ? (
+                            <div key={`${seatId}-aisle`} />
+                          ) : (
+                            <Button
+                              key={seatId}
+                              variant={isSelected ? "default" : "outline"}
+                              size="sm"
+                              className="text-xs"
+                              onClick={() => {
+                                setSeatSelections((prev) => {
+                                  // If already selected, deselect
+                                  if (prev.includes(seatId)) {
+                                    const next = prev.filter((s) => s !== seatId)
+                                    return next
+                                  }
+                                  // Limit to number of travellers (adults + children)
+                                  const maxSeats = passengerCount.adults + passengerCount.children
+                                  const next = [...prev, seatId].slice(0, maxSeats)
+                                  return next
+                                })
+                              }}
+                            >
+                              {seatId}
+                            </Button>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between pt-2">
+            <Button variant="outline" onClick={() => setCurrentStage("Passenger Details")}>
+              Back to Passenger Details
+            </Button>
+            <Button onClick={handleNextStage} size="lg" className="min-w-[200px] font-semibold">
+              Continue to Ancillaries <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Stage 6: Payment */}
       {currentStage === "Payment Pending" && (
         <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg">
           <div className="flex items-center justify-between">
@@ -1597,59 +1870,197 @@ export default function FlightsPage() {
             )}
           </div>
 
-          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-950/10 p-5 rounded-xl border-2 border-yellow-300 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 shadow-sm">
-            <p className="font-bold text-lg">
-              Total Amount: ₹
-              {selectedFlight
-                ? (
-                    selectedFlight.price +
-                    3750 +
-                    (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-                    (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-                    (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-                  ).toLocaleString("en-IN")
-                : 0}
-            </p>
-            <p className="text-sm mt-2">Please proceed to payment gateway to confirm your booking.</p>
-            {paymentTimeout !== null && paymentTimeout < 5 && (
-              <p className="text-sm font-semibold mt-3 flex items-center gap-1">
-                <AlertCircle className="h-4 w-4" />
-                Payment session expires in {paymentTimeout} minute{paymentTimeout !== 1 ? "s" : ""}
-              </p>
-            )}
-          </div>
+          {(() => {
+            const ancillariesTotal =
+              (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+              (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+              (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+            const netFare =
+              (pricingBreakdown?.baseFare ?? selectedFlight?.price ?? 0) +
+              (pricingBreakdown?.taxes ?? 3750)
+            const markupTotal =
+              pricingBreakdown?.markup ??
+              (markupControls.applyMarkup ? resolvedMarkup.superAdminMarkup + markupControls.agentMarkup : 0)
+            const customerTotal = netFare + markupTotal + ancillariesTotal
+
+            return (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-950/10 p-5 rounded-xl border-2 border-yellow-300 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 shadow-sm">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-sm uppercase tracking-wide text-yellow-700">Net Price (API Fare)</p>
+                      <p className="text-2xl font-bold text-yellow-900">
+                        ₹{netFare.toLocaleString("en-IN")}
+                      </p>
+                      <p className="text-xs text-yellow-700 mt-1">Base fare + taxes shown to agents</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-sm uppercase tracking-wide text-yellow-700">Customer Payable</p>
+                      <p className="text-3xl font-bold text-yellow-900">
+                        ₹{customerTotal.toLocaleString("en-IN")}
+                      </p>
+                      <p className="text-xs text-yellow-700 mt-1">
+                        Includes markup and ancillaries (toggle below to remove markup)
+                      </p>
+                    </div>
+                  </div>
+                  {paymentTimeout !== null && paymentTimeout < 5 && (
+                    <p className="text-sm font-semibold mt-3 flex items-center gap-1">
+                      <AlertCircle className="h-4 w-4" />
+                      Payment session expires in {paymentTimeout} minute{paymentTimeout !== 1 ? "s" : ""}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  {canViewMarkups && (
+                    <div className="space-y-2 border rounded-lg p-4">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="applyMarkup"
+                          checked={markupControls.applyMarkup}
+                          disabled={!canEditMarkups}
+                          onCheckedChange={(checked) =>
+                            setMarkupControls((prev) => ({ ...prev, applyMarkup: checked as boolean }))
+                          }
+                        />
+                        <div>
+                          <Label htmlFor="applyMarkup" className="font-semibold">
+                            Add markup before payment
+                          </Label>
+                          <p className="text-xs text-muted-foreground">
+                            Defaulted on with preset ₹500. Toggle off to send without markup.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+                        {isSuperAdmin && (
+                          <div className="space-y-1">
+                            <Label>Super Admin markup (₹)</Label>
+                            <Input value={resolvedMarkup.superAdminMarkup} readOnly />
+                          </div>
+                        )}
+                        <div className="space-y-1">
+                          <Label>Agent markup (₹)</Label>
+                          <Input
+                            type="number"
+                            value={markupControls.agentMarkup}
+                            onChange={(e) =>
+                              setMarkupControls((prev) => ({
+                                ...prev,
+                                agentMarkup: Math.max(0, parseFloat(e.target.value) || 0),
+                              }))
+                            }
+                            disabled={
+                              !markupControls.applyMarkup ||
+                              !resolvedMarkup.allowAgentOverride ||
+                              !canEditMarkups
+                            }
+                            min={0}
+                          />
+                          {!resolvedMarkup.allowAgentOverride && (
+                            <p className="text-xs text-muted-foreground">Locked by Agent Admin</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2">
+                        <Checkbox
+                          id="includeAgentMarkupDocs"
+                          checked={markupControls.includeAgentMarkupInDocs}
+                          disabled={!canEditMarkups}
+                          onCheckedChange={(checked) =>
+                            setMarkupControls((prev) => ({ ...prev, includeAgentMarkupInDocs: checked as boolean }))
+                          }
+                        />
+                        <Label htmlFor="includeAgentMarkupDocs" className="cursor-pointer">
+                          Include agent surcharge on documents
+                        </Label>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-1 rounded-md border bg-card p-4">
+                    {(() => {
+                      const baseFareAmount = pricingBreakdown?.baseFare ?? selectedFlight?.price ?? 0
+                      const taxAmount = pricingBreakdown?.taxes ?? 3750
+                      const convenienceAndSurcharges = (markupControls.applyMarkup ? markupTotal : 0) + ancillariesTotal
+                      const total = baseFareAmount + taxAmount + convenienceAndSurcharges
+                      return (
+                        <>
+                          <p className="text-sm font-medium text-muted-foreground">Price Breakdown</p>
+                          <div className="flex items-center justify-between">
+                            <span>Base fare</span>
+                            <span className="font-semibold">₹{baseFareAmount.toLocaleString("en-IN")}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span>Taxes</span>
+                            <span className="font-semibold">₹{taxAmount.toLocaleString("en-IN")}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span>Convenience fees & surcharges</span>
+                            <span className="font-semibold text-primary">
+                              ₹{convenienceAndSurcharges.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                          <Separator />
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold">Total</span>
+                            <span className="text-lg font-bold text-primary">
+                              ₹{total.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                        </>
+                      )
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Wallet Balance Display */}
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 p-5 rounded-xl border-2 border-blue-200 dark:border-blue-800 shadow-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">Wallet Balance:</span>
-              <span className="text-xl font-bold text-blue-900 dark:text-blue-100">
-                ₹{parseFloat(localStorage.getItem("wallet_balance") || "0").toLocaleString("en-IN")}
-              </span>
+          {canViewWallet && (
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 p-5 rounded-xl border-2 border-blue-200 dark:border-blue-800 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">Wallet Balance:</span>
+                <span className="text-xl font-bold text-blue-900 dark:text-blue-100">
+                  ₹{parseFloat(localStorage.getItem("wallet_balance") || "0").toLocaleString("en-IN")}
+                </span>
+              </div>
+              {selectedFlight && (
+                <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                  {(() => {
+                    const ancillariesTotal =
+                      (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+                      (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+                      (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+                    const baseTotal =
+                      pricingBreakdown?.totalAmount ??
+                      ((selectedFlight.price || 0) +
+                        3750 +
+                        (markupControls.applyMarkup
+                          ? resolvedMarkup.superAdminMarkup + markupControls.agentMarkup
+                          : 0))
+                    const required = baseTotal + ancillariesTotal
+                    const walletBalance = parseFloat(localStorage.getItem("wallet_balance") || "0")
+
+                    return (
+                      <>
+                        Required: ₹{required.toLocaleString("en-IN")}
+                        {walletBalance < required && (
+                          <span className="text-red-600 dark:text-red-400 font-semibold ml-2">
+                            (Insufficient balance)
+                          </span>
+                        )}
+                      </>
+                    )
+                  })()}
+                </p>
+              )}
             </div>
-            {selectedFlight && (
-              <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                Required: ₹
-                {(
-                  selectedFlight.price +
-                  3750 +
-                  (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-                  (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-                  (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-                ).toLocaleString("en-IN")}
-                {parseFloat(localStorage.getItem("wallet_balance") || "0") <
-                  selectedFlight.price +
-                    3750 +
-                    (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-                    (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-                    (ancillaries.seatSelection ? ancillaries.seatPrice : 0) && (
-                  <span className="text-red-600 dark:text-red-400 font-semibold ml-2">
-                    (Insufficient balance)
-                  </span>
-                )}
-              </p>
-            )}
-          </div>
+          )}
 
           <div className="space-y-4">
             <div className="space-y-2">
@@ -1666,7 +2077,7 @@ export default function FlightsPage() {
                 }
               >
                 <option value="">Select payment method</option>
-                <option value="wallet">Wallet</option>
+                {canUseWallet && <option value="wallet">Wallet</option>}
                 <option value="card">Credit/Debit Card</option>
                 <option value="netbanking">Net Banking</option>
               </select>
@@ -1691,7 +2102,7 @@ export default function FlightsPage() {
         </div>
       )}
 
-      {/* Stage 6: Confirmed */}
+      {/* Stage 7: Confirmed */}
       {currentStage === "Booking Confirmed" && (
         <div className="border-2 rounded-xl p-8 text-center bg-gradient-to-br from-green-50 to-green-100/50 border-green-300 shadow-xl">
           <div className="flex justify-center mb-6">
@@ -1732,7 +2143,12 @@ export default function FlightsPage() {
                       "flights",
                       isInternational ? "International" : "Domestic",
                       searchData.specialFare || "Regular",
-                      selectedFlight.currency || "INR"
+                      selectedFlight.currency || "INR",
+                      {
+                        superAdminMarkup: resolvedMarkup.superAdminMarkup,
+                        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                        applyMarkup: true,
+                      }
                     )
                   }
                   
@@ -1774,7 +2190,26 @@ export default function FlightsPage() {
                       markupPercent: finalPricingBreakdown.markupPercent,
                     } : undefined,
                   }
-                  downloadTicket(ticketData)
+                  const agentMarkupForDocs = markupControls.includeAgentMarkupInDocs ? markupControls.agentMarkup : 0
+                  const markupForDocs = Math.max(
+                    (finalPricingBreakdown?.markup ?? 0) - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0),
+                    0
+                  )
+                  const totalForDocs = totalAmount - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0)
+
+                  downloadTicket(
+                    {
+                      ...ticketData,
+                      totalAmount: totalForDocs,
+                      pricingBreakdown: ticketData.pricingBreakdown
+                        ? {
+                            ...ticketData.pricingBreakdown,
+                            markup: markupForDocs,
+                          }
+                        : undefined,
+                    },
+                    { showMarkup: true }
+                  )
                   toast.success("Ticket downloaded", {
                     description: "Your flight ticket has been downloaded and opened for printing.",
                   })

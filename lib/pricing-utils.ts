@@ -17,6 +17,9 @@ export interface PricingBreakdown {
   markup: number
   totalAmount: number
   markupPercent: number
+  superAdminMarkup?: number
+  agentMarkup?: number
+  appliedMarkup?: boolean
 }
 
 /**
@@ -91,9 +94,22 @@ export function calculatePricingBreakdown(
   product: "flights" | "hotels",
   route: string = "Domestic",
   fareType: string = "Regular",
-  currency: string = "INR"
+  currency: string = "INR",
+  overrides?: {
+    superAdminMarkup?: number
+    agentMarkup?: number
+    applyMarkup?: boolean
+    markupPercent?: number
+  }
 ): PricingBreakdown {
-  const { markup, markupPercent } = calculateMarkup(baseFare, product, route, fareType, currency)
+  const { markup: ruleMarkup, markupPercent: rulePercent } = calculateMarkup(baseFare, product, route, fareType, currency)
+
+  const resolvedMarkupPercent = overrides?.markupPercent ?? rulePercent
+  const percentMarkup = (baseFare * resolvedMarkupPercent) / 100
+  const superAdminMarkup = overrides?.superAdminMarkup ?? 500
+  const agentMarkup = overrides?.applyMarkup === false ? 0 : overrides?.agentMarkup ?? 0
+
+  const markup = percentMarkup + superAdminMarkup + agentMarkup
   const totalAmount = baseFare + taxes + markup
 
   return {
@@ -101,6 +117,11 @@ export function calculatePricingBreakdown(
     taxes,
     markup,
     totalAmount,
-    markupPercent,
+    markupPercent: resolvedMarkupPercent,
+    superAdminMarkup,
+    agentMarkup,
+    appliedMarkup: overrides?.applyMarkup !== false,
   }
 }
+
+
