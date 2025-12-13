@@ -525,6 +525,8 @@ __turbopack_context__.s([
     ()=>exportToCSV,
     "exportToExcel",
     ()=>exportToExcel,
+    "exportToJSON",
+    ()=>exportToJSON,
     "exportToPDF",
     ()=>exportToPDF,
     "exportTransactions",
@@ -594,6 +596,22 @@ function exportToPDF(data, filename, title, columns) {
     });
     doc.save(`${filename}.pdf`);
 }
+function exportToJSON(data, filename) {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([
+        json
+    ], {
+        type: "application/json;charset=utf-8;"
+    });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${filename}.json`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 function exportBookings(bookings, format) {
     const columns = [
         {
@@ -630,6 +648,8 @@ function exportBookings(bookings, format) {
         exportToCSV(bookings, filename, columns.map((c)=>c.dataKey));
     } else if (format === "excel") {
         exportToExcel(bookings, filename);
+    } else if (format === "json") {
+        exportToJSON(bookings, filename);
     } else {
         exportToPDF(bookings, filename, "Bookings Report", columns);
     }
