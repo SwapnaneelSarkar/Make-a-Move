@@ -1,7 +1,12 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/approvals/page": "app/dashboard/approvals/page.js",
+  "/dashboard/employees/page": "app/dashboard/employees/page.js",
   "/dashboard/flights/listing/page": "app/dashboard/flights/listing/page.js",
   "/dashboard/flights/page": "app/dashboard/flights/page.js",
+  "/dashboard/hotels/page": "app/dashboard/hotels/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/wallet/page": "app/dashboard/wallet/page.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js"
 }

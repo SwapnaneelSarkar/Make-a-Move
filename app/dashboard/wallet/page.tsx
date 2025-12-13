@@ -53,10 +53,11 @@ export default function WalletPage() {
   const { canView, canEdit, canApprove } = usePermissions()
   const { currentUser } = useAppStore()
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [balance, setBalance] = useState(getWalletBalance())
-  const [lastUpdated, setLastUpdated] = useState(getLastUpdatedTimestamp())
+  const [balance, setBalance] = useState(0) // Initialize to 0 to prevent hydration mismatch
+  const [lastUpdated, setLastUpdated] = useState(new Date())
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [depositRequests, setDepositRequests] = useState<WalletDepositRequest[]>([])
   const [selectedRequest, setSelectedRequest] = useState<WalletDepositRequest | null>(null)
   const [approvalDialogOpen, setApprovalDialogOpen] = useState(false)
@@ -87,7 +88,15 @@ export default function WalletPage() {
     ? MOCK_USERS.filter(u => (u.role === "AGENT" || u.role === "AGENCY_ADMIN" || u.role === "SUB_AGENT") && u.walletBalance !== undefined)
     : []
 
+  // Initialize balance from localStorage only after mount (client-side only)
   useEffect(() => {
+    setIsMounted(true)
+    setBalance(getWalletBalance())
+    setLastUpdated(getLastUpdatedTimestamp())
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted) return
     loadTransactions()
     loadBudgetUsage()
     if (canApprove("walletTopUps")) {
@@ -98,7 +107,7 @@ export default function WalletPage() {
       refreshBalance()
     }, 30000)
     return () => clearInterval(interval)
-  }, [])
+  }, [isMounted])
 
   const loadDepositRequests = async () => {
     try {
@@ -584,10 +593,12 @@ export default function WalletPage() {
           <CardContent>
             <div className="flex items-center gap-2">
               <Wallet className="h-6 w-6 opacity-75" />
-              <div className="text-4xl font-bold">₹{balance.toLocaleString("en-IN")}</div>
+              <div className="text-4xl font-bold">
+                {!isMounted ? "₹0" : `₹${balance.toLocaleString("en-IN")}`}
+              </div>
             </div>
             <p className="mt-2 text-sm opacity-75">
-              Updated {formatTimeAgo(lastUpdated)}
+              {!isMounted ? "Loading..." : `Updated ${formatTimeAgo(lastUpdated)}`}
             </p>
           </CardContent>
         </Card>

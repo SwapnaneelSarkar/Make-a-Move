@@ -5,8 +5,6 @@ import {
   Search,
   Menu,
   UserCircle,
-  Shield,
-  AlertTriangle,
   FileText,
   Building2,
   Plane,
@@ -23,16 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { getAgentAccess } from "@/lib/agent-access"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import {
@@ -47,10 +36,15 @@ import {
 import { MOCK_BOOKINGS, MOCK_FLIGHTS, MOCK_HOTELS } from "@/lib/mock-data"
 
 export function Header() {
-  const { currentUser, setRole, setSupportMode } = useAppStore()
+  const { currentUser, setRole } = useAppStore()
   const router = useRouter()
-  const [selectedAgent, setSelectedAgent] = useState("John Employee")
   const [openSearch, setOpenSearch] = useState(false)
+
+  // Check if user can book flights and hotels
+  const agentAccess = getAgentAccess(currentUser.id, currentUser.role)
+  const canBookFlights = agentAccess.flights.book
+  const canBookHotels = agentAccess.hotels.book
+  const canBook = (currentUser.role === "AGENCY_ADMIN" || currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT") && (canBookFlights || canBookHotels)
 
   // Keyboard shortcut to open search
   useEffect(() => {
@@ -63,13 +57,6 @@ export function Header() {
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [])
-
-  const activateSupportMode = () => {
-    setSupportMode(true, selectedAgent)
-    toast.warning("Entering Support Mode", {
-      description: `You are now viewing as ${selectedAgent}. All actions will be logged.`,
-    })
-  }
 
   const handleLogout = () => {
     localStorage.removeItem("session_user")
@@ -89,6 +76,33 @@ export function Header() {
       </Button>
 
       <div className="flex flex-1 items-center gap-4 md:gap-8">
+        {/* Flight and Hotel Booking Buttons */}
+        {canBook && (
+          <div className="hidden md:flex items-center gap-3">
+            {canBookFlights && (
+              <Button
+                variant="default"
+                size="default"
+                onClick={() => router.push("/dashboard/flights")}
+                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <Plane className="h-4 w-4" />
+                Flight Booking
+              </Button>
+            )}
+            {canBookHotels && (
+              <Button
+                variant="default"
+                size="default"
+                onClick={() => router.push("/dashboard/hotels")}
+                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <Building2 className="h-4 w-4" />
+                Hotel Booking
+              </Button>
+            )}
+          </div>
+        )}
         {/* Replaced Input with CommandDialog trigger */}
         <div className="hidden md:block flex-1 max-w-sm">
           <Button
@@ -171,63 +185,14 @@ export function Header() {
             <DropdownMenuLabel>Select Role (Demo)</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setRole("SUPER_ADMIN")}>Super Admin</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("CORPORATE_ADMIN")}>Corporate Admin</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("EMPLOYEE")}>Employee</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("AGENCY_ADMIN")}>Agency Admin</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("AGENT")}>Agent</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("SUB_AGENT")}>Sub Agent</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("FINANCE_TEAM")}>Finance Team</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("SUPPORT_TEAM")}>Support Team</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("KYC_COMPLIANCE_TEAM")}>KYC Compliance Team</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Support Mode Button for Super Admin */}
-        {currentUser.role === "SUPER_ADMIN" && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden md:flex gap-2 border-orange-500/20 text-orange-600 bg-orange-50 hover:bg-orange-100 hover:text-orange-700"
-              >
-                <Shield className="h-4 w-4" />
-                Support Mode
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Activate Support Mode</DialogTitle>
-                <DialogDescription>
-                  Select an agent to impersonate. This allows you to view the dashboard exactly as they see it to
-                  troubleshoot issues.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="py-4">
-                <label className="text-sm font-medium mb-2 block">Select Agent</label>
-                <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="John Employee">John Employee (Sales)</SelectItem>
-                    <SelectItem value="Sarah Corp">Sarah Corp (Admin)</SelectItem>
-                    <SelectItem value="Mike Finance">Mike Finance (Accounts)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="bg-yellow-50 p-3 rounded-md text-yellow-800 text-sm flex gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                <p>
-                  While in Support Mode, you cannot perform financial transactions or approve payments. All navigation
-                  is logged.
-                </p>
-              </div>
-
-              <DialogFooter>
-                <Button onClick={activateSupportMode} className="bg-orange-600 hover:bg-orange-700 text-white">
-                  Enter Support Mode
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
 
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5 text-muted-foreground" />
