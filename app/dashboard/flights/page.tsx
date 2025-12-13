@@ -12,6 +12,14 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -224,6 +232,7 @@ export default function FlightsPage() {
     agentMarkup: 500,
     includeAgentMarkupInDocs: true, // agent markup visibility + amount on documents
   })
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
   const [resolvedMarkup, setResolvedMarkup] = useState(() =>
     resolveAgentMarkup(currentUser.id, currentUser.role)
   )
@@ -783,6 +792,100 @@ export default function FlightsPage() {
     return Object.keys(newErrors).length === 0
   }
 
+  const handleDownloadTicket = (includeAgentMarkup: boolean) => {
+    if (!selectedFlight || !bookingId || !pnr) {
+      toast.error("Ticket data not available", {
+        description: "Please complete the booking to download the ticket.",
+      })
+      return
+    }
+
+    const ancillariesTotal =
+      (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+      (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+      (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+    
+    // Calculate pricing breakdown if not already available
+    let finalPricingBreakdown = pricingBreakdown
+    if (!finalPricingBreakdown && selectedFlight) {
+      finalPricingBreakdown = calculatePricingBreakdown(
+        selectedFlight.price,
+        3750,
+        "flights",
+        isInternational ? "International" : "Domestic",
+        searchData.specialFare || "Regular",
+        selectedFlight.currency || "INR",
+        {
+          superAdminMarkup: resolvedMarkup.superAdminMarkup,
+          agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+          applyMarkup: true,
+        }
+      )
+    }
+    
+    const totalAmount = finalPricingBreakdown 
+      ? finalPricingBreakdown.totalAmount + ancillariesTotal
+      : selectedFlight.price + 3750 + ancillariesTotal
+    
+    const ticketData: TicketData = {
+      bookingId,
+      pnr,
+      flight: {
+        airline: selectedFlight.airline,
+        flightNumber: selectedFlight.flightNumber,
+        departure: selectedFlight.departure,
+        arrival: selectedFlight.arrival,
+        duration: selectedFlight.duration,
+      },
+      passenger: {
+        firstName: passengerDetails.firstName,
+        lastName: passengerDetails.lastName || undefined,
+        dob: passengerDetails.dob,
+        gender: passengerDetails.gender,
+        mobile: passengerDetails.mobile,
+        email: passengerDetails.email,
+        passport: passengerDetails.passport || undefined,
+      },
+      passengerCount,
+      bookingDate: new Date().toISOString(),
+      totalAmount,
+      ancillaries: {
+        extraBaggage: ancillaries.extraBaggage,
+        mealSelection: ancillaries.mealSelection,
+        seatSelection: ancillaries.seatSelection,
+      },
+      pricingBreakdown: finalPricingBreakdown ? {
+        baseFare: finalPricingBreakdown.baseFare,
+        taxes: finalPricingBreakdown.taxes,
+        markup: includeAgentMarkup ? (finalPricingBreakdown.markup ?? 0) : 0,
+        markupPercent: finalPricingBreakdown.markupPercent,
+      } : undefined,
+    }
+    
+    // Calculate totals: base fare includes super admin markup, agent markup is optional
+    const agentMarkupAmount = includeAgentMarkup ? (finalPricingBreakdown?.markup ?? 0) : 0
+    const totalForDocs = finalPricingBreakdown 
+      ? finalPricingBreakdown.baseFare + finalPricingBreakdown.taxes + agentMarkupAmount + ancillariesTotal
+      : totalAmount
+
+    downloadTicket(
+      {
+        ...ticketData,
+        totalAmount: totalForDocs,
+        pricingBreakdown: ticketData.pricingBreakdown
+          ? {
+              ...ticketData.pricingBreakdown,
+              markup: agentMarkupAmount,
+            }
+          : undefined,
+      },
+      { showMarkup: includeAgentMarkup && agentMarkupAmount > 0 }
+    )
+    toast.success("Ticket downloaded", {
+      description: `Your flight ticket has been downloaded ${includeAgentMarkup ? "with" : "without"} convenience fees.`,
+    })
+  }
+
   const handleNextStage = async () => {
     const currentIndex = getCurrentStageIndex()
     if (currentIndex === -1 || currentIndex >= BOOKING_STAGES.length - 1) return
@@ -983,7 +1086,7 @@ export default function FlightsPage() {
                   superAdminMarkup: finalPricingBreakdown?.superAdminMarkup ?? 0,
                   agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
                   totalMarkup: finalPricingBreakdown?.markup ?? 0,
-                  showOnDocs: markupControls.includeAgentMarkupInDocs,
+                  showOnDocs: markupControls.applyMarkup, // Always show convenience fees on docs when markup is applied
                 },
             },
             date: new Date().toISOString().split("T")[0],
@@ -1266,11 +1369,11 @@ export default function FlightsPage() {
                   <>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-muted-foreground">Surcharges (includes platform + agent fee)</p>
+                        <p className="text-sm font-medium text-muted-foreground">Convenience fees</p>
                         <p className="text-xl font-bold">₹{pricingBreakdown.markup.toLocaleString("en-IN")}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Label className="text-xs text-muted-foreground">Adjust agent service fee (₹)</Label>
+                        <Label className="text-xs text-muted-foreground">Adjust convenience fees (₹)</Label>
                         <Input
                           type="number"
                           value={markupControls.agentMarkup}
@@ -1878,9 +1981,11 @@ export default function FlightsPage() {
             const netFare =
               (pricingBreakdown?.baseFare ?? selectedFlight?.price ?? 0) +
               (pricingBreakdown?.taxes ?? 3750)
+            // markupTotal now only includes agent markup (convenience fees)
+            // Super admin markup is already included in baseFare
             const markupTotal =
               pricingBreakdown?.markup ??
-              (markupControls.applyMarkup ? resolvedMarkup.superAdminMarkup + markupControls.agentMarkup : 0)
+              (markupControls.applyMarkup ? markupControls.agentMarkup : 0)
             const customerTotal = netFare + markupTotal + ancillariesTotal
 
             return (
@@ -1964,20 +2069,6 @@ export default function FlightsPage() {
                           )}
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-2 pt-2">
-                        <Checkbox
-                          id="includeAgentMarkupDocs"
-                          checked={markupControls.includeAgentMarkupInDocs}
-                          disabled={!canEditMarkups}
-                          onCheckedChange={(checked) =>
-                            setMarkupControls((prev) => ({ ...prev, includeAgentMarkupInDocs: checked as boolean }))
-                          }
-                        />
-                        <Label htmlFor="includeAgentMarkupDocs" className="cursor-pointer">
-                          Include agent surcharge on documents
-                        </Label>
-                      </div>
                     </div>
                   )}
 
@@ -1985,8 +2076,8 @@ export default function FlightsPage() {
                     {(() => {
                       const baseFareAmount = pricingBreakdown?.baseFare ?? selectedFlight?.price ?? 0
                       const taxAmount = pricingBreakdown?.taxes ?? 3750
-                      const convenienceAndSurcharges = (markupControls.applyMarkup ? markupTotal : 0) + ancillariesTotal
-                      const total = baseFareAmount + taxAmount + convenienceAndSurcharges
+                      const convenienceFees = markupControls.applyMarkup ? markupTotal : 0
+                      const total = baseFareAmount + taxAmount + convenienceFees + ancillariesTotal
                       return (
                         <>
                           <p className="text-sm font-medium text-muted-foreground">Price Breakdown</p>
@@ -1998,12 +2089,22 @@ export default function FlightsPage() {
                             <span>Taxes</span>
                             <span className="font-semibold">₹{taxAmount.toLocaleString("en-IN")}</span>
                           </div>
-                          <div className="flex items-center justify-between">
-                            <span>Convenience fees & surcharges</span>
-                            <span className="font-semibold text-primary">
-                              ₹{convenienceAndSurcharges.toLocaleString("en-IN")}
-                            </span>
-                          </div>
+                          {convenienceFees > 0 && (
+                            <div className="flex items-center justify-between">
+                              <span>Convenience fees</span>
+                              <span className="font-semibold text-primary">
+                                ₹{convenienceFees.toLocaleString("en-IN")}
+                              </span>
+                            </div>
+                          )}
+                          {ancillariesTotal > 0 && (
+                            <div className="flex items-center justify-between">
+                              <span>Ancillaries</span>
+                              <span className="font-semibold text-primary">
+                                ₹{ancillariesTotal.toLocaleString("en-IN")}
+                              </span>
+                            </div>
+                          )}
                           <Separator />
                           <div className="flex items-center justify-between">
                             <span className="font-bold">Total</span>
@@ -2036,13 +2137,13 @@ export default function FlightsPage() {
                       (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
                       (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
                       (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+                    // baseTotal calculation: baseFare (includes super admin markup) + taxes + agent markup
                     const baseTotal =
                       pricingBreakdown?.totalAmount ??
                       ((selectedFlight.price || 0) +
-                        3750 +
-                        (markupControls.applyMarkup
-                          ? resolvedMarkup.superAdminMarkup + markupControls.agentMarkup
-                          : 0))
+                        resolvedMarkup.superAdminMarkup + // Super admin markup added to base fare
+                        3750 + // Taxes
+                        (markupControls.applyMarkup ? markupControls.agentMarkup : 0)) // Agent markup (convenience fees)
                     const required = baseTotal + ancillariesTotal
                     const walletBalance = parseFloat(localStorage.getItem("wallet_balance") || "0")
 
@@ -2129,90 +2230,7 @@ export default function FlightsPage() {
               variant="outline"
               onClick={() => {
                 if (selectedFlight && bookingId && pnr) {
-                  const ancillariesTotal =
-                    (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
-                    (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
-                    (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-                  
-                  // Calculate pricing breakdown if not already available
-                  let finalPricingBreakdown = pricingBreakdown
-                  if (!finalPricingBreakdown && selectedFlight) {
-                    finalPricingBreakdown = calculatePricingBreakdown(
-                      selectedFlight.price,
-                      3750,
-                      "flights",
-                      isInternational ? "International" : "Domestic",
-                      searchData.specialFare || "Regular",
-                      selectedFlight.currency || "INR",
-                      {
-                        superAdminMarkup: resolvedMarkup.superAdminMarkup,
-                        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-                        applyMarkup: true,
-                      }
-                    )
-                  }
-                  
-                  const totalAmount = finalPricingBreakdown 
-                    ? finalPricingBreakdown.totalAmount + ancillariesTotal
-                    : selectedFlight.price + 3750 + ancillariesTotal
-                  
-                  const ticketData: TicketData = {
-                    bookingId,
-                    pnr,
-                    flight: {
-                      airline: selectedFlight.airline,
-                      flightNumber: selectedFlight.flightNumber,
-                      departure: selectedFlight.departure,
-                      arrival: selectedFlight.arrival,
-                      duration: selectedFlight.duration,
-                    },
-                    passenger: {
-                      firstName: passengerDetails.firstName,
-                      lastName: passengerDetails.lastName || undefined,
-                      dob: passengerDetails.dob,
-                      gender: passengerDetails.gender,
-                      mobile: passengerDetails.mobile,
-                      email: passengerDetails.email,
-                      passport: passengerDetails.passport || undefined,
-                    },
-                    passengerCount,
-                    bookingDate: new Date().toISOString(),
-                    totalAmount,
-                    ancillaries: {
-                      extraBaggage: ancillaries.extraBaggage,
-                      mealSelection: ancillaries.mealSelection,
-                      seatSelection: ancillaries.seatSelection,
-                    },
-                    pricingBreakdown: finalPricingBreakdown ? {
-                      baseFare: finalPricingBreakdown.baseFare,
-                      taxes: finalPricingBreakdown.taxes,
-                      markup: finalPricingBreakdown.markup,
-                      markupPercent: finalPricingBreakdown.markupPercent,
-                    } : undefined,
-                  }
-                  const agentMarkupForDocs = markupControls.includeAgentMarkupInDocs ? markupControls.agentMarkup : 0
-                  const markupForDocs = Math.max(
-                    (finalPricingBreakdown?.markup ?? 0) - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0),
-                    0
-                  )
-                  const totalForDocs = totalAmount - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0)
-
-                  downloadTicket(
-                    {
-                      ...ticketData,
-                      totalAmount: totalForDocs,
-                      pricingBreakdown: ticketData.pricingBreakdown
-                        ? {
-                            ...ticketData.pricingBreakdown,
-                            markup: markupForDocs,
-                          }
-                        : undefined,
-                    },
-                    { showMarkup: true }
-                  )
-                  toast.success("Ticket downloaded", {
-                    description: "Your flight ticket has been downloaded and opened for printing.",
-                  })
+                  setDownloadDialogOpen(true)
                 } else {
                   toast.error("Ticket data not available", {
                     description: "Please complete the booking to download the ticket.",
@@ -2222,6 +2240,42 @@ export default function FlightsPage() {
             >
               Download Ticket
             </Button>
+            
+            <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Download Ticket</DialogTitle>
+                  <DialogDescription>
+                    Choose whether to include convenience fees in the ticket. Super admin markup is always included in the base fare.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="text-sm text-muted-foreground">
+                    <p className="mb-2">Super admin markup is automatically included in the base fare and will always be shown.</p>
+                    <p>You can choose to include or exclude agent markup (convenience fees) from the ticket.</p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setDownloadDialogOpen(false)
+                      handleDownloadTicket(false) // Without agent markup
+                    }}
+                  >
+                    Without Convenience Fees
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setDownloadDialogOpen(false)
+                      handleDownloadTicket(true) // With agent markup
+                    }}
+                  >
+                    With Convenience Fees
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <Button onClick={() => (window.location.href = "/dashboard")}>Return to Dashboard</Button>
           </div>
         </div>

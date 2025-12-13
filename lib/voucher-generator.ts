@@ -277,7 +277,7 @@ export function generateHotelVoucherPDF(data: HotelVoucherData, options?: { show
   }
 
   if (showMarkup) {
-    doc.text(`Markup (${data.pricingBreakdown?.markupPercent?.toFixed(2) || '0.00'}%):`, 20, yPos)
+    doc.text(`Convenience fees:`, 20, yPos)
     doc.text(`₹${markup.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
     yPos += 7
   }

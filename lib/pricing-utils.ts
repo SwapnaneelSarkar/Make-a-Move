@@ -109,16 +109,22 @@ export function calculatePricingBreakdown(
   const superAdminMarkup = overrides?.superAdminMarkup ?? 500
   const agentMarkup = overrides?.applyMarkup === false ? 0 : overrides?.agentMarkup ?? 0
 
-  const markup = percentMarkup + superAdminMarkup + agentMarkup
-  const totalAmount = baseFare + taxes + markup
+  // Super admin markup is added directly to base fare (hidden from agents)
+  // Agents see: baseFare (which includes super admin markup) + taxes + agent markup (shown as convenience fees)
+  const adjustedBaseFare = baseFare + superAdminMarkup
+  
+  // Only agent markup is shown to agents as "Convenience fees"
+  // Super admin markup is not shown separately
+  const markup = agentMarkup
+  const totalAmount = adjustedBaseFare + taxes + markup
 
   return {
-    baseFare,
+    baseFare: adjustedBaseFare, // Base fare shown to agents includes super admin markup
     taxes,
-    markup,
+    markup, // Only agent markup (shown as convenience fees)
     totalAmount,
     markupPercent: resolvedMarkupPercent,
-    superAdminMarkup,
+    superAdminMarkup, // Kept for reference but not shown to agents
     agentMarkup,
     appliedMarkup: overrides?.applyMarkup !== false,
   }

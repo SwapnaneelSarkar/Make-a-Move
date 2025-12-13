@@ -5,6 +5,8 @@ import {
   Search,
   Menu,
   UserCircle,
+  Shield,
+  AlertTriangle,
   FileText,
   Building2,
   Plane,
@@ -21,7 +23,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
-import { useState, useEffect, useCallback } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import {
   CommandDialog,
@@ -33,17 +45,12 @@ import {
   CommandSeparator,
 } from "@/components/ui/command"
 import { MOCK_BOOKINGS, MOCK_FLIGHTS, MOCK_HOTELS } from "@/lib/mock-data"
-import { getLastUpdatedTimestamp, getWalletBalance, formatTimeAgo } from "@/lib/wallet-utils"
-import { RefreshCw, Wallet } from "lucide-react"
 
 export function Header() {
-  const { currentUser, setRole } = useAppStore()
+  const { currentUser, setRole, setSupportMode } = useAppStore()
   const router = useRouter()
+  const [selectedAgent, setSelectedAgent] = useState("John Employee")
   const [openSearch, setOpenSearch] = useState(false)
-  const [walletBalance, setWalletBalance] = useState(0)
-  const [walletUpdatedAt, setWalletUpdatedAt] = useState<Date | null>(null)
-  const [isWalletRefreshing, setIsWalletRefreshing] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
 
   // Keyboard shortcut to open search
   useEffect(() => {
@@ -57,32 +64,12 @@ export function Header() {
     return () => document.removeEventListener("keydown", down)
   }, [])
 
-  // Load wallet balance for agents/sub-agents in header
-  useEffect(() => {
-    setIsMounted(true)
-    setWalletBalance(getWalletBalance())
-    setWalletUpdatedAt(getLastUpdatedTimestamp())
-  }, [])
-
-  const refreshWallet = useCallback(async () => {
-    setIsWalletRefreshing(true)
-    try {
-      // Simulate async fetch; currently sourced from local storage
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      setWalletBalance(getWalletBalance())
-      setWalletUpdatedAt(getLastUpdatedTimestamp())
-    } finally {
-      setIsWalletRefreshing(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isMounted) return
-    const interval = setInterval(() => {
-      refreshWallet()
-    }, 30000)
-    return () => clearInterval(interval)
-  }, [isMounted, refreshWallet])
+  const activateSupportMode = () => {
+    setSupportMode(true, selectedAgent)
+    toast.warning("Entering Support Mode", {
+      description: `You are now viewing as ${selectedAgent}. All actions will be logged.`,
+    })
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("session_user")
@@ -173,23 +160,6 @@ export function Header() {
       </CommandDialog>
 
       <div className="flex items-center gap-4">
-        {isMounted && (currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT") && (
-          <div className="flex items-center gap-2 rounded-full border bg-muted px-3 py-1">
-            <Wallet className="h-4 w-4 text-primary" />
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold">
-                ₹{walletBalance.toLocaleString("en-IN")}
-              </span>
-              <span className="text-[11px] text-muted-foreground">
-                {walletUpdatedAt ? `Updated ${formatTimeAgo(walletUpdatedAt)}` : "Loading..."}
-              </span>
-            </div>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={refreshWallet} disabled={isWalletRefreshing}>
-              <RefreshCw className={`h-3.5 w-3.5 ${isWalletRefreshing ? "animate-spin" : ""}`} />
-            </Button>
-          </div>
-        )}
-
         {/* Role Switcher for Demo Purposes */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -197,18 +167,67 @@ export function Header() {
               Switch Role: {currentUser.role}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="max-h-96 overflow-y-auto">
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Select Role (Demo)</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setRole("SUPER_ADMIN")}>Super Admin</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("AGENCY_ADMIN")}>Agency Admin</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("AGENT")}>Agent</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("SUB_AGENT")}>Sub Agent</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("FINANCE_TEAM")}>Finance Team</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("SUPPORT_TEAM")}>Support Team</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setRole("KYC_COMPLIANCE_TEAM")}>KYC Team</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("CORPORATE_ADMIN")}>Corporate Admin</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRole("EMPLOYEE")}>Employee</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Support Mode Button for Super Admin */}
+        {currentUser.role === "SUPER_ADMIN" && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:flex gap-2 border-orange-500/20 text-orange-600 bg-orange-50 hover:bg-orange-100 hover:text-orange-700"
+              >
+                <Shield className="h-4 w-4" />
+                Support Mode
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Activate Support Mode</DialogTitle>
+                <DialogDescription>
+                  Select an agent to impersonate. This allows you to view the dashboard exactly as they see it to
+                  troubleshoot issues.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="py-4">
+                <label className="text-sm font-medium mb-2 block">Select Agent</label>
+                <Select value={selectedAgent} onValueChange={setSelectedAgent}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="John Employee">John Employee (Sales)</SelectItem>
+                    <SelectItem value="Sarah Corp">Sarah Corp (Admin)</SelectItem>
+                    <SelectItem value="Mike Finance">Mike Finance (Accounts)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="bg-yellow-50 p-3 rounded-md text-yellow-800 text-sm flex gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                <p>
+                  While in Support Mode, you cannot perform financial transactions or approve payments. All navigation
+                  is logged.
+                </p>
+              </div>
+
+              <DialogFooter>
+                <Button onClick={activateSupportMode} className="bg-orange-600 hover:bg-orange-700 text-white">
+                  Enter Support Mode
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
 
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5 text-muted-foreground" />

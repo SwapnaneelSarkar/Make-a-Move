@@ -441,7 +441,7 @@ export function generateTicketHTML(data: TicketData, options?: { showMarkup?: bo
         </div>
         ${showMarkup ? `
         <div class="price-row">
-          <span class="price-label">Markup (${data.pricingBreakdown?.markupPercent?.toFixed(2) || '0.00'}%)</span>
+          <span class="price-label">Convenience fees</span>
           <span class="price-value">₹${markup.toLocaleString("en-IN")}</span>
         </div>
         ` : ""}

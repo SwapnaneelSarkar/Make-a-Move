@@ -979,6 +979,13 @@ const useAppStore = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Download
         isLoading: false,
         setIsLoading: (loading)=>set({
                 isLoading: loading
+            }),
+        // Support Mode Implementation
+        isSupportMode: false,
+        supportAgentName: null,
+        setSupportMode: (active, agentName)=>set({
+                isSupportMode: active,
+                supportAgentName: agentName
             })
     }));
 }),

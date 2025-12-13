@@ -7,6 +7,10 @@ interface AppState {
   setRole: (role: Role) => void
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
+  // Support Mode State
+  isSupportMode: boolean
+  supportAgentName: string | null
+  setSupportMode: (active: boolean, agentName: string | null) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -18,4 +22,8 @@ export const useAppStore = create<AppState>((set) => ({
   },
   isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
+  // Support Mode Implementation
+  isSupportMode: false,
+  supportAgentName: null,
+  setSupportMode: (active, agentName) => set({ isSupportMode: active, supportAgentName: agentName }),
 }))

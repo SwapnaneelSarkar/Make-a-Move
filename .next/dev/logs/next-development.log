@@ -1,7 +1,16 @@
-[00:00:00.844] Server  LOG      ✓ Ready in 450ms
-[00:00:00.950] Browser ERROR   uncaughtError: Error: Failed to load chunk /_next/static/chunks/56a5d_125482fa._.js from module [project]/Downloads/travel-booking-platform/node_modules/next/dist/compiled/react-server-dom-turbopack/cjs/react-server-dom-turbopack-client.browser.development.js [app-client] (ecmascript)
-[00:00:03.360] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:03.361] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:33.687] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:05:40.056] Server  LOG      ✓ Compiled in 336.6s
-[00:06:08.163] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:00.637] Server  LOG      ✓ Ready in 448ms
+[00:18:31.372] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:18:46.873] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:19:28.911] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:19:52.892] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:21:40.760] Server  LOG      ✓ Compiled in 227ms
+[00:21:42.836] Server  LOG      ✓ Compiled in 129ms
+[00:21:54.581] Server  LOG      ✓ Compiled in 95ms
+[00:23:58.741] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:36.211] Server  LOG      ✓ Compiled in 33ms
+[00:24:39.157] Server  LOG      ✓ Compiled in 108ms
+[00:25:23.531] Server  LOG      ✓ Compiled in 171ms
+[00:25:29.660] Server  LOG      ✓ Compiled in 308ms
+[00:26:00.639] Server  LOG      ✓ Compiled in 231ms
+[00:26:15.817] Server  LOG      ✓ Compiled in 350ms
+[04:04:12.142] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

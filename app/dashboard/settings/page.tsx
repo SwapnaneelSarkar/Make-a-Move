@@ -101,7 +101,7 @@ function DownloadMarkupSettings() {
 function MarkupGovernance() {
   const { role, canEdit } = usePermissions()
   const [prefs, setPrefs] = useState(loadMarkupPreferences())
-  const agents = MOCK_USERS.filter((user) => user.role === "AGENT" || user.role === "SUB_AGENT")
+  const agents = MOCK_USERS.filter((user) => user.role === "AGENT" || user.role === "SUB_AGENT" || user.role === "AGENCY_ADMIN")
 
   useEffect(() => {
     setPrefs(loadMarkupPreferences())
@@ -110,10 +110,17 @@ function MarkupGovernance() {
   if (!canEdit("markups")) return null
 
   const handleSave = () => {
-    const cleanOverrides = Object.fromEntries(
+    const cleanAgentOverrides = Object.fromEntries(
       Object.entries(prefs.agentOverrides || {}).filter(([, value]) => typeof value === "number"),
     ) as Record<string, number>
-    persistMarkupPreferences({ ...prefs, agentOverrides: cleanOverrides })
+    const cleanSuperAdminOverrides = Object.fromEntries(
+      Object.entries(prefs.superAdminMarkupOverrides || {}).filter(([, value]) => typeof value === "number"),
+    ) as Record<string, number>
+    persistMarkupPreferences({ 
+      ...prefs, 
+      agentOverrides: cleanAgentOverrides,
+      superAdminMarkupOverrides: cleanSuperAdminOverrides,
+    })
     toast.success("Markup defaults updated")
   }
 
@@ -170,8 +177,8 @@ function MarkupGovernance() {
         <div className="border rounded-md">
           <div className="px-4 py-2 border-b bg-muted/50 flex items-center justify-between">
             <div>
-              <p className="font-semibold">Agent/Sub-Agent Overrides</p>
-              <p className="text-sm text-muted-foreground">Customize markup per agent when needed.</p>
+              <p className="font-semibold">Agent/Sub-Agent Markup Overrides</p>
+              <p className="text-sm text-muted-foreground">Customize agent markup (convenience fees) per agent when needed.</p>
             </div>
             <Button size="sm" onClick={handleSave}>
               Save Defaults & Overrides
@@ -215,6 +222,56 @@ function MarkupGovernance() {
             ))}
           </div>
         </div>
+
+        {role === "SUPER_ADMIN" && (
+          <div className="border rounded-md border-primary/20">
+            <div className="px-4 py-2 border-b bg-primary/5 flex items-center justify-between">
+              <div>
+                <p className="font-semibold">Super Admin Markup Overrides (Per Agent)</p>
+                <p className="text-sm text-muted-foreground">
+                  Override super admin markup for specific agents/admins. This markup is added to base fare (hidden from agents).
+                </p>
+              </div>
+            </div>
+            <div className="divide-y">
+              {agents.map((agent) => (
+                <div key={`super-${agent.id}`} className="grid grid-cols-3 gap-4 items-center px-4 py-3">
+                  <div>
+                    <p className="font-medium">{agent.name}</p>
+                    <p className="text-xs text-muted-foreground">{agent.role.toLowerCase()}</p>
+                  </div>
+                  <Input
+                    type="number"
+                    value={prefs.superAdminMarkupOverrides?.[agent.id] ?? ""}
+                    placeholder={`${prefs.superAdminMarkup ?? DEFAULT_SUPER_ADMIN_MARKUP}`}
+                    onChange={(e) =>
+                      setPrefs((prev) => ({
+                        ...prev,
+                        superAdminMarkupOverrides: {
+                          ...prev.superAdminMarkupOverrides,
+                          [agent.id]: e.target.value === "" ? undefined : Math.max(0, parseFloat(e.target.value) || 0),
+                        },
+                      }))
+                    }
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      setPrefs((prev) => {
+                        const next = { ...prev.superAdminMarkupOverrides }
+                        delete next[agent.id]
+                        return { ...prev, superAdminMarkupOverrides: next }
+                      })
+                    }
+                  >
+                    Clear
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

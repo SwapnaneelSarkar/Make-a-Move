@@ -49,6 +49,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const BOOKING_STAGES = [
   { id: "search", label: "Search" },
@@ -157,6 +165,7 @@ export default function HotelsPage() {
   const [resolvedMarkup, setResolvedMarkup] = useState(() =>
     resolveAgentMarkup(currentUser.id, currentUser.role)
   )
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
 
   // Booking confirmation data
   const [bookingId, setBookingId] = useState<string>("")
@@ -437,6 +446,60 @@ export default function HotelsPage() {
     }
   }
 
+  const handleDownloadVoucher = (includeAgentMarkup: boolean) => {
+    if (!selectedHotel || !bookingId || !voucherNumber || !searchData.checkIn || !searchData.checkOut) {
+      toast.error("Voucher data not available")
+      return
+    }
+
+    const nights = Math.ceil(
+      (searchData.checkOut.getTime() - searchData.checkIn.getTime()) / (1000 * 60 * 60 * 24),
+    )
+    
+    import("@/lib/voucher-generator").then(({ generateHotelVoucherPDF }) => {
+      const baseAmount = calculateTotalAmount()
+      const breakdown = calculatePricingWithMarkup(baseAmount)
+      
+      // Calculate totals: base fare includes super admin markup, agent markup is optional
+      const agentMarkupAmount = includeAgentMarkup ? breakdown.markup : 0
+      const totalForDocs = breakdown.baseFare + breakdown.taxes + agentMarkupAmount
+
+      generateHotelVoucherPDF({
+        bookingId,
+        voucherNumber,
+        hotel: {
+          name: selectedHotel.name,
+          location: selectedHotel.location,
+          rating: selectedHotel.rating,
+        },
+        guest: guestDetails,
+        checkIn: searchData.checkIn ? format(searchData.checkIn, "yyyy-MM-dd") : "",
+        checkOut: searchData.checkOut ? format(searchData.checkOut, "yyyy-MM-dd") : "",
+        nights,
+        rooms: selectedRooms.map((r) => ({
+          type: r.roomType,
+          boardBasis: r.boardBasis,
+          price: r.price,
+        })),
+        addOns,
+        totalAmount: totalForDocs,
+        finalAmount: calculateFinalAmount(),
+        paymentMode: paymentData.paymentMode,
+        bookingDate: new Date().toISOString(),
+        specialRequests: guestDetails.specialRequests || undefined,
+        pricingBreakdown: {
+          baseFare: breakdown.baseFare,
+          taxes: breakdown.taxes,
+          markup: agentMarkupAmount,
+          markupPercent: breakdown.markupPercent,
+        },
+      }, { showMarkup: includeAgentMarkup && agentMarkupAmount > 0 })
+      toast.success("Voucher downloaded", {
+        description: `Your hotel voucher has been downloaded ${includeAgentMarkup ? "with" : "without"} convenience fees.`,
+      })
+    })
+  }
+
   // Handle stage progression
   const handleNextStage = async () => {
     let canProceed = false
@@ -524,7 +587,7 @@ export default function HotelsPage() {
             superAdminMarkup: breakdown.superAdminMarkup ?? 0,
             agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
             totalMarkup: breakdown.markup,
-            showOnDocs: markupControls.includeAgentMarkupInDocs,
+            showOnDocs: markupControls.applyMarkup, // Always show convenience fees on docs when markup is applied
           },
         },
         date: format(searchData.checkIn, "yyyy-MM-dd"),
@@ -1323,22 +1386,22 @@ export default function HotelsPage() {
                   />
                   <div>
                     <Label htmlFor="hotelApplyMarkup" className="font-semibold">
-                      Add surcharges before final confirmation
+                      Add convenience fees before final confirmation
                     </Label>
                     <p className="text-xs text-muted-foreground">
-                      Platform surcharge + your agent service fee
+                      Convenience fees for booking
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {isSuperAdmin && (
                     <div className="space-y-1">
-                      <Label>Platform surcharge (₹)</Label>
+                      <Label>Super Admin markup (₹)</Label>
                       <Input value={resolvedMarkup.superAdminMarkup} readOnly />
                     </div>
                   )}
                   <div className="space-y-1">
-                    <Label>Agent service fee (₹)</Label>
+                    <Label>Convenience fees (₹)</Label>
                     <Input
                       type="number"
                       value={markupControls.agentMarkup}
@@ -1356,38 +1419,34 @@ export default function HotelsPage() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="hotelIncludeMarkupDocs"
-                    checked={markupControls.includeAgentMarkupInDocs}
-                    onCheckedChange={(checked) =>
-                      setMarkupControls((prev) => ({ ...prev, includeAgentMarkupInDocs: checked as boolean }))
-                    }
-                  />
-                  <Label htmlFor="hotelIncludeMarkupDocs" className="cursor-pointer">
-                    Include agent surcharge on voucher/invoice
-                  </Label>
-                </div>
               </div>
 
               <div className="space-y-1 rounded-md border bg-card p-3">
                 {(() => {
                   const baseAmount = calculateTotalAmount()
                   const breakdown = calculatePricingWithMarkup(baseAmount)
-                  const surchargeTotal = markupControls.applyMarkup ? breakdown.markup : 0
-                  const netFare = baseAmount
+                  // breakdown.baseFare already includes super admin markup
+                  const convenienceFees = markupControls.applyMarkup ? breakdown.markup : 0
                   return (
                     <>
                       <div className="flex justify-between text-sm">
-                        <span>Net price (API fare)</span>
-                        <span className="font-semibold">₹{netFare.toLocaleString("en-IN")}</span>
+                        <span>Base fare</span>
+                        <span className="font-semibold">₹{breakdown.baseFare.toLocaleString("en-IN")}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Surcharges (platform + agent)</span>
-                        <span className="font-semibold text-primary">
-                          ₹{surchargeTotal.toLocaleString("en-IN")}
-                        </span>
-                      </div>
+                      {breakdown.taxes > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span>Taxes & Fees</span>
+                          <span className="font-semibold">₹{breakdown.taxes.toLocaleString("en-IN")}</span>
+                        </div>
+                      )}
+                      {convenienceFees > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span>Convenience fees</span>
+                          <span className="font-semibold text-primary">
+                            ₹{convenienceFees.toLocaleString("en-IN")}
+                          </span>
+                        </div>
+                      )}
                       <Separator className="my-1" />
                       <div className="flex justify-between font-bold">
                         <span>Customer payable (pre-discount)</span>
@@ -1423,7 +1482,7 @@ export default function HotelsPage() {
                       )}
                       {showMarkup && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Surcharges (platform + agent)</span>
+                          <span className="text-muted-foreground">Convenience fees</span>
                           <span>₹{breakdown.markup.toLocaleString("en-IN")}</span>
                         </div>
                       )}
@@ -1502,50 +1561,7 @@ export default function HotelsPage() {
                 variant="outline"
                 onClick={() => {
                   if (selectedHotel && bookingId && voucherNumber && searchData.checkIn && searchData.checkOut) {
-                    const nights = Math.ceil(
-                      (searchData.checkOut.getTime() - searchData.checkIn.getTime()) / (1000 * 60 * 60 * 24),
-                    )
-                    import("@/lib/voucher-generator").then(({ generateHotelVoucherPDF }) => {
-                      const baseAmount = calculateTotalAmount()
-                      const breakdown = calculatePricingWithMarkup(baseAmount)
-                      const agentMarkupForDocs = markupControls.includeAgentMarkupInDocs ? markupControls.agentMarkup : 0
-                      const markupForDocs = Math.max(breakdown.markup - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0), 0)
-                      const totalForDocs = breakdown.totalAmount - (markupControls.applyMarkup ? (markupControls.agentMarkup - agentMarkupForDocs) : 0)
-
-                      generateHotelVoucherPDF({
-                      bookingId,
-                      voucherNumber,
-                      hotel: {
-                        name: selectedHotel.name,
-                        location: selectedHotel.location,
-                        rating: selectedHotel.rating,
-                      },
-                      guest: guestDetails,
-                      checkIn: searchData.checkIn ? format(searchData.checkIn, "yyyy-MM-dd") : "",
-                      checkOut: searchData.checkOut ? format(searchData.checkOut, "yyyy-MM-dd") : "",
-                      nights,
-                      rooms: selectedRooms.map((r) => ({
-                        type: r.roomType,
-                        boardBasis: r.boardBasis,
-                        price: r.price,
-                      })),
-                      addOns,
-                      totalAmount: totalForDocs,
-                      finalAmount: calculateFinalAmount(),
-                      paymentMode: paymentData.paymentMode,
-                      bookingDate: new Date().toISOString(),
-                      specialRequests: guestDetails.specialRequests || undefined,
-                      pricingBreakdown: {
-                        baseFare: breakdown.baseFare,
-                        taxes: breakdown.taxes,
-                        markup: markupForDocs,
-                        markupPercent: breakdown.markupPercent,
-                      },
-                      }, { showMarkup: true })
-                      toast.success("Voucher downloaded", {
-                        description: "Your hotel voucher has been downloaded as PDF.",
-                      })
-                    })
+                    setDownloadDialogOpen(true)
                   } else {
                     toast.error("Voucher data not available")
                   }
@@ -1553,6 +1569,42 @@ export default function HotelsPage() {
               >
                 Download Voucher (PDF)
               </Button>
+              
+              <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Download Voucher</DialogTitle>
+                    <DialogDescription>
+                      Choose whether to include convenience fees in the voucher. Super admin markup is always included in the base fare.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="text-sm text-muted-foreground">
+                      <p className="mb-2">Super admin markup is automatically included in the base fare and will always be shown.</p>
+                      <p>You can choose to include or exclude agent markup (convenience fees) from the voucher.</p>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setDownloadDialogOpen(false)
+                        handleDownloadVoucher(false) // Without agent markup
+                      }}
+                    >
+                      Without Convenience Fees
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setDownloadDialogOpen(false)
+                        handleDownloadVoucher(true) // With agent markup
+                      }}
+                    >
+                      With Convenience Fees
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <Button onClick={() => (window.location.href = "/dashboard")}>Return to Dashboard</Button>
             </div>
           </CardContent>
