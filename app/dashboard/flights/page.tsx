@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo } from "react"
+import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FlightSearch } from "@/components/booking/flight-search"
 import { FlightCard } from "@/components/booking/flight-card"
@@ -236,6 +237,10 @@ export default function FlightsPage() {
   const [resolvedMarkup, setResolvedMarkup] = useState(() =>
     resolveAgentMarkup(currentUser.id, currentUser.role)
   )
+  const allowAgentMarkupEdit =
+    canEditMarkups ||
+    (resolvedMarkup.allowAgentOverride &&
+      (currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT" || currentUser.role === "AGENCY_ADMIN"))
   const [paymentTimeout, setPaymentTimeout] = useState<number | null>(null)
   const paymentTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const fareReviewStartTimeRef = useRef<number | null>(null)
@@ -293,8 +298,8 @@ export default function FlightsPage() {
       selectedFlight.currency || "INR",
       {
         superAdminMarkup: resolvedMarkup.superAdminMarkup,
-        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-        applyMarkup: true,
+        agentMarkup: markupControls.agentMarkup,
+        applyMarkup: markupControls.applyMarkup,
       }
     )
   }, [selectedFlight, isInternational, searchData.specialFare, markupControls.applyMarkup, markupControls.agentMarkup, resolvedMarkup.superAdminMarkup])
@@ -440,6 +445,7 @@ export default function FlightsPage() {
 
   const validateSearch = (): boolean => {
     const newErrors: Record<string, string> = {}
+    const requestedTravellers = Math.max(1, parseInt(searchData.travellers || "1") || 1)
 
     // Origin & Destination: Required, cannot be same
     if (!searchData.origin) {
@@ -477,21 +483,26 @@ export default function FlightsPage() {
       }
     }
 
-    // Passengers: At least 1 adult required, max total passengers (typically 20)
-    const totalPassengers = passengerCount.adults + passengerCount.children + passengerCount.infants
-    if (passengerCount.adults < 1) {
-      newErrors.passengers = "At least 1 adult passenger is required"
-    }
-    if (totalPassengers > 200) {
-      newErrors.passengers = "Maximum 200 passengers allowed per search"
+    // Passengers: Standard flow capped at 10, group flow requires 10+
+    if (searchData.tripType === "group") {
+      if (requestedTravellers < 10) {
+        newErrors.passengers = "Group bookings require at least 10 passengers"
+      }
+    } else {
+      if (requestedTravellers > 10) {
+        newErrors.passengers = "Use Group Booking for more than 10 passengers"
+      }
+      if (requestedTravellers < 1) {
+        newErrors.passengers = "At least 1 passenger is required"
+      }
     }
 
     setSearchErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  // Parse travellers string to extract passenger count
-  const parseTravellers = (travellersStr: string) => {
+  // Parse travellers string to extract passenger count with limits based on flow
+  const parseTravellers = (travellersStr: string, tripTypeValue: string) => {
     // Handle formats like "1", "2", "1-business", etc.
     const parts = travellersStr.split("-")
     const adults = parseInt(parts[0]) || 1
@@ -503,7 +514,11 @@ export default function FlightsPage() {
       setSearchData((prev) => ({ ...prev, class: "Premium" }))
     }
     
-    return Math.min(200, Math.max(1, adults))
+    if (tripTypeValue === "group") {
+      return Math.max(10, Math.min(200, adults))
+    }
+
+    return Math.min(10, Math.max(1, adults))
   }
 
   const handleSearch = () => {
@@ -521,12 +536,29 @@ export default function FlightsPage() {
     }
 
     // Parse travellers and update passenger count
-    const adults = parseTravellers(searchData.travellers)
+    const adults = parseTravellers(searchData.travellers, searchData.tripType)
     setPassengerCount({
       adults,
       children: 0,
       infants: 0,
     })
+
+    const isGroupFlow = searchData.tripType === "group" || adults > 10
+    if (isGroupFlow) {
+      const params = new URLSearchParams({
+        origin: searchData.origin,
+        destination: searchData.destination,
+        departureDate: searchData.departureDate?.toISOString() || "",
+        returnDate: searchData.returnDate?.toISOString() || "",
+        travellers: adults.toString(),
+        class: searchData.class || "Economy",
+        tripType: "group",
+        isInternational: isInternational.toString(),
+      })
+      toast.info("Redirecting to group booking form for 10+ passengers")
+      router.push(`/dashboard/flights/group-enquiry?${params.toString()}`)
+      return
+    }
 
     // Prepare search data matching the required Search stage fields
     const searchDataForTransition = {
@@ -817,8 +849,8 @@ export default function FlightsPage() {
         selectedFlight.currency || "INR",
         {
           superAdminMarkup: resolvedMarkup.superAdminMarkup,
-          agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-          applyMarkup: true,
+          agentMarkup: markupControls.agentMarkup,
+          applyMarkup: markupControls.applyMarkup,
         }
       )
     }
@@ -863,7 +895,8 @@ export default function FlightsPage() {
     }
     
     // Calculate totals: base fare includes super admin markup, agent markup is optional
-    const agentMarkupAmount = includeAgentMarkup ? (finalPricingBreakdown?.markup ?? 0) : 0
+    const agentMarkupAmount =
+      includeAgentMarkup && markupControls.applyMarkup ? (finalPricingBreakdown?.markup ?? 0) : 0
     const totalForDocs = finalPricingBreakdown 
       ? finalPricingBreakdown.baseFare + finalPricingBreakdown.taxes + agentMarkupAmount + ancillariesTotal
       : totalAmount
@@ -1228,6 +1261,9 @@ export default function FlightsPage() {
         <div className="transition-all duration-300">
           <div className="flex items-center gap-2 mb-4">
             <h2 className="text-2xl font-bold">Search Criteria</h2>
+            <Button asChild variant="outline" size="sm" className="ml-auto">
+              <Link href="/dashboard/flights/group-requests">Manage Group Requests</Link>
+            </Button>
           </div>
           <FlightSearch
             tripType={searchData.tripType}
@@ -1238,7 +1274,16 @@ export default function FlightsPage() {
             travellers={searchData.travellers}
             class={searchData.class}
             flightType={isInternational ? "international" : "domestic"}
-            onTripTypeChange={(value) => setSearchData({ ...searchData, tripType: value })}
+            onTripTypeChange={(value) =>
+              setSearchData((prev) => ({
+                ...prev,
+                tripType: value,
+                travellers:
+                  value === "group"
+                    ? Math.max(10, parseInt(prev.travellers || "10") || 10).toString()
+                    : Math.min(10, Math.max(1, parseInt(prev.travellers || "1") || 1)).toString(),
+              }))
+            }
             onOriginChange={(value) => setSearchData({ ...searchData, origin: value })}
             onDestinationChange={(value) => setSearchData({ ...searchData, destination: value })}
             onDepartureDateChange={(date) => setSearchData({ ...searchData, departureDate: date })}

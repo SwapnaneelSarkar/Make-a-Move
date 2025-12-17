@@ -1743,6 +1743,8 @@ __turbopack_context__.s([
     ()=>bookingsDB,
     "disputesDB",
     ()=>disputesDB,
+    "groupBookingsDB",
+    ()=>groupBookingsDB,
     "initDB",
     ()=>initDB,
     "kycDB",
@@ -1763,7 +1765,7 @@ __turbopack_context__.s([
     ()=>walletDepositRequestsDB
 ]);
 const DB_NAME = "TravelBookingDB";
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const TABLES = {
     BOOKINGS: "bookings",
     TRANSACTIONS: "transactions",
@@ -1776,7 +1778,8 @@ const TABLES = {
     SCHEDULED_REPORTS: "scheduled_reports",
     PROMOTIONAL_BANNERS: "promotional_banners",
     WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
-    AGENT_STATUS: "agent_status"
+    AGENT_STATUS: "agent_status",
+    GROUP_BOOKINGS: "group_bookings"
 };
 // Database initialization
 let dbInstance = null;
@@ -1895,6 +1898,16 @@ async function initDB() {
                     unique: true
                 });
                 statusStore.createIndex("status", "status");
+            }
+            if (!db.objectStoreNames.contains(TABLES.GROUP_BOOKINGS)) {
+                const groupStore = db.createObjectStore(TABLES.GROUP_BOOKINGS, {
+                    keyPath: "id"
+                });
+                groupStore.createIndex("reference", "reference", {
+                    unique: true
+                });
+                groupStore.createIndex("status", "status");
+                groupStore.createIndex("createdAt", "createdAt");
             }
         };
     });
@@ -2261,6 +2274,27 @@ const agentStatusDB = {
     delete: (id)=>remove(TABLES.AGENT_STATUS, id),
     search: (query)=>search(TABLES.AGENT_STATUS, query),
     filter: (filters)=>filter(TABLES.AGENT_STATUS, filters)
+};
+const groupBookingsDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        const reference = `GRP-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        return create(TABLES.GROUP_BOOKINGS, {
+            ...data,
+            reference,
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.GROUP_BOOKINGS, id),
+    readAll: ()=>readAll(TABLES.GROUP_BOOKINGS),
+    update: (id, data)=>update(TABLES.GROUP_BOOKINGS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    delete: (id)=>remove(TABLES.GROUP_BOOKINGS, id),
+    search: (query)=>search(TABLES.GROUP_BOOKINGS, query),
+    filter: (filters)=>filter(TABLES.GROUP_BOOKINGS, filters)
 };
 }),
 "[project]/Downloads/travel-booking-platform/lib/wallet-utils.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {

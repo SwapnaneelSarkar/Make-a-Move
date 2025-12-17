@@ -144,6 +144,24 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../../app/dashboard/flights/group-requests/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/dashboard/flights/group-requests">> = Specific
+  const handler = {} as typeof import("../../../app/dashboard/flights/group-requests/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/dashboard/flights/group-success/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/dashboard/flights/group-success">> = Specific
+  const handler = {} as typeof import("../../../app/dashboard/flights/group-success/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/dashboard/flights/listing/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/dashboard/flights/listing">> = Specific

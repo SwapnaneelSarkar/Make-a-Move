@@ -113,6 +113,8 @@ export function FlightSearch({
   const airportOptions = flightType === "domestic" ? DOMESTIC_AIRPORTS : INTERNATIONAL_AIRPORTS
   const swapDisabled = !origin || !destination
   const travellerCount = Math.max(1, parseInt(travellers || "1") || 1)
+  const minPassengers = tripType === "group" ? 10 : 1
+  const maxPassengers = tripType === "group" ? 200 : 10
   const readableTripType = tripType.replace("-", " ")
 
   const handleSwapAirports = () => {
@@ -139,6 +141,10 @@ export function FlightSearch({
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="multi-city" id="multi-city" disabled />
               <Label htmlFor="multi-city" className="text-muted-foreground cursor-not-allowed">Multi City</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="group" id="group" />
+              <Label htmlFor="group" className="font-medium cursor-pointer">Group (10+)</Label>
             </div>
           </RadioGroup>
           <ToggleGroup type="single" value={flightType} onValueChange={handleTypeChange} className="border-2">
@@ -302,24 +308,24 @@ export function FlightSearch({
                 variant="outline"
                 size="icon"
                 onClick={() => {
-                  const current = parseInt(travellers) || 1
-                  const newValue = Math.max(1, current - 1)
+                  const current = parseInt(travellers) || minPassengers
+                  const newValue = Math.max(minPassengers, current - 1)
                   onTravellersChange?.(newValue.toString())
                 }}
-                disabled={parseInt(travellers) <= 1}
+                disabled={(parseInt(travellers) || minPassengers) <= minPassengers}
                 className="h-11 w-11 transition-all hover:border-primary/50"
               >
                 <Minus className="h-4 w-4" />
               </Button>
               <Input
                 type="number"
-                min="1"
-                max="200"
+                min={minPassengers}
+                max={maxPassengers}
                 value={travellers}
                 onChange={(e) => {
                   const value = e.target.value
-                  if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= 200)) {
-                    onTravellersChange?.(value || "1")
+                  if (value === "" || (parseInt(value) >= minPassengers && parseInt(value) <= maxPassengers)) {
+                    onTravellersChange?.(value || minPassengers.toString())
                   }
                 }}
                 className="h-11 text-center w-20 font-semibold"
@@ -329,17 +335,21 @@ export function FlightSearch({
                 variant="outline"
                 size="icon"
                 onClick={() => {
-                  const current = parseInt(travellers) || 1
-                  const newValue = Math.min(200, current + 1)
+                  const current = parseInt(travellers) || minPassengers
+                  const newValue = Math.min(maxPassengers, current + 1)
                   onTravellersChange?.(newValue.toString())
                 }}
-                disabled={parseInt(travellers) >= 200}
+                disabled={(parseInt(travellers) || minPassengers) >= maxPassengers}
                 className="h-11 w-11 transition-all hover:border-primary/50"
               >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">1-200 passengers (10+ will be handled as group booking)</p>
+            <p className="text-xs text-muted-foreground">
+              {tripType === "group"
+                ? "Group flow: minimum 10 passengers, support will respond with quote."
+                : "Standard flow: 1-10 passengers. 10+ automatically moves to group booking."}
+            </p>
           </div>
 
           <div className="space-y-2">

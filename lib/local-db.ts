@@ -1,7 +1,7 @@
 // IndexedDB setup and CRUD operations for all tables
 
 const DB_NAME = "TravelBookingDB"
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 // Table names
 export const TABLES = {
@@ -17,6 +17,7 @@ export const TABLES = {
   PROMOTIONAL_BANNERS: "promotional_banners",
   WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
   AGENT_STATUS: "agent_status",
+  GROUP_BOOKINGS: "group_bookings",
 } as const
 
 // Types
@@ -186,6 +187,35 @@ export interface AgentStatus {
   updatedAt: string
 }
 
+export interface GroupBookingRequest {
+  id: string
+  reference: string
+  flightId?: string
+  origin: string
+  destination: string
+  departureDate?: string
+  returnDate?: string
+  classType: string
+  isInternational: boolean
+  passengers: {
+    adults: number
+    children: number
+    infants: number
+    total: number
+  }
+  expectedQuote?: string
+  notes?: string
+  status: "NEW" | "QUOTE_SHARED" | "AWAITING_AGENT" | "CONFIRMED" | "CLOSED"
+  quoteAmount?: string
+  validUntil?: string
+  nextSteps?: string
+  submittedBy: string
+  agentEmail?: string
+  assignedTo?: string
+  createdAt: string
+  updatedAt: string
+}
+
 // Database initialization
 let dbInstance: IDBDatabase | null = null
 
@@ -283,6 +313,13 @@ export async function initDB(): Promise<IDBDatabase> {
         const statusStore = db.createObjectStore(TABLES.AGENT_STATUS, { keyPath: "id" })
         statusStore.createIndex("agentId", "agentId", { unique: true })
         statusStore.createIndex("status", "status")
+      }
+
+      if (!db.objectStoreNames.contains(TABLES.GROUP_BOOKINGS)) {
+        const groupStore = db.createObjectStore(TABLES.GROUP_BOOKINGS, { keyPath: "id" })
+        groupStore.createIndex("reference", "reference", { unique: true })
+        groupStore.createIndex("status", "status")
+        groupStore.createIndex("createdAt", "createdAt")
       }
     }
   })
@@ -666,5 +703,31 @@ export const agentStatusDB = {
   delete: (id: string) => remove(TABLES.AGENT_STATUS, id),
   search: (query: (item: AgentStatus) => boolean) => search<AgentStatus>(TABLES.AGENT_STATUS, query),
   filter: (filters: Record<string, any>) => filter<AgentStatus>(TABLES.AGENT_STATUS, filters),
+}
+
+// Group Bookings CRUD
+export const groupBookingsDB = {
+  create: async (
+    data: Omit<GroupBookingRequest, "id" | "reference" | "createdAt" | "updatedAt">,
+  ): Promise<GroupBookingRequest> => {
+    const now = new Date().toISOString()
+    const reference = `GRP-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random()
+      .toString(36)
+      .substr(2, 4)
+      .toUpperCase()}`
+    return create<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, {
+      ...data,
+      reference,
+      createdAt: now,
+      updatedAt: now,
+    })
+  },
+  read: (id: string) => read<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, id),
+  readAll: () => readAll<GroupBookingRequest>(TABLES.GROUP_BOOKINGS),
+  update: (id: string, data: Partial<GroupBookingRequest>) =>
+    update<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, id, { ...data, updatedAt: new Date().toISOString() }),
+  delete: (id: string) => remove(TABLES.GROUP_BOOKINGS, id),
+  search: (query: (item: GroupBookingRequest) => boolean) => search<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, query),
+  filter: (filters: Record<string, any>) => filter<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, filters),
 }
 

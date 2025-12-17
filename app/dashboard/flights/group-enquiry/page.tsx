@@ -14,6 +14,7 @@ import { AlertCircle, ArrowLeft, Users } from "lucide-react"
 import { MOCK_FLIGHTS, type Flight } from "@/lib/mock-data"
 import { toast } from "sonner"
 import { useAppStore } from "@/lib/store"
+import { groupBookingsDB, notificationsDB, type GroupBookingRequest } from "@/lib/local-db"
 
 const CITY_LOOKUP: Record<string, string> = {
   DEL: "New Delhi",
@@ -93,10 +94,11 @@ export default function GroupEnquiryPage() {
     expectedQuote: "",
     notes: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const totalPassengers = form.adults + form.children + form.infants
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (form.adults < 1) {
       toast.error("At least 1 adult is required for group bookings")
       return
@@ -112,34 +114,89 @@ export default function GroupEnquiryPage() {
       return
     }
 
-    const enquiry = {
-      id: Date.now().toString(),
+    if (!selectedFlight) {
+      toast.error("Selected flight missing. Please go back and pick a flight.")
+      return
+    }
+
+    const payload: Omit<GroupBookingRequest, "id" | "reference" | "createdAt" | "updatedAt"> = {
       flightId: selectedFlight.id,
-      route: `${selectedFlight.departure.city} → ${selectedFlight.arrival.city}`,
-      departure: selectedFlight.departure.time,
+      origin,
+      destination,
+      departureDate,
       returnDate: returnDate || undefined,
-      counts: { ...form },
-      totalPassengers,
       classType,
       isInternational,
+      passengers: {
+        adults: form.adults,
+        children: form.children,
+        infants: form.infants,
+        total: totalPassengers,
+      },
       expectedQuote: form.expectedQuote,
       notes: form.notes,
-      submittedBy: currentUser.name,
-      contact: currentUser.email,
-      submittedAt: new Date().toISOString(),
       status: "NEW",
+      submittedBy: currentUser.name,
+      agentEmail: currentUser.email,
+      assignedTo: "Support Team",
     }
 
     try {
-      const existing = JSON.parse(localStorage.getItem("groupBookingEnquiries") || "[]")
-      localStorage.setItem("groupBookingEnquiries", JSON.stringify([enquiry, ...existing]))
+      setIsSubmitting(true)
+      const timeoutMs = 8000
+      const timeoutPromise = new Promise<null>((_, reject) =>
+        setTimeout(() => reject(new Error("Timed out saving group enquiry")), timeoutMs),
+      )
+
+      const record = await Promise.race([groupBookingsDB.create(payload), timeoutPromise])
+      if (!record) {
+        throw new Error("Save failed (record missing)")
+      }
+
+      try {
+        await notificationsDB.create({
+          title: "New group booking enquiry",
+          message: `Reference ${record.reference} for ${record.passengers.total} pax on ${origin}-${destination}`,
+          type: "group-booking",
+          userId: "support-team",
+        })
+      } catch (notifyErr) {
+        console.warn("Notification create failed", notifyErr)
+      }
+
       toast.success("Group enquiry submitted", {
-        description: "Support will share a custom quote, validity, and payment steps.",
+        description: "Sent to Support/Admin. They will share quote, validity, and next steps.",
       })
-      router.push("/dashboard/flights")
+      const params = new URLSearchParams({
+        reference: record.reference,
+        total: record.passengers.total.toString(),
+        origin,
+        destination,
+        class: classType,
+        quote: form.expectedQuote || "",
+      })
+      router.push(`/dashboard/flights/group-success?${params.toString()}`)
     } catch (error) {
       console.error("Failed to save group enquiry", error)
-      toast.error("Could not save enquiry locally. Please retry.")
+      try {
+        const fallback = {
+          ...payload,
+          id: Date.now().toString(),
+          reference: `GRP-${Date.now()}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        const existing = JSON.parse(localStorage.getItem("groupBookingEnquiries") || "[]")
+        localStorage.setItem("groupBookingEnquiries", JSON.stringify([fallback, ...existing]))
+        toast.success("Saved offline", {
+          description: "We stored the enquiry locally; please resend once online/DB is ready.",
+        })
+      } catch (storageErr) {
+        console.error("Fallback storage failed", storageErr)
+        toast.error("Could not save enquiry. Please retry.")
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -242,8 +299,8 @@ export default function GroupEnquiryPage() {
             </div>
 
             <div className="flex justify-end">
-              <Button size="lg" onClick={handleSubmit}>
-                Submit Enquiry
+              <Button size="lg" onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Enquiry"}
               </Button>
             </div>
           </CardContent>
@@ -281,9 +338,16 @@ export default function GroupEnquiryPage() {
                 <span>{selectedFlight.duration}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Fare basis</span>
-                <span>{selectedFlight.currency} {selectedFlight.price.toLocaleString("en-IN")} (indicative)</span>
+                <span className="text-muted-foreground">Quoted price (total for this group)</span>
+                <span>
+                  {form.expectedQuote && form.expectedQuote.trim().length > 0
+                    ? form.expectedQuote
+                    : `${selectedFlight.currency} ${selectedFlight.price.toLocaleString("en-IN")} (indicative)`}
+                </span>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Quoted price should be the total for all passengers (per-ticket price × number of passengers), not a per-ticket amount.
+              </p>
             </div>
             <Separator />
             <div className="space-y-1 text-sm">

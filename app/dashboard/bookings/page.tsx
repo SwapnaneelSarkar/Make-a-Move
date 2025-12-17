@@ -28,11 +28,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { bookingsDB, type Booking } from "@/lib/local-db"
+import { bookingsDB, transactionsDB, type Booking, type Transaction } from "@/lib/local-db"
 import { exportBookings } from "@/lib/export-utils"
 import { formatDate } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { audit } from "@/lib/audit-utils"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { usePermissions } from "@/hooks/use-permissions"
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -43,6 +47,12 @@ export default function BookingsPage() {
   const [selectedBookings, setSelectedBookings] = React.useState<string[]>([])
   const [isAlertOpen, setIsAlertOpen] = React.useState(false)
   const [actionType, setActionType] = React.useState<string | null>(null)
+  const { role } = usePermissions()
+  const isSuperAdmin = role === "SUPER_ADMIN"
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const [bookingTransactions, setBookingTransactions] = useState<Transaction[]>([])
 
   useEffect(() => {
     loadBookings()
@@ -132,6 +142,90 @@ export default function BookingsPage() {
 
     return matchesSearch && matchesStatus && matchesType
   })
+
+  const handleViewDetails = async (booking: Booking) => {
+    if (!isSuperAdmin) return
+    setSelectedBooking(booking)
+    setIsDetailOpen(true)
+    setDetailLoading(true)
+
+    try {
+      const txns = await transactionsDB.filter({ bookingId: booking.id })
+      setBookingTransactions(
+        txns.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      )
+    } catch (error) {
+      console.error("Failed to load booking transactions:", error)
+      toast.error("Unable to load booking details")
+    } finally {
+      setDetailLoading(false)
+    }
+  }
+
+  const closeDetails = () => {
+    setIsDetailOpen(false)
+    setSelectedBooking(null)
+    setBookingTransactions([])
+  }
+
+  const getAncillariesTotal = (booking: Booking) => {
+    if (booking.type === "FLIGHT") {
+      const anc = booking.details?.ancillaries || {}
+      const seatSelectionTotal = anc.seatSelection ? Number(anc.seatPrice || 0) : 0
+      return (
+        (anc.extraBaggage ? Number(anc.extraBaggagePrice || 0) : 0) +
+        (anc.mealSelection ? Number(anc.mealPrice || 0) : 0) +
+        seatSelectionTotal
+      )
+    }
+
+    const hotelAddOns = booking.details?.addOns || {}
+    const nights = booking.details?.nights || 1
+    let addOnTotal = 0
+    if (hotelAddOns.extraBed) addOnTotal += 2000 * nights
+    if (hotelAddOns.airportTransfer) addOnTotal += 1500
+    if (hotelAddOns.meals) addOnTotal += 1000 * nights
+    if (hotelAddOns.insurance) addOnTotal += 500
+    return addOnTotal
+  }
+
+  const getFareBreakdown = (booking: Booking | null) => {
+    if (!booking) return null
+    const details = booking.details || {}
+    const markupInfo = details.markup || {}
+    const superAdminMarkup = Number(markupInfo.superAdminMarkup ?? 0)
+    const agentMarkup = Number(markupInfo.totalMarkup ?? markupInfo.agentMarkup ?? 0)
+    const taxes = Number(details.taxes ?? details.taxAmount ?? details.taxesAndFees ?? 0)
+    const ancillaries = getAncillariesTotal(booking)
+    const baseFare = Math.max(booking.amount - (agentMarkup + superAdminMarkup + ancillaries + taxes), 0)
+
+    return {
+      baseFare,
+      taxes,
+      agentMarkup,
+      superAdminMarkup,
+      ancillaries,
+      total: booking.amount,
+    }
+  }
+
+  const getPassengerList = (booking: Booking | null) => {
+    if (!booking) return []
+    if (booking.type === "FLIGHT") {
+      const passengers = booking.details?.passengerDetails
+      if (!passengers) return []
+      return Array.isArray(passengers) ? passengers : [passengers]
+    }
+
+    if (booking.type === "HOTEL") {
+      const guest = booking.details?.guestDetails
+      return guest ? [guest] : []
+    }
+
+    return []
+  }
+
+  const formatCurrency = (value: number) => `₹${Number(value || 0).toLocaleString("en-IN")}`
 
   return (
     <div className="space-y-6">
@@ -243,11 +337,17 @@ export default function BookingsPage() {
                 </TableRow>
               ) : (
                 filteredBookings.map((booking) => (
-                  <TableRow key={booking.id} data-state={selectedBookings.includes(booking.id) ? "selected" : undefined}>
+                  <TableRow
+                    key={booking.id}
+                    data-state={selectedBookings.includes(booking.id) ? "selected" : undefined}
+                    className={isSuperAdmin ? "cursor-pointer" : ""}
+                    onClick={() => isSuperAdmin && handleViewDetails(booking)}
+                  >
                     <TableCell>
                       <Checkbox
                         checked={selectedBookings.includes(booking.id)}
                         onCheckedChange={(checked) => handleSelectBooking(booking.id, checked as boolean)}
+                        onClick={(event) => event.stopPropagation()}
                       />
                     </TableCell>
                     <TableCell className="font-medium">{booking.bookingId}</TableCell>
@@ -272,7 +372,16 @@ export default function BookingsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          handleViewDetails(booking)
+                        }}
+                        disabled={!isSuperAdmin}
+                        aria-label="View booking details"
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </TableCell>
@@ -283,6 +392,164 @@ export default function BookingsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <Dialog open={isDetailOpen} onOpenChange={(open) => (open ? setIsDetailOpen(true) : closeDetails())}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Booking Details</DialogTitle>
+            <DialogDescription>Full booking, fare breakup, markup, passenger and transaction summary.</DialogDescription>
+          </DialogHeader>
+
+          {detailLoading ? (
+            <div className="py-6 text-center text-muted-foreground">Loading booking details...</div>
+          ) : selectedBooking ? (
+            <ScrollArea className="max-h-[70vh] pr-4">
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">Booking ID</p>
+                    <p className="font-semibold">{selectedBooking.bookingId}</p>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">{selectedBooking.type === "HOTEL" ? "Voucher" : "PNR"}</p>
+                    <p className="font-semibold">{selectedBooking.type === "HOTEL" ? selectedBooking.details?.voucherNumber ?? "N/A" : selectedBooking.pnr}</p>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">Status</p>
+                    <Badge
+                      variant={
+                        selectedBooking.status === "CONFIRMED" || selectedBooking.status === "COMPLETED"
+                          ? "default"
+                          : selectedBooking.status === "PENDING_APPROVAL"
+                            ? "secondary"
+                            : "destructive"
+                      }
+                    >
+                      {selectedBooking.status.replace("_", " ")}
+                    </Badge>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">Type</p>
+                    <p className="font-semibold">{selectedBooking.type}</p>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">Agent</p>
+                    <p className="font-semibold">{selectedBooking.agentName}</p>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3">
+                    <p className="text-muted-foreground">Date</p>
+                    <p className="font-semibold">{formatDate(selectedBooking.date)}</p>
+                  </div>
+                  <div className="rounded-md border bg-muted/30 p-3 md:col-span-3">
+                    <p className="text-muted-foreground">Total Amount</p>
+                    <p className="text-xl font-semibold">{formatCurrency(selectedBooking.amount)}</p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {(() => {
+                  const fare = getFareBreakdown(selectedBooking)
+                  if (!fare) return null
+                  return (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">Fare Breakup</h3>
+                        <span className="text-sm text-muted-foreground">Includes markup and ancillaries</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Base Fare</span>
+                          <span className="font-semibold">{formatCurrency(fare.baseFare)}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Taxes & Fees</span>
+                          <span className="font-semibold">{formatCurrency(fare.taxes)}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Ancillaries / Add-ons</span>
+                          <span className="font-semibold">{formatCurrency(fare.ancillaries)}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Agent Markup</span>
+                          <span className="font-semibold text-primary">{formatCurrency(fare.agentMarkup)}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Super Admin Markup</span>
+                          <span className="font-semibold text-primary">{formatCurrency(fare.superAdminMarkup)}</span>
+                        </div>
+                        <div className="flex items-center justify-between rounded-md border p-3">
+                          <span className="text-muted-foreground">Grand Total</span>
+                          <span className="font-semibold">{formatCurrency(fare.total)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Passenger / Guest Details</h3>
+                    <span className="text-sm text-muted-foreground">
+                      {selectedBooking.type === "HOTEL" ? "Primary guest information" : "Passenger contact"}
+                    </span>
+                  </div>
+                  {getPassengerList(selectedBooking).length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No passenger details captured.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      {getPassengerList(selectedBooking).map((passenger: any, index) => (
+                        <div key={index} className="rounded-md border p-3 space-y-1">
+                          <p className="font-semibold">{passenger.firstName} {passenger.lastName}</p>
+                          {passenger.email && <p className="text-muted-foreground">Email: {passenger.email}</p>}
+                          {passenger.mobile && <p className="text-muted-foreground">Phone: {passenger.mobile}</p>}
+                          {passenger.gender && <p className="text-muted-foreground">Gender: {passenger.gender}</p>}
+                          {passenger.nationality && <p className="text-muted-foreground">Nationality: {passenger.nationality}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Transaction Summary</h3>
+                    <span className="text-sm text-muted-foreground">Linked wallet or payment transactions</span>
+                  </div>
+                  {bookingTransactions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No transactions recorded for this booking.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-3">
+                      {bookingTransactions.map((txn) => (
+                        <div key={txn.id} className="rounded-md border p-3 text-sm">
+                          <div className="flex items-center justify-between">
+                            <p className="font-semibold">{txn.description}</p>
+                            <Badge variant={txn.status === "Completed" ? "default" : txn.status === "Pending" ? "secondary" : "destructive"}>
+                              {txn.status}
+                            </Badge>
+                          </div>
+                          <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-2 text-muted-foreground">
+                            <span>Amount: {formatCurrency(txn.amount)}</span>
+                            <span>Method: {txn.paymentMethod}</span>
+                            <span>Type: {txn.type}</span>
+                            <span>Date: {formatDate(txn.date)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </ScrollArea>
+          ) : (
+            <div className="py-6 text-center text-muted-foreground">Select a booking to view details.</div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>

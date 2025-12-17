@@ -33,6 +33,7 @@ import {
   upsertAgentAccess,
 } from "@/lib/agent-access"
 import { Switch } from "@/components/ui/switch"
+import { loadMarkupPreferences, persistMarkupPreferences } from "@/lib/markup-settings"
 
 export default function EmployeesPage() {
   const { currentUser } = useAppStore()
@@ -50,15 +51,43 @@ export default function EmployeesPage() {
   const [permissionDialogOpen, setPermissionDialogOpen] = useState(false)
   const [accessDraft, setAccessDraft] = useState<AgentAccessMatrix | null>(null)
   const [accessCache, setAccessCache] = useState<Record<string, AgentAccessMatrix>>({})
+  const [markupPrefs, setMarkupPrefs] = useState(loadMarkupPreferences())
+  const [markupDrafts, setMarkupDrafts] = useState<Record<string, number>>({})
+  const [markupSaving, setMarkupSaving] = useState<Record<string, boolean>>({})
+  const [defaultMarkupInput, setDefaultMarkupInput] = useState(markupPrefs.defaultAgentMarkup)
 
   // Super Admin sees Agent Admins, Agent Admin sees Agents/Sub Agents
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
   const isAgencyAdmin = currentUser.role === "AGENCY_ADMIN"
+  const canManageMarkups = canEdit("markups")
 
   // Load employees and their statuses on mount and when currentUser changes
   useEffect(() => {
     loadEmployees()
   }, [isSuperAdmin, isAgencyAdmin])
+
+  useEffect(() => {
+    setMarkupPrefs(loadMarkupPreferences())
+  }, [])
+
+  useEffect(() => {
+    setDefaultMarkupInput(markupPrefs.defaultAgentMarkup)
+  }, [markupPrefs.defaultAgentMarkup])
+
+  useEffect(() => {
+    if (employees.length === 0) return
+    setMarkupDrafts((prev) => {
+      const next = { ...prev }
+      employees.forEach((emp) => {
+        if (emp.role === "AGENT" || emp.role === "SUB_AGENT") {
+          if (next[emp.id] === undefined) {
+            next[emp.id] = markupPrefs.agentOverrides[emp.id] ?? markupPrefs.defaultAgentMarkup
+          }
+        }
+      })
+      return next
+    })
+  }, [employees, markupPrefs])
 
   const loadEmployees = async () => {
     const filtered = MOCK_USERS.filter((u) => {
@@ -99,6 +128,30 @@ export default function EmployeesPage() {
 
   const getAgentListStatus = (agentId: string): "Blacklisted" | "Whitelisted" | "Normal" => {
     return blacklistStatuses[agentId] || "Normal"
+  }
+
+  const getEffectiveMarkup = (agentId: string) =>
+    markupDrafts[agentId] ?? markupPrefs.agentOverrides[agentId] ?? markupPrefs.defaultAgentMarkup
+
+  const handleMarkupInput = (agentId: string, value: string) => {
+    const numericValue = Math.max(0, Number(value) || 0)
+    setMarkupDrafts((prev) => ({ ...prev, [agentId]: numericValue }))
+  }
+
+  const handleSaveMarkup = (agentId: string) => {
+    if (!canManageMarkups) return
+    const amount = getEffectiveMarkup(agentId)
+    const nextPrefs = {
+      ...markupPrefs,
+      agentOverrides: { ...markupPrefs.agentOverrides, [agentId]: amount },
+    }
+    setMarkupSaving((prev) => ({ ...prev, [agentId]: true }))
+    setMarkupPrefs(nextPrefs)
+    persistMarkupPreferences(nextPrefs)
+    setMarkupSaving((prev) => ({ ...prev, [agentId]: false }))
+    toast.success("Markup updated", {
+      description: `Default convenience fees set to ₹${amount} for this agent.`,
+    })
   }
 
   useEffect(() => {
@@ -194,6 +247,31 @@ export default function EmployeesPage() {
     setPermissionDialogOpen(true)
   }
 
+  const handleSaveDefaultMarkup = () => {
+    if (!canManageMarkups) return
+    const amount = Math.max(0, Number(defaultMarkupInput) || 0)
+    const nextPrefs = {
+      ...markupPrefs,
+      defaultAgentMarkup: amount,
+    }
+    setMarkupPrefs(nextPrefs)
+    persistMarkupPreferences(nextPrefs)
+    toast.success("Default markup updated", {
+      description: `All agents without overrides now use ₹${amount} in bookings.`,
+    })
+  }
+
+  const handleToggleAgentOverride = (allow: boolean) => {
+    if (!canManageMarkups) return
+    const nextPrefs = {
+      ...markupPrefs,
+      allowAgentOverride: allow,
+    }
+    setMarkupPrefs(nextPrefs)
+    persistMarkupPreferences(nextPrefs)
+    toast.success(allow ? "Agents can edit markup during checkout" : "Agent markup locked for checkout")
+  }
+
   const handleSavePermissions = () => {
     if (!selectedEmployee || !accessDraft) return
     const updated = upsertAgentAccess(selectedEmployee.id, selectedEmployee.role, accessDraft)
@@ -254,6 +332,57 @@ export default function EmployeesPage() {
         </div>
       </div>
 
+      {canManageMarkups && (
+        <div className="rounded-lg border bg-card p-4 space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold">Markup controls</h3>
+              <p className="text-sm text-muted-foreground">
+                Set default markups for Agents/Sub-Agents and decide if they can adjust fees in the booking flow.
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-[2fr,1fr]">
+            <div className="space-y-2">
+              <Label>Default agent markup (₹)</Label>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <Input
+                  type="number"
+                  value={defaultMarkupInput}
+                  onChange={(e) => setDefaultMarkupInput(Math.max(0, Number(e.target.value) || 0))}
+                  min={0}
+                  className="sm:max-w-xs"
+                />
+                <Button
+                  variant="secondary"
+                  onClick={handleSaveDefaultMarkup}
+                  disabled={!canManageMarkups}
+                >
+                  Save default
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Applied to Agents/Sub-Agents without a specific override below. Reflected automatically in checkout pricing.
+              </p>
+            </div>
+
+            <div className="rounded-md border p-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold">Allow agent override at checkout</p>
+                <p className="text-xs text-muted-foreground">
+                  When on, Agents/Sub-Agents can change markup before finalizing a booking.
+                </p>
+              </div>
+              <Switch
+                checked={markupPrefs.allowAgentOverride}
+                onCheckedChange={(checked) => handleToggleAgentOverride(!!checked)}
+                disabled={!canManageMarkups}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="rounded-md border bg-card">
         <Table>
           <TableHeader>
@@ -263,6 +392,7 @@ export default function EmployeesPage() {
               <TableHead>Role</TableHead>
               <TableHead>Policy</TableHead>
               <TableHead>Access</TableHead>
+              <TableHead>Markup (₹)</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -270,7 +400,7 @@ export default function EmployeesPage() {
           <TableBody>
             {filteredEmployees.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={8} className="text-center text-muted-foreground">
                   {searchQuery ? "No employees found matching your search." : "No employees found."}
                 </TableCell>
               </TableRow>
@@ -321,6 +451,30 @@ export default function EmployeesPage() {
                       </div>
                     )
                   })()}
+                </TableCell>
+                <TableCell>
+                  {employee.role === "AGENT" || employee.role === "SUB_AGENT" ? (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        className="h-9 w-28"
+                        value={getEffectiveMarkup(employee.id)}
+                        onChange={(e) => handleMarkupInput(employee.id, e.target.value)}
+                        min={0}
+                        disabled={!canManageMarkups}
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => handleSaveMarkup(employee.id)}
+                        disabled={!canManageMarkups || markupSaving[employee.id]}
+                      >
+                        {markupSaving[employee.id] ? "Saving..." : "Save"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Not applicable</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
