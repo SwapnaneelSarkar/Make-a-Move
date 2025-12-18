@@ -439,6 +439,11 @@ export default function EmployeesPage() {
                         <Badge variant={access.flights.book ? "default" : "outline"} className="text-xs">
                           Flights: {access.flights.book ? "Book" : access.flights.view ? "View" : "No access"}
                         </Badge>
+                        {access.flights.lockTickets && (
+                          <Badge variant="secondary" className="text-xs">
+                            Lock Tickets
+                          </Badge>
+                        )}
                         <Badge variant={access.hotels.book ? "default" : "outline"} className="text-xs">
                           Hotels: {access.hotels.book ? "Book" : access.hotels.view ? "View" : "No access"}
                         </Badge>
@@ -1113,8 +1118,9 @@ function PermissionDialog({
           <div className="space-y-4">
             <PermissionSection
               title="Flights"
-              description="Control flight search, booking, and cancellations."
+              description="Control flight search, booking, cancellations, and ticket locking."
               values={accessDraft.flights}
+              labels={{ view: "View flights", book: "Book flights", cancel: "Cancel bookings", lockTickets: "Lock tickets (48hr hold)" }}
               onChange={(key, value) => updateAccess("flights", key, value)}
             />
             <PermissionSection

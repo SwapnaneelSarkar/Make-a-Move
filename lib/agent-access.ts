@@ -4,7 +4,7 @@ import { type Role } from "./mock-data"
 export type AccessModule = "flights" | "hotels" | "wallet" | "reports" | "markups"
 
 export type AgentAccessMatrix = {
-  flights: { view: boolean; book: boolean; cancel: boolean }
+  flights: { view: boolean; book: boolean; cancel: boolean; lockTickets: boolean }
   hotels: { view: boolean; book: boolean; cancel: boolean }
   wallet: { view: boolean; debit: boolean }
   reports: { view: boolean; download: boolean }
@@ -14,7 +14,7 @@ export type AgentAccessMatrix = {
 const STORAGE_KEY = "agent_access_overrides"
 
 const BASELINE: AgentAccessMatrix = {
-  flights: { view: true, book: true, cancel: true },
+  flights: { view: true, book: true, cancel: true, lockTickets: false },
   hotels: { view: true, book: true, cancel: true },
   wallet: { view: true, debit: true },
   reports: { view: false, download: false },
@@ -24,7 +24,7 @@ const BASELINE: AgentAccessMatrix = {
 const DEFAULT_BY_ROLE: Record<Role, AgentAccessMatrix> = {
   SUPER_ADMIN: {
     ...BASELINE,
-    flights: { view: true, book: false, cancel: false },
+    flights: { view: true, book: false, cancel: false, lockTickets: false },
     hotels: { view: true, book: false, cancel: false },
     wallet: { view: true, debit: false },
     markups: { view: true, edit: true },
@@ -32,11 +32,13 @@ const DEFAULT_BY_ROLE: Record<Role, AgentAccessMatrix> = {
   },
   AGENCY_ADMIN: {
     ...BASELINE,
+    flights: { view: true, book: true, cancel: true, lockTickets: true },
     markups: { view: true, edit: true },
     reports: { view: true, download: true },
   },
   AGENT: {
     ...BASELINE,
+    flights: { view: true, book: true, cancel: true, lockTickets: false },
     markups: { view: true, edit: false },
     wallet: { view: true, debit: true },
     reports: { view: false, download: false },
@@ -44,14 +46,14 @@ const DEFAULT_BY_ROLE: Record<Role, AgentAccessMatrix> = {
   SUB_AGENT: {
     ...BASELINE,
     hotels: { view: true, book: true, cancel: false },
-    flights: { view: true, book: true, cancel: false },
+    flights: { view: true, book: true, cancel: false, lockTickets: false },
     wallet: { view: true, debit: false },
     reports: { view: false, download: false },
     markups: { view: true, edit: false },
   },
   FINANCE_TEAM: {
     ...BASELINE,
-    flights: { view: true, book: false, cancel: false },
+    flights: { view: true, book: false, cancel: false, lockTickets: false },
     hotels: { view: true, book: false, cancel: false },
     wallet: { view: true, debit: false },
     markups: { view: true, edit: false },
@@ -59,7 +61,7 @@ const DEFAULT_BY_ROLE: Record<Role, AgentAccessMatrix> = {
   },
   SUPPORT_TEAM: {
     ...BASELINE,
-    flights: { view: true, book: false, cancel: true },
+    flights: { view: true, book: false, cancel: true, lockTickets: false },
     hotels: { view: true, book: false, cancel: true },
     wallet: { view: true, debit: false },
     reports: { view: true, download: false },
@@ -67,7 +69,7 @@ const DEFAULT_BY_ROLE: Record<Role, AgentAccessMatrix> = {
   },
   KYC_COMPLIANCE_TEAM: {
     ...BASELINE,
-    flights: { view: true, book: false, cancel: false },
+    flights: { view: true, book: false, cancel: false, lockTickets: false },
     hotels: { view: true, book: false, cancel: false },
     wallet: { view: true, debit: false },
     reports: { view: true, download: true },

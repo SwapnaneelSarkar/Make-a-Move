@@ -148,6 +148,7 @@
     --color-blue-100: #dbeafe;
     --color-blue-200: #bedbff;
     --color-blue-300: #90c5ff;
+    --color-blue-400: #54a2ff;
     --color-blue-500: #3080ff;
     --color-blue-600: #155dfc;
     --color-blue-700: #1447e6;
@@ -278,6 +279,7 @@
       --color-blue-100: lab(92.0301% -2.24757 -11.6453);
       --color-blue-200: lab(86.15% -4.04379 -21.0797);
       --color-blue-300: lab(77.5052% -6.4629 -36.42);
+      --color-blue-400: lab(65.0361% -1.42065 -56.9802);
       --color-blue-500: lab(54.1736% 13.3369 -74.6839);
       --color-blue-600: lab(44.0605% 29.0279 -86.0352);
       --color-blue-700: lab(36.9089% 35.0961 -85.6872);
@@ -1369,6 +1371,10 @@
     min-height: 120px;
   }
 
+  .min-h-\[400px\] {
+    min-height: 400px;
+  }
+
   .min-h-screen {
     min-height: 100vh;
   }
@@ -2372,6 +2378,10 @@
 
   .border-blue-200 {
     border-color: var(--color-blue-200);
+  }
+
+  .border-blue-300 {
+    border-color: var(--color-blue-300);
   }
 
   .border-blue-600 {
@@ -3724,6 +3734,10 @@
     color: var(--color-gray-900);
   }
 
+  .text-green-500 {
+    color: var(--color-green-500);
+  }
+
   .text-green-600 {
     color: var(--color-green-600);
   }
@@ -4866,6 +4880,18 @@
     @supports (color: color-mix(in lab, red, red)) {
       .hover\:bg-primary-foreground\/20:hover {
         background-color: color-mix(in oklab, var(--primary-foreground) 20%, transparent);
+      }
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-primary\/10:hover {
+      background-color: var(--primary);
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-primary\/10:hover {
+        background-color: color-mix(in oklab, var(--primary) 10%, transparent);
       }
     }
   }
@@ -6732,6 +6758,12 @@
   }
 
   @media (min-width: 64rem) {
+    .lg\:grid-cols-\[1\.6fr_1fr\] {
+      grid-template-columns: 1.6fr 1fr;
+    }
+  }
+
+  @media (min-width: 64rem) {
     .lg\:grid-cols-\[2fr\,1fr\] {
       grid-template-columns: 2fr, 1fr;
     }
@@ -6791,6 +6823,16 @@
 
   .dark\:border-yellow-800:is(.dark *) {
     border-color: var(--color-yellow-800);
+  }
+
+  .dark\:bg-blue-950\/20:is(.dark *) {
+    background-color: #16245633;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-blue-950\/20:is(.dark *) {
+      background-color: color-mix(in oklab, var(--color-blue-950) 20%, transparent);
+    }
   }
 
   .dark\:bg-destructive\/60:is(.dark *) {
@@ -6897,6 +6939,14 @@
 
   .dark\:text-blue-300:is(.dark *) {
     color: var(--color-blue-300);
+  }
+
+  .dark\:text-blue-400:is(.dark *) {
+    color: var(--color-blue-400);
+  }
+
+  .dark\:text-green-300:is(.dark *) {
+    color: var(--color-green-300);
   }
 
   .dark\:text-muted-foreground:is(.dark *) {

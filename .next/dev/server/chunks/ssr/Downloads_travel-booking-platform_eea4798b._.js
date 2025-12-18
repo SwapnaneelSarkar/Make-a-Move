@@ -1825,7 +1825,8 @@ const BASELINE = {
     flights: {
         view: true,
         book: true,
-        cancel: true
+        cancel: true,
+        lockTickets: false
     },
     hotels: {
         view: true,
@@ -1851,7 +1852,8 @@ const DEFAULT_BY_ROLE = {
         flights: {
             view: true,
             book: false,
-            cancel: false
+            cancel: false,
+            lockTickets: false
         },
         hotels: {
             view: true,
@@ -1873,6 +1875,12 @@ const DEFAULT_BY_ROLE = {
     },
     AGENCY_ADMIN: {
         ...BASELINE,
+        flights: {
+            view: true,
+            book: true,
+            cancel: true,
+            lockTickets: true
+        },
         markups: {
             view: true,
             edit: true
@@ -1884,6 +1892,12 @@ const DEFAULT_BY_ROLE = {
     },
     AGENT: {
         ...BASELINE,
+        flights: {
+            view: true,
+            book: true,
+            cancel: true,
+            lockTickets: false
+        },
         markups: {
             view: true,
             edit: false
@@ -1907,7 +1921,8 @@ const DEFAULT_BY_ROLE = {
         flights: {
             view: true,
             book: true,
-            cancel: false
+            cancel: false,
+            lockTickets: false
         },
         wallet: {
             view: true,
@@ -1927,7 +1942,8 @@ const DEFAULT_BY_ROLE = {
         flights: {
             view: true,
             book: false,
-            cancel: false
+            cancel: false,
+            lockTickets: false
         },
         hotels: {
             view: true,
@@ -1952,7 +1968,8 @@ const DEFAULT_BY_ROLE = {
         flights: {
             view: true,
             book: false,
-            cancel: true
+            cancel: true,
+            lockTickets: false
         },
         hotels: {
             view: true,
@@ -1977,7 +1994,8 @@ const DEFAULT_BY_ROLE = {
         flights: {
             view: true,
             book: false,
-            cancel: false
+            cancel: false,
+            lockTickets: false
         },
         hotels: {
             view: true,

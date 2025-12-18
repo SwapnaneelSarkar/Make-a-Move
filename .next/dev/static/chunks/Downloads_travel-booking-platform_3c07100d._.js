@@ -1842,13 +1842,15 @@ __turbopack_context__.s([
     ()=>refundsDB,
     "scheduledReportsDB",
     ()=>scheduledReportsDB,
+    "ticketLocksDB",
+    ()=>ticketLocksDB,
     "transactionsDB",
     ()=>transactionsDB,
     "walletDepositRequestsDB",
     ()=>walletDepositRequestsDB
 ]);
 const DB_NAME = "TravelBookingDB";
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 const TABLES = {
     BOOKINGS: "bookings",
     TRANSACTIONS: "transactions",
@@ -1862,7 +1864,8 @@ const TABLES = {
     PROMOTIONAL_BANNERS: "promotional_banners",
     WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
     AGENT_STATUS: "agent_status",
-    GROUP_BOOKINGS: "group_bookings"
+    GROUP_BOOKINGS: "group_bookings",
+    TICKET_LOCKS: "ticket_locks"
 };
 // Database initialization
 let dbInstance = null;
@@ -1991,6 +1994,18 @@ async function initDB() {
                 });
                 groupStore.createIndex("status", "status");
                 groupStore.createIndex("createdAt", "createdAt");
+            }
+            if (!db.objectStoreNames.contains(TABLES.TICKET_LOCKS)) {
+                const locksStore = db.createObjectStore(TABLES.TICKET_LOCKS, {
+                    keyPath: "id"
+                });
+                locksStore.createIndex("lockId", "lockId", {
+                    unique: true
+                });
+                locksStore.createIndex("agentId", "agentId");
+                locksStore.createIndex("status", "status");
+                locksStore.createIndex("expiresAt", "expiresAt");
+                locksStore.createIndex("flightId", "flightId");
             }
         };
     });
@@ -2378,6 +2393,46 @@ const groupBookingsDB = {
     delete: (id)=>remove(TABLES.GROUP_BOOKINGS, id),
     search: (query)=>search(TABLES.GROUP_BOOKINGS, query),
     filter: (filters)=>filter(TABLES.GROUP_BOOKINGS, filters)
+};
+const ticketLocksDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() // 48 hours from now
+        ;
+        const lockId = `LOCK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        // Calculate defaults for quantity and pricePerTicket if not provided
+        const quantity = data.quantity || 1;
+        const pricePerTicket = data.pricePerTicket || data.lockedPrice / quantity;
+        return create(TABLES.TICKET_LOCKS, {
+            ...data,
+            quantity,
+            pricePerTicket,
+            lockId,
+            lockedAt: now,
+            expiresAt,
+            status: "LOCKED",
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.TICKET_LOCKS, id),
+    readAll: ()=>readAll(TABLES.TICKET_LOCKS),
+    update: (id, data)=>update(TABLES.TICKET_LOCKS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    delete: (id)=>remove(TABLES.TICKET_LOCKS, id),
+    search: (query)=>search(TABLES.TICKET_LOCKS, query),
+    filter: (filters)=>filter(TABLES.TICKET_LOCKS, filters),
+    readByAgentId: async (agentId)=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        return all.filter((lock)=>lock.agentId === agentId && lock.status === "LOCKED");
+    },
+    readActive: async ()=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        const now = new Date().toISOString();
+        return all.filter((lock)=>lock.status === "LOCKED" && lock.expiresAt > now);
+    }
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

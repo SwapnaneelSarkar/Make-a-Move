@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { FlightSearch } from "@/components/booking/flight-search"
 import { FlightCard } from "@/components/booking/flight-card"
 import { MOCK_FLIGHTS, type Flight } from "@/lib/mock-data"
-import { CheckCircle2, Lock, ChevronRight, AlertCircle } from "lucide-react"
+import { CheckCircle2, Lock, ChevronRight, AlertCircle, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -34,7 +34,7 @@ import {
   validateMandatoryFields,
   type FlightStage,
 } from "@/lib/stage-management"
-import { bookingsDB, transactionsDB } from "@/lib/local-db"
+import { bookingsDB, transactionsDB, ticketLocksDB, type TicketLock } from "@/lib/local-db"
 import { audit } from "@/lib/audit-utils"
 import { checkFlightPolicyCompliance, generateBookingId, generatePNR } from "@/lib/policy-utils"
 import { downloadTicket, type TicketData } from "@/lib/ticket-generator"
@@ -153,9 +153,14 @@ export default function FlightsPage() {
   const canViewWallet = agentAccess.wallet.view
   const canEditMarkups = agentAccess.markups.edit
   const canViewMarkups = agentAccess.markups.view
+  const canLockTickets = agentAccess.flights.lockTickets
   
-  // Check if we're coming from listing page with a selected flight
+  // Check if we're coming from listing page with a selected flight or from locked ticket
   const selectedFlightId = searchParams.get("selectedFlight")
+  const lockId = searchParams.get("lockId")
+  const [currentLock, setCurrentLock] = useState<TicketLock | null>(null)
+  const [isFromLock, setIsFromLock] = useState(false)
+  const [lockedPricePerTicket, setLockedPricePerTicket] = useState<number | null>(null)
 
   useEffect(() => {
     setAgentAccess(getAgentAccess(currentUser.id, currentUser.role))
@@ -283,9 +288,33 @@ export default function FlightsPage() {
   }, [agentAccess.markups.view, agentAccess.markups.edit, agentAccess.wallet.debit])
   
   // Calculate pricing breakdown using useMemo
+  // If coming from a locked ticket, use the locked price
   const pricingBreakdown = useMemo(() => {
     if (!selectedFlight) return null
     
+    // If from locked ticket, use locked price per ticket (already includes all markups)
+    if (isFromLock && lockedPricePerTicket !== null) {
+      // The locked price already includes base fare + taxes + markups
+      // We need to reverse engineer the breakdown to show it properly
+      // Typically: baseFare + superAdminMarkup + taxes + agentMarkup = lockedPricePerTicket
+      // For display, we'll estimate: baseFare ≈ flight.price, taxes = 3750, rest is markup
+      const estimatedBaseFare = selectedFlight.price
+      const taxes = 3750
+      const estimatedMarkup = lockedPricePerTicket - estimatedBaseFare - taxes
+      
+      return {
+        baseFare: estimatedBaseFare + (resolvedMarkup.superAdminMarkup || 0), // Include super admin markup in base
+        taxes,
+        markup: Math.max(0, estimatedMarkup - (resolvedMarkup.superAdminMarkup || 0)), // Agent markup only
+        totalAmount: lockedPricePerTicket, // Use locked price as total
+        markupPercent: 0,
+        superAdminMarkup: resolvedMarkup.superAdminMarkup || 0,
+        agentMarkup: Math.max(0, estimatedMarkup - (resolvedMarkup.superAdminMarkup || 0)),
+        appliedMarkup: true,
+      }
+    }
+    
+    // Normal flow - use current flight price
     const baseFare = selectedFlight.price
     const taxes = 3750
     
@@ -302,7 +331,7 @@ export default function FlightsPage() {
         applyMarkup: markupControls.applyMarkup,
       }
     )
-  }, [selectedFlight, isInternational, searchData.specialFare, markupControls.applyMarkup, markupControls.agentMarkup, resolvedMarkup.superAdminMarkup])
+  }, [selectedFlight, isInternational, searchData.specialFare, markupControls.applyMarkup, markupControls.agentMarkup, resolvedMarkup.superAdminMarkup, isFromLock, lockedPricePerTicket])
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -316,9 +345,137 @@ export default function FlightsPage() {
     }))
   }, [seatSelections, seatPricePerSeat])
 
+  // Handle locked ticket conversion
+  useEffect(() => {
+    const loadLockData = async () => {
+      if (!lockId) return
+
+      try {
+        const lock = await ticketLocksDB.read(lockId)
+        if (!lock || lock.status !== "LOCKED") {
+          toast.error("Invalid or expired lock", {
+            description: "This ticket lock is no longer valid.",
+          })
+          router.push("/dashboard/flights/locked-tickets")
+          return
+        }
+
+        // Check if lock has expired
+        const now = new Date().toISOString()
+        if (lock.expiresAt <= now) {
+          await ticketLocksDB.update(lock.id, { status: "EXPIRED" })
+          toast.error("Lock expired", {
+            description: "This ticket lock has expired. Please lock a new ticket.",
+          })
+          router.push("/dashboard/flights/locked-tickets")
+          return
+        }
+
+        setCurrentLock(lock)
+        setIsFromLock(true)
+        setLockedPricePerTicket(lock.pricePerTicket || lock.lockedPrice / (lock.quantity || 1))
+
+        // Pre-fill flight data
+        setSelectedFlight(lock.flightDetails)
+        
+        // Pre-fill search data
+        setSearchData({
+          tripType: lock.searchData.tripType || "one-way",
+          origin: lock.searchData.origin,
+          destination: lock.searchData.destination,
+          departureDate: lock.searchData.departureDate ? new Date(lock.searchData.departureDate) : null,
+          returnDate: lock.searchData.returnDate ? new Date(lock.searchData.returnDate) : null,
+          travellers: lock.quantity.toString(),
+          class: lock.searchData.class || "Economy",
+          specialFare: "Regular",
+        })
+        setIsInternational(lock.searchData.isInternational)
+
+        // Pre-fill passenger count
+        if (lock.passengerCount) {
+          setPassengerCount(lock.passengerCount)
+        } else {
+          setPassengerCount({
+            adults: lock.quantity || 1,
+            children: 0,
+            infants: 0,
+          })
+        }
+
+        // Pre-fill passenger details if available
+        if (lock.passengerDetails) {
+          setPassengerDetails(lock.passengerDetails)
+        }
+
+        // Pre-fill ancillaries if available
+        if (lock.ancillaries) {
+          setAncillaries(lock.ancillaries)
+        }
+
+        // Pre-fill seat selections if available
+        if (lock.seatSelections) {
+          setSeatSelections(lock.seatSelections)
+        }
+
+        // Set listing data
+        const newListingData = {
+          selectedFlight: lock.flightId,
+          fareType: "Standard",
+          airline: lock.flightDetails.airline,
+          time: lock.flightDetails.departure.time,
+          price: lock.flightDetails.price.toString(),
+        }
+        setListingData(newListingData)
+
+        // Check policy compliance
+        const departureDate = lock.searchData.departureDate ? new Date(lock.searchData.departureDate) : new Date(lock.flightDetails.departure.time)
+        const cabinClass = lock.searchData.class || "Economy"
+        const policyResult = checkFlightPolicyCompliance(
+          lock.flightDetails.price,
+          cabinClass,
+          departureDate,
+          lock.searchData.isInternational,
+        )
+        setPolicyCheckResult(policyResult)
+
+        // Transition to Fare Review stage
+        const transitionResult = transitionStage(
+          "FLIGHT",
+          bookingId,
+          "Listing",
+          "Fare Review",
+          newListingData,
+          currentUser.id,
+          `Locked ticket ${lock.lockId} - Flight ${lock.flightDetails.flightNumber} selected`,
+        )
+
+        if (transitionResult.success) {
+          setCurrentStage("Fare Review")
+          fareReviewStartTimeRef.current = Date.now()
+          setFareAccepted(true) // Auto-accept fare since price is locked
+        } else {
+          toast.error("Cannot proceed", { description: transitionResult.error })
+        }
+
+        // Clear lockId from URL
+        const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete("lockId")
+        router.replace(`/dashboard/flights?${newParams.toString()}`)
+      } catch (error) {
+        console.error("Failed to load lock data:", error)
+        toast.error("Failed to load locked ticket", {
+          description: "An error occurred while loading the locked ticket data.",
+        })
+        router.push("/dashboard/flights/locked-tickets")
+      }
+    }
+
+    loadLockData()
+  }, [lockId, router, searchParams, bookingId, currentUser.id])
+
   // Handle flight selection from listing page
   useEffect(() => {
-    if (selectedFlightId) {
+    if (selectedFlightId && !lockId) {
       let flight = MOCK_FLIGHTS.find((f) => f.id === selectedFlightId)
 
       // If no mock flight matches, try generated fallback flights (matches listing page fallback)
@@ -824,6 +981,107 @@ export default function FlightsPage() {
     return Object.keys(newErrors).length === 0
   }
 
+  const handleLockTicket = async () => {
+    if (!selectedFlight || !canLockTickets) {
+      toast.error("Cannot lock ticket", {
+        description: "You don't have permission to lock tickets or no flight is selected.",
+      })
+      return
+    }
+
+    if (!fareAccepted) {
+      toast.error("Please accept fare rules", {
+        description: "You must accept the fare terms before locking the ticket.",
+      })
+      return
+    }
+
+    try {
+      // Calculate locked price (total amount at current pricing)
+      const ancillariesTotal =
+        (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
+        (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
+        (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
+      
+      let pricePerTicket = 0
+      if (pricingBreakdown) {
+        pricePerTicket = pricingBreakdown.totalAmount + ancillariesTotal
+      } else if (selectedFlight) {
+        const breakdown = calculatePricingBreakdown(
+          selectedFlight.price,
+          3750,
+          "flights",
+          isInternational ? "International" : "Domestic",
+          searchData.specialFare || "Regular",
+          selectedFlight.currency || "INR",
+          {
+            superAdminMarkup: resolvedMarkup.superAdminMarkup,
+            agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+            applyMarkup: markupControls.applyMarkup,
+          }
+        )
+        pricePerTicket = breakdown.totalAmount + ancillariesTotal
+      }
+
+      const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants
+      const quantity = Math.max(1, totalTravellers)
+      const lockedPrice = pricePerTicket * quantity
+
+      const ticketLock = await ticketLocksDB.create({
+        flightId: selectedFlight.id,
+        flightDetails: selectedFlight,
+        lockedPrice,
+        pricePerTicket,
+        quantity,
+        agentId: currentUser.id,
+        agentName: currentUser.name,
+        searchData: {
+          origin: searchData.origin,
+          destination: searchData.destination,
+          departureDate: searchData.departureDate?.toISOString() || "",
+          returnDate: searchData.returnDate?.toISOString() || "",
+          travellers: quantity.toString(),
+          class: searchData.class || "Economy",
+          tripType: searchData.tripType || "one-way",
+          isInternational,
+        },
+        passengerDetails,
+        passengerCount,
+        ancillaries,
+        seatSelections,
+      })
+
+      await audit.create("ticket_locks", ticketLock.id, {
+        action: "LOCK_CREATED",
+        flightId: selectedFlight.id,
+        lockedPrice,
+        pricePerTicket,
+        quantity,
+        agentId: currentUser.id,
+      })
+
+      toast.success("Ticket locked successfully!", {
+        description: `${quantity} ticket${quantity > 1 ? "s" : ""} locked for 48 hours at ₹${pricePerTicket.toLocaleString("en-IN")} per ticket. Total: ₹${lockedPrice.toLocaleString("en-IN")}. Lock ID: ${ticketLock.lockId}`,
+        action: {
+          label: "View Locks",
+          onClick: () => {
+            router.push("/dashboard/flights/locked-tickets")
+          },
+        },
+      })
+
+      // Reset to search stage after locking
+      setCurrentStage("Search")
+      setSelectedFlight(null)
+      setFareAccepted(false)
+    } catch (error) {
+      console.error("Failed to lock ticket:", error)
+      toast.error("Failed to lock ticket", {
+        description: "An error occurred while locking the ticket. Please try again.",
+      })
+    }
+  }
+
   const handleDownloadTicket = (includeAgentMarkup: boolean) => {
     if (!selectedFlight || !bookingId || !pnr) {
       toast.error("Ticket data not available", {
@@ -954,13 +1212,14 @@ export default function FlightsPage() {
       stageData = listingData
     } else if (currentStage === "Fare Review") {
       // Fare Acceptance: Must accept fare rules before continuing
-      if (!fareAccepted) {
+      // For locked tickets, fare is auto-accepted and checkbox is hidden
+      if (!isFromLock && !fareAccepted) {
         toast.error("Please accept the fare rules to continue", {
           description: "You must accept the fare terms before proceeding",
         })
         return
       }
-      stageData = { fareAccepted: true }
+      stageData = { fareAccepted: true, isFromLock }
     } else if (currentStage === "Passenger Details") {
       // Validate passenger count first
       if (!validatePassengerCount()) {
@@ -1011,7 +1270,12 @@ export default function FlightsPage() {
       
       // Use pricing breakdown if available, otherwise calculate
       let totalAmount = 0
-      if (selectedFlight && pricingBreakdown) {
+      if (isFromLock && lockedPricePerTicket !== null) {
+        // If from locked ticket, use locked price per ticket * quantity + ancillaries
+        const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants
+        const quantity = Math.max(1, totalTravellers)
+        totalAmount = (lockedPricePerTicket * quantity) + ancillariesTotal
+      } else if (selectedFlight && pricingBreakdown) {
         totalAmount = pricingBreakdown.totalAmount + ancillariesTotal
       } else if (selectedFlight) {
         // Fallback calculation
@@ -1083,24 +1347,32 @@ export default function FlightsPage() {
             (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) +
             (ancillaries.mealSelection ? ancillaries.mealPrice : 0) +
             (ancillaries.seatSelection ? ancillaries.seatPrice : 0)
-          const fallbackPricing = selectedFlight
-            ? calculatePricingBreakdown(
-                selectedFlight.price,
-                3750,
-                "flights",
-                isInternational ? "International" : "Domestic",
-                searchData.specialFare || "Regular",
-                selectedFlight.currency || "INR",
-                {
-                  superAdminMarkup: resolvedMarkup.superAdminMarkup,
-                  agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-                  applyMarkup: true,
-                }
-              )
-            : null
-          const finalPricingBreakdown = pricingBreakdown ?? fallbackPricing
-          const bookingTotal =
-            (finalPricingBreakdown?.totalAmount || selectedFlight?.price || 0) + ancillariesTotal
+          
+          // Calculate booking total - use locked price if from lock
+          let bookingTotal = 0
+          if (isFromLock && lockedPricePerTicket !== null) {
+            const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants
+            const quantity = Math.max(1, totalTravellers)
+            bookingTotal = (lockedPricePerTicket * quantity) + ancillariesTotal
+          } else {
+            const fallbackPricing = selectedFlight
+              ? calculatePricingBreakdown(
+                  selectedFlight.price,
+                  3750,
+                  "flights",
+                  isInternational ? "International" : "Domestic",
+                  searchData.specialFare || "Regular",
+                  selectedFlight.currency || "INR",
+                  {
+                    superAdminMarkup: resolvedMarkup.superAdminMarkup,
+                    agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                    applyMarkup: true,
+                  }
+                )
+              : null
+            const finalPricingBreakdown = pricingBreakdown ?? fallbackPricing
+            bookingTotal = (finalPricingBreakdown?.totalAmount || selectedFlight?.price || 0) + ancillariesTotal
+          }
 
           const booking = await bookingsDB.create({
             type: "FLIGHT",
@@ -1116,9 +1388,9 @@ export default function FlightsPage() {
                 seatSelections,
                 markup: {
                   applied: markupControls.applyMarkup,
-                  superAdminMarkup: finalPricingBreakdown?.superAdminMarkup ?? 0,
+                  superAdminMarkup: pricingBreakdown?.superAdminMarkup ?? resolvedMarkup.superAdminMarkup ?? 0,
                   agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-                  totalMarkup: finalPricingBreakdown?.markup ?? 0,
+                  totalMarkup: pricingBreakdown?.markup ?? (markupControls.applyMarkup ? markupControls.agentMarkup : 0),
                   showOnDocs: markupControls.applyMarkup, // Always show convenience fees on docs when markup is applied
                 },
             },
@@ -1146,13 +1418,23 @@ export default function FlightsPage() {
 
           await audit.create("bookings", booking.id, { type: "FLIGHT", amount: selectedFlight?.price || 0 })
 
+          // If booking was from a locked ticket, mark lock as converted
+          if (currentLock) {
+            await ticketLocksDB.update(currentLock.id, { status: "CONVERTED" })
+            await audit.create("ticket_locks", currentLock.id, {
+              action: "CONVERTED_TO_BOOKING",
+              bookingId: booking.id,
+              agentId: currentUser.id,
+            })
+          }
+
           if (policyCheckResult?.requiresApproval) {
             toast.success("Booking submitted for approval!", {
-              description: `Booking ID: ${newBookingId}, PNR: ${newPnr}. Policy violations require approval.`,
+              description: `Booking ID: ${newBookingId}, PNR: ${newPnr}. Policy violations require approval.${currentLock ? " Locked ticket converted." : ""}`,
             })
           } else {
             toast.success("Booking confirmed!", {
-              description: `Booking ID: ${newBookingId}, PNR: ${newPnr}`,
+              description: `Booking ID: ${newBookingId}, PNR: ${newPnr}.${currentLock ? " Locked ticket converted." : ""}`,
             })
           }
 
@@ -1261,9 +1543,16 @@ export default function FlightsPage() {
         <div className="transition-all duration-300">
           <div className="flex items-center gap-2 mb-4">
             <h2 className="text-2xl font-bold">Search Criteria</h2>
-            <Button asChild variant="outline" size="sm" className="ml-auto">
-              <Link href="/dashboard/flights/group-requests">Manage Group Requests</Link>
-            </Button>
+            <div className="flex gap-2 ml-auto">
+              {canLockTickets && (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/dashboard/flights/locked-tickets">View Locked Tickets</Link>
+                </Button>
+              )}
+              <Button asChild variant="outline" size="sm">
+                <Link href="/dashboard/flights/group-requests">Manage Group Requests</Link>
+              </Button>
+            </div>
           </div>
           <FlightSearch
             tripType={searchData.tripType}
@@ -1326,7 +1615,43 @@ export default function FlightsPage() {
         <div className="border-2 rounded-xl p-6 space-y-6 bg-card shadow-lg">
           <div className="flex items-center gap-2">
             <h3 className="text-2xl font-bold">Fare Review</h3>
+            {isFromLock && currentLock && (
+              <Badge className="bg-blue-500 text-white">
+                <Lock className="h-3 w-3 mr-1" />
+                Price Locked
+              </Badge>
+            )}
           </div>
+          
+          {isFromLock && currentLock && (
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 border-2 border-blue-300 dark:border-blue-800 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Lock className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold text-blue-800 dark:text-blue-200 mb-1">
+                    Locked Ticket - Price Protected
+                  </p>
+                  <div className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                    <p>Lock ID: <span className="font-mono">{currentLock.lockId}</span></p>
+                    <p>Locked Price: ₹{lockedPricePerTicket?.toLocaleString("en-IN")} per ticket (protected for 48 hours)</p>
+                    <p>Time Remaining: {(() => {
+                      try {
+                        const expires = new Date(currentLock.expiresAt)
+                        const now = new Date()
+                        if (expires <= now) return "Expired"
+                        const diffMs = expires.getTime() - now.getTime()
+                        const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+                        const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+                        return `${diffHours}h ${diffMinutes}m`
+                      } catch {
+                        return "Invalid"
+                      }
+                    })()}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Policy Compliance Warnings - Only show to AGENT and SUB_AGENT */}
           {policyCheckResult &&
@@ -1457,22 +1782,49 @@ export default function FlightsPage() {
           })()}
 
           {/* Fare Acceptance Checkbox */}
-          <div className="flex items-start gap-2 pt-2">
-            <input
-              type="checkbox"
-              id="fareAccepted"
-              checked={fareAccepted}
-              onChange={(e) => setFareAccepted(e.target.checked)}
-              className="mt-1 rounded border-gray-300"
-            />
-            <Label htmlFor="fareAccepted" className="cursor-pointer text-sm">
-              I accept the fare rules, cancellation policy, and terms & conditions{" "}
-              <span className="text-red-500">*</span>
-            </Label>
-          </div>
+          {!isFromLock && (
+            <div className="flex items-start gap-2 pt-2">
+              <input
+                type="checkbox"
+                id="fareAccepted"
+                checked={fareAccepted}
+                onChange={(e) => setFareAccepted(e.target.checked)}
+                className="mt-1 rounded border-gray-300"
+              />
+              <Label htmlFor="fareAccepted" className="cursor-pointer text-sm">
+                I accept the fare rules, cancellation policy, and terms & conditions{" "}
+                <span className="text-red-500">*</span>
+              </Label>
+            </div>
+          )}
+          {isFromLock && (
+            <div className="flex items-start gap-2 pt-2">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+              <Label className="text-sm text-green-700 dark:text-green-300">
+                Fare rules accepted (price locked at ₹{lockedPricePerTicket?.toLocaleString("en-IN")} per ticket)
+              </Label>
+            </div>
+          )}
 
-          <div className="flex justify-end pt-2">
-            <Button onClick={handleNextStage} disabled={!fareAccepted} size="lg" className="min-w-[200px] font-semibold">
+          <div className="flex justify-end gap-3 pt-2">
+            {canLockTickets && !isFromLock && (
+              <Button
+                onClick={handleLockTicket}
+                variant="outline"
+                size="lg"
+                className="min-w-[200px] font-semibold"
+                disabled={!fareAccepted}
+              >
+                <Clock className="w-4 h-4 mr-2" />
+                Lock Ticket (48hrs)
+              </Button>
+            )}
+            <Button 
+              onClick={handleNextStage} 
+              disabled={!isFromLock && !fareAccepted} 
+              size="lg" 
+              className="min-w-[200px] font-semibold"
+            >
               Continue to Passenger Details <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>

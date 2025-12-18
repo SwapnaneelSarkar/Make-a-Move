@@ -2551,13 +2551,15 @@ __turbopack_context__.s([
     ()=>refundsDB,
     "scheduledReportsDB",
     ()=>scheduledReportsDB,
+    "ticketLocksDB",
+    ()=>ticketLocksDB,
     "transactionsDB",
     ()=>transactionsDB,
     "walletDepositRequestsDB",
     ()=>walletDepositRequestsDB
 ]);
 const DB_NAME = "TravelBookingDB";
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 const TABLES = {
     BOOKINGS: "bookings",
     TRANSACTIONS: "transactions",
@@ -2571,7 +2573,8 @@ const TABLES = {
     PROMOTIONAL_BANNERS: "promotional_banners",
     WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
     AGENT_STATUS: "agent_status",
-    GROUP_BOOKINGS: "group_bookings"
+    GROUP_BOOKINGS: "group_bookings",
+    TICKET_LOCKS: "ticket_locks"
 };
 // Database initialization
 let dbInstance = null;
@@ -2700,6 +2703,18 @@ async function initDB() {
                 });
                 groupStore.createIndex("status", "status");
                 groupStore.createIndex("createdAt", "createdAt");
+            }
+            if (!db.objectStoreNames.contains(TABLES.TICKET_LOCKS)) {
+                const locksStore = db.createObjectStore(TABLES.TICKET_LOCKS, {
+                    keyPath: "id"
+                });
+                locksStore.createIndex("lockId", "lockId", {
+                    unique: true
+                });
+                locksStore.createIndex("agentId", "agentId");
+                locksStore.createIndex("status", "status");
+                locksStore.createIndex("expiresAt", "expiresAt");
+                locksStore.createIndex("flightId", "flightId");
             }
         };
     });
@@ -3087,6 +3102,46 @@ const groupBookingsDB = {
     delete: (id)=>remove(TABLES.GROUP_BOOKINGS, id),
     search: (query)=>search(TABLES.GROUP_BOOKINGS, query),
     filter: (filters)=>filter(TABLES.GROUP_BOOKINGS, filters)
+};
+const ticketLocksDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() // 48 hours from now
+        ;
+        const lockId = `LOCK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        // Calculate defaults for quantity and pricePerTicket if not provided
+        const quantity = data.quantity || 1;
+        const pricePerTicket = data.pricePerTicket || data.lockedPrice / quantity;
+        return create(TABLES.TICKET_LOCKS, {
+            ...data,
+            quantity,
+            pricePerTicket,
+            lockId,
+            lockedAt: now,
+            expiresAt,
+            status: "LOCKED",
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.TICKET_LOCKS, id),
+    readAll: ()=>readAll(TABLES.TICKET_LOCKS),
+    update: (id, data)=>update(TABLES.TICKET_LOCKS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    delete: (id)=>remove(TABLES.TICKET_LOCKS, id),
+    search: (query)=>search(TABLES.TICKET_LOCKS, query),
+    filter: (filters)=>filter(TABLES.TICKET_LOCKS, filters),
+    readByAgentId: async (agentId)=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        return all.filter((lock)=>lock.agentId === agentId && lock.status === "LOCKED");
+    },
+    readActive: async ()=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        const now = new Date().toISOString();
+        return all.filter((lock)=>lock.status === "LOCKED" && lock.expiresAt > now);
+    }
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -4155,6 +4210,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booki
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/lucide-react/dist/esm/icons/lock.js [app-client] (ecmascript) <export default as Lock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/lucide-react/dist/esm/icons/chevron-right.js [app-client] (ecmascript) <export default as ChevronRight>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/lucide-react/dist/esm/icons/circle-alert.js [app-client] (ecmascript) <export default as AlertCircle>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/node_modules/lucide-react/dist/esm/icons/clock.js [app-client] (ecmascript) <export default as Clock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/components/ui/button.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/components/ui/input.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Downloads/travel-booking-platform/components/ui/label.tsx [app-client] (ecmascript)");
@@ -4353,8 +4409,13 @@ function FlightsPage() {
     const canViewWallet = agentAccess.wallet.view;
     const canEditMarkups = agentAccess.markups.edit;
     const canViewMarkups = agentAccess.markups.view;
-    // Check if we're coming from listing page with a selected flight
+    const canLockTickets = agentAccess.flights.lockTickets;
+    // Check if we're coming from listing page with a selected flight or from locked ticket
     const selectedFlightId = searchParams.get("selectedFlight");
+    const lockId = searchParams.get("lockId");
+    const [currentLock, setCurrentLock] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isFromLock, setIsFromLock] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [lockedPricePerTicket, setLockedPricePerTicket] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "FlightsPage.useEffect": ()=>{
             setAgentAccess((0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$agent$2d$access$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAgentAccess"])(currentUser.id, currentUser.role));
@@ -4489,9 +4550,31 @@ function FlightsPage() {
         agentAccess.wallet.debit
     ]);
     // Calculate pricing breakdown using useMemo
+    // If coming from a locked ticket, use the locked price
     const pricingBreakdown = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "FlightsPage.useMemo[pricingBreakdown]": ()=>{
             if (!selectedFlight) return null;
+            // If from locked ticket, use locked price per ticket (already includes all markups)
+            if (isFromLock && lockedPricePerTicket !== null) {
+                // The locked price already includes base fare + taxes + markups
+                // We need to reverse engineer the breakdown to show it properly
+                // Typically: baseFare + superAdminMarkup + taxes + agentMarkup = lockedPricePerTicket
+                // For display, we'll estimate: baseFare ≈ flight.price, taxes = 3750, rest is markup
+                const estimatedBaseFare = selectedFlight.price;
+                const taxes = 3750;
+                const estimatedMarkup = lockedPricePerTicket - estimatedBaseFare - taxes;
+                return {
+                    baseFare: estimatedBaseFare + (resolvedMarkup.superAdminMarkup || 0),
+                    taxes,
+                    markup: Math.max(0, estimatedMarkup - (resolvedMarkup.superAdminMarkup || 0)),
+                    totalAmount: lockedPricePerTicket,
+                    markupPercent: 0,
+                    superAdminMarkup: resolvedMarkup.superAdminMarkup || 0,
+                    agentMarkup: Math.max(0, estimatedMarkup - (resolvedMarkup.superAdminMarkup || 0)),
+                    appliedMarkup: true
+                };
+            }
+            // Normal flow - use current flight price
             const baseFare = selectedFlight.price;
             const taxes = 3750;
             return (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$pricing$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["calculatePricingBreakdown"])(baseFare, taxes, "flights", isInternational ? "International" : "Domestic", searchData.specialFare || "Regular", selectedFlight.currency || "INR", {
@@ -4506,7 +4589,9 @@ function FlightsPage() {
         searchData.specialFare,
         markupControls.applyMarkup,
         markupControls.agentMarkup,
-        resolvedMarkup.superAdminMarkup
+        resolvedMarkup.superAdminMarkup,
+        isFromLock,
+        lockedPricePerTicket
     ]);
     const [errors, setErrors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -4525,10 +4610,123 @@ function FlightsPage() {
         seatSelections,
         seatPricePerSeat
     ]);
+    // Handle locked ticket conversion
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "FlightsPage.useEffect": ()=>{
+            const loadLockData = {
+                "FlightsPage.useEffect.loadLockData": async ()=>{
+                    if (!lockId) return;
+                    try {
+                        const lock = await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$local$2d$db$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ticketLocksDB"].read(lockId);
+                        if (!lock || lock.status !== "LOCKED") {
+                            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Invalid or expired lock", {
+                                description: "This ticket lock is no longer valid."
+                            });
+                            router.push("/dashboard/flights/locked-tickets");
+                            return;
+                        }
+                        // Check if lock has expired
+                        const now = new Date().toISOString();
+                        if (lock.expiresAt <= now) {
+                            await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$local$2d$db$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ticketLocksDB"].update(lock.id, {
+                                status: "EXPIRED"
+                            });
+                            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Lock expired", {
+                                description: "This ticket lock has expired. Please lock a new ticket."
+                            });
+                            router.push("/dashboard/flights/locked-tickets");
+                            return;
+                        }
+                        setCurrentLock(lock);
+                        setIsFromLock(true);
+                        setLockedPricePerTicket(lock.pricePerTicket || lock.lockedPrice / (lock.quantity || 1));
+                        // Pre-fill flight data
+                        setSelectedFlight(lock.flightDetails);
+                        // Pre-fill search data
+                        setSearchData({
+                            tripType: lock.searchData.tripType || "one-way",
+                            origin: lock.searchData.origin,
+                            destination: lock.searchData.destination,
+                            departureDate: lock.searchData.departureDate ? new Date(lock.searchData.departureDate) : null,
+                            returnDate: lock.searchData.returnDate ? new Date(lock.searchData.returnDate) : null,
+                            travellers: lock.quantity.toString(),
+                            class: lock.searchData.class || "Economy",
+                            specialFare: "Regular"
+                        });
+                        setIsInternational(lock.searchData.isInternational);
+                        // Pre-fill passenger count
+                        if (lock.passengerCount) {
+                            setPassengerCount(lock.passengerCount);
+                        } else {
+                            setPassengerCount({
+                                adults: lock.quantity || 1,
+                                children: 0,
+                                infants: 0
+                            });
+                        }
+                        // Pre-fill passenger details if available
+                        if (lock.passengerDetails) {
+                            setPassengerDetails(lock.passengerDetails);
+                        }
+                        // Pre-fill ancillaries if available
+                        if (lock.ancillaries) {
+                            setAncillaries(lock.ancillaries);
+                        }
+                        // Pre-fill seat selections if available
+                        if (lock.seatSelections) {
+                            setSeatSelections(lock.seatSelections);
+                        }
+                        // Set listing data
+                        const newListingData = {
+                            selectedFlight: lock.flightId,
+                            fareType: "Standard",
+                            airline: lock.flightDetails.airline,
+                            time: lock.flightDetails.departure.time,
+                            price: lock.flightDetails.price.toString()
+                        };
+                        setListingData(newListingData);
+                        // Check policy compliance
+                        const departureDate = lock.searchData.departureDate ? new Date(lock.searchData.departureDate) : new Date(lock.flightDetails.departure.time);
+                        const cabinClass = lock.searchData.class || "Economy";
+                        const policyResult = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$policy$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["checkFlightPolicyCompliance"])(lock.flightDetails.price, cabinClass, departureDate, lock.searchData.isInternational);
+                        setPolicyCheckResult(policyResult);
+                        // Transition to Fare Review stage
+                        const transitionResult = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$stage$2d$management$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["transitionStage"])("FLIGHT", bookingId, "Listing", "Fare Review", newListingData, currentUser.id, `Locked ticket ${lock.lockId} - Flight ${lock.flightDetails.flightNumber} selected`);
+                        if (transitionResult.success) {
+                            setCurrentStage("Fare Review");
+                            fareReviewStartTimeRef.current = Date.now();
+                            setFareAccepted(true); // Auto-accept fare since price is locked
+                        } else {
+                            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Cannot proceed", {
+                                description: transitionResult.error
+                            });
+                        }
+                        // Clear lockId from URL
+                        const newParams = new URLSearchParams(searchParams.toString());
+                        newParams.delete("lockId");
+                        router.replace(`/dashboard/flights?${newParams.toString()}`);
+                    } catch (error) {
+                        console.error("Failed to load lock data:", error);
+                        __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Failed to load locked ticket", {
+                            description: "An error occurred while loading the locked ticket data."
+                        });
+                        router.push("/dashboard/flights/locked-tickets");
+                    }
+                }
+            }["FlightsPage.useEffect.loadLockData"];
+            loadLockData();
+        }
+    }["FlightsPage.useEffect"], [
+        lockId,
+        router,
+        searchParams,
+        bookingId,
+        currentUser.id
+    ]);
     // Handle flight selection from listing page
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "FlightsPage.useEffect": ()=>{
-            if (selectedFlightId) {
+            if (selectedFlightId && !lockId) {
                 let flight = __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$mock$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["MOCK_FLIGHTS"].find({
                     "FlightsPage.useEffect.flight": (f)=>f.id === selectedFlightId
                 }["FlightsPage.useEffect.flight"]);
@@ -5007,6 +5205,87 @@ function FlightsPage() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+    const handleLockTicket = async ()=>{
+        if (!selectedFlight || !canLockTickets) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Cannot lock ticket", {
+                description: "You don't have permission to lock tickets or no flight is selected."
+            });
+            return;
+        }
+        if (!fareAccepted) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Please accept fare rules", {
+                description: "You must accept the fare terms before locking the ticket."
+            });
+            return;
+        }
+        try {
+            // Calculate locked price (total amount at current pricing)
+            const ancillariesTotal = (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) + (ancillaries.mealSelection ? ancillaries.mealPrice : 0) + (ancillaries.seatSelection ? ancillaries.seatPrice : 0);
+            let pricePerTicket = 0;
+            if (pricingBreakdown) {
+                pricePerTicket = pricingBreakdown.totalAmount + ancillariesTotal;
+            } else if (selectedFlight) {
+                const breakdown = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$pricing$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["calculatePricingBreakdown"])(selectedFlight.price, 3750, "flights", isInternational ? "International" : "Domestic", searchData.specialFare || "Regular", selectedFlight.currency || "INR", {
+                    superAdminMarkup: resolvedMarkup.superAdminMarkup,
+                    agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                    applyMarkup: markupControls.applyMarkup
+                });
+                pricePerTicket = breakdown.totalAmount + ancillariesTotal;
+            }
+            const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants;
+            const quantity = Math.max(1, totalTravellers);
+            const lockedPrice = pricePerTicket * quantity;
+            const ticketLock = await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$local$2d$db$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ticketLocksDB"].create({
+                flightId: selectedFlight.id,
+                flightDetails: selectedFlight,
+                lockedPrice,
+                pricePerTicket,
+                quantity,
+                agentId: currentUser.id,
+                agentName: currentUser.name,
+                searchData: {
+                    origin: searchData.origin,
+                    destination: searchData.destination,
+                    departureDate: searchData.departureDate?.toISOString() || "",
+                    returnDate: searchData.returnDate?.toISOString() || "",
+                    travellers: quantity.toString(),
+                    class: searchData.class || "Economy",
+                    tripType: searchData.tripType || "one-way",
+                    isInternational
+                },
+                passengerDetails,
+                passengerCount,
+                ancillaries,
+                seatSelections
+            });
+            await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$audit$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["audit"].create("ticket_locks", ticketLock.id, {
+                action: "LOCK_CREATED",
+                flightId: selectedFlight.id,
+                lockedPrice,
+                pricePerTicket,
+                quantity,
+                agentId: currentUser.id
+            });
+            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Ticket locked successfully!", {
+                description: `${quantity} ticket${quantity > 1 ? "s" : ""} locked for 48 hours at ₹${pricePerTicket.toLocaleString("en-IN")} per ticket. Total: ₹${lockedPrice.toLocaleString("en-IN")}. Lock ID: ${ticketLock.lockId}`,
+                action: {
+                    label: "View Locks",
+                    onClick: ()=>{
+                        router.push("/dashboard/flights/locked-tickets");
+                    }
+                }
+            });
+            // Reset to search stage after locking
+            setCurrentStage("Search");
+            setSelectedFlight(null);
+            setFareAccepted(false);
+        } catch (error) {
+            console.error("Failed to lock ticket:", error);
+            __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Failed to lock ticket", {
+                description: "An error occurred while locking the ticket. Please try again."
+            });
+        }
+    };
     const handleDownloadTicket = (includeAgentMarkup)=>{
         if (!selectedFlight || !bookingId || !pnr) {
             __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Ticket data not available", {
@@ -5108,14 +5387,16 @@ function FlightsPage() {
             stageData = listingData;
         } else if (currentStage === "Fare Review") {
             // Fare Acceptance: Must accept fare rules before continuing
-            if (!fareAccepted) {
+            // For locked tickets, fare is auto-accepted and checkbox is hidden
+            if (!isFromLock && !fareAccepted) {
                 __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Please accept the fare rules to continue", {
                     description: "You must accept the fare terms before proceeding"
                 });
                 return;
             }
             stageData = {
-                fareAccepted: true
+                fareAccepted: true,
+                isFromLock
             };
         } else if (currentStage === "Passenger Details") {
             // Validate passenger count first
@@ -5169,7 +5450,12 @@ function FlightsPage() {
             const ancillariesTotal = (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) + (ancillaries.mealSelection ? ancillaries.mealPrice : 0) + (ancillaries.seatSelection ? ancillaries.seatPrice : 0);
             // Use pricing breakdown if available, otherwise calculate
             let totalAmount = 0;
-            if (selectedFlight && pricingBreakdown) {
+            if (isFromLock && lockedPricePerTicket !== null) {
+                // If from locked ticket, use locked price per ticket * quantity + ancillaries
+                const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants;
+                const quantity = Math.max(1, totalTravellers);
+                totalAmount = lockedPricePerTicket * quantity + ancillariesTotal;
+            } else if (selectedFlight && pricingBreakdown) {
                 totalAmount = pricingBreakdown.totalAmount + ancillariesTotal;
             } else if (selectedFlight) {
                 // Fallback calculation
@@ -5228,13 +5514,21 @@ function FlightsPage() {
                 // Save booking to IndexedDB
                 try {
                     const ancillariesTotal = (ancillaries.extraBaggage ? ancillaries.extraBaggagePrice : 0) + (ancillaries.mealSelection ? ancillaries.mealPrice : 0) + (ancillaries.seatSelection ? ancillaries.seatPrice : 0);
-                    const fallbackPricing = selectedFlight ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$pricing$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["calculatePricingBreakdown"])(selectedFlight.price, 3750, "flights", isInternational ? "International" : "Domestic", searchData.specialFare || "Regular", selectedFlight.currency || "INR", {
-                        superAdminMarkup: resolvedMarkup.superAdminMarkup,
-                        agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-                        applyMarkup: true
-                    }) : null;
-                    const finalPricingBreakdown = pricingBreakdown ?? fallbackPricing;
-                    const bookingTotal = (finalPricingBreakdown?.totalAmount || selectedFlight?.price || 0) + ancillariesTotal;
+                    // Calculate booking total - use locked price if from lock
+                    let bookingTotal = 0;
+                    if (isFromLock && lockedPricePerTicket !== null) {
+                        const totalTravellers = passengerCount.adults + passengerCount.children + passengerCount.infants;
+                        const quantity = Math.max(1, totalTravellers);
+                        bookingTotal = lockedPricePerTicket * quantity + ancillariesTotal;
+                    } else {
+                        const fallbackPricing = selectedFlight ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$pricing$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["calculatePricingBreakdown"])(selectedFlight.price, 3750, "flights", isInternational ? "International" : "Domestic", searchData.specialFare || "Regular", selectedFlight.currency || "INR", {
+                            superAdminMarkup: resolvedMarkup.superAdminMarkup,
+                            agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
+                            applyMarkup: true
+                        }) : null;
+                        const finalPricingBreakdown = pricingBreakdown ?? fallbackPricing;
+                        bookingTotal = (finalPricingBreakdown?.totalAmount || selectedFlight?.price || 0) + ancillariesTotal;
+                    }
                     const booking = await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$local$2d$db$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["bookingsDB"].create({
                         type: "FLIGHT",
                         status: policyCheckResult?.requiresApproval ? "PENDING_APPROVAL" : "CONFIRMED",
@@ -5249,9 +5543,9 @@ function FlightsPage() {
                             seatSelections,
                             markup: {
                                 applied: markupControls.applyMarkup,
-                                superAdminMarkup: finalPricingBreakdown?.superAdminMarkup ?? 0,
+                                superAdminMarkup: pricingBreakdown?.superAdminMarkup ?? resolvedMarkup.superAdminMarkup ?? 0,
                                 agentMarkup: markupControls.applyMarkup ? markupControls.agentMarkup : 0,
-                                totalMarkup: finalPricingBreakdown?.markup ?? 0,
+                                totalMarkup: pricingBreakdown?.markup ?? (markupControls.applyMarkup ? markupControls.agentMarkup : 0),
                                 showOnDocs: markupControls.applyMarkup
                             }
                         },
@@ -5279,13 +5573,24 @@ function FlightsPage() {
                         type: "FLIGHT",
                         amount: selectedFlight?.price || 0
                     });
+                    // If booking was from a locked ticket, mark lock as converted
+                    if (currentLock) {
+                        await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$local$2d$db$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ticketLocksDB"].update(currentLock.id, {
+                            status: "CONVERTED"
+                        });
+                        await __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$audit$2d$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["audit"].create("ticket_locks", currentLock.id, {
+                            action: "CONVERTED_TO_BOOKING",
+                            bookingId: booking.id,
+                            agentId: currentUser.id
+                        });
+                    }
                     if (policyCheckResult?.requiresApproval) {
                         __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Booking submitted for approval!", {
-                            description: `Booking ID: ${newBookingId}, PNR: ${newPnr}. Policy violations require approval.`
+                            description: `Booking ID: ${newBookingId}, PNR: ${newPnr}. Policy violations require approval.${currentLock ? " Locked ticket converted." : ""}`
                         });
                     } else {
                         __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Booking confirmed!", {
-                            description: `Booking ID: ${newBookingId}, PNR: ${newPnr}`
+                            description: `Booking ID: ${newBookingId}, PNR: ${newPnr}.${currentLock ? " Locked ticket converted." : ""}`
                         });
                     }
                     // Clear payment timeout
@@ -5320,37 +5625,37 @@ function FlightsPage() {
                                     className: "h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1182,
+                                    lineNumber: 1464,
                                     columnNumber: 15
                                 }, this),
                                 "Booking access restricted"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1181,
+                            lineNumber: 1463,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
                             children: "Super Admins supervise agencies but cannot create flight bookings from this workspace. Switch to an agency role (Agency Admin, Agent, or Sub Agent) to access flight booking tools."
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1185,
+                            lineNumber: 1467,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                    lineNumber: 1180,
+                    lineNumber: 1462,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1179,
+                lineNumber: 1461,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-            lineNumber: 1178,
+            lineNumber: 1460,
             columnNumber: 7
         }, this);
     }
@@ -5368,37 +5673,37 @@ function FlightsPage() {
                                     className: "h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1201,
+                                    lineNumber: 1483,
                                     columnNumber: 15
                                 }, this),
                                 "Flight access restricted"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1200,
+                            lineNumber: 1482,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
                             children: "Your Agent Admin has disabled flight access for this account. Contact an admin to enable flight search or bookings."
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1204,
+                            lineNumber: 1486,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                    lineNumber: 1199,
+                    lineNumber: 1481,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1198,
+                lineNumber: 1480,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-            lineNumber: 1197,
+            lineNumber: 1479,
             columnNumber: 7
         }, this);
     }
@@ -5413,7 +5718,7 @@ function FlightsPage() {
                         children: "Flight Booking"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1217,
+                        lineNumber: 1499,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5421,13 +5726,13 @@ function FlightsPage() {
                         children: "Search and book flights for your business travel with ease."
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1220,
+                        lineNumber: 1502,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1216,
+                lineNumber: 1498,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5448,45 +5753,45 @@ function FlightsPage() {
                                             className: "w-4 h-4"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1242,
+                                            lineNumber: 1524,
                                             columnNumber: 21
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("w-5 h-5 rounded-full flex items-center justify-center text-xs", isCurrent && "bg-primary-foreground/20"),
                                             children: index + 1
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1244,
+                                            lineNumber: 1526,
                                             columnNumber: 21
                                         }, this),
                                         stage.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1231,
+                                    lineNumber: 1513,
                                     columnNumber: 17
                                 }, this),
                                 index < BOOKING_STAGES.length - 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("w-12 h-0.5 mx-2 transition-colors", isCompleted ? "bg-primary" : "bg-border")
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1251,
+                                    lineNumber: 1533,
                                     columnNumber: 19
                                 }, this)
                             ]
                         }, stage.id, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1230,
+                            lineNumber: 1512,
                             columnNumber: 15
                         }, this);
                     })
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                    lineNumber: 1224,
+                    lineNumber: 1506,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1223,
+                lineNumber: 1505,
                 columnNumber: 7
             }, this),
             currentStage === "Search" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5500,31 +5805,56 @@ function FlightsPage() {
                                 children: "Search Criteria"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1263,
+                                lineNumber: 1545,
                                 columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                asChild: true,
-                                variant: "outline",
-                                size: "sm",
-                                className: "ml-auto",
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    href: "/dashboard/flights/group-requests",
-                                    children: "Manage Group Requests"
-                                }, void 0, false, {
-                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1265,
-                                    columnNumber: 15
-                                }, this)
-                            }, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex gap-2 ml-auto",
+                                children: [
+                                    canLockTickets && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                        asChild: true,
+                                        variant: "outline",
+                                        size: "sm",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                            href: "/dashboard/flights/locked-tickets",
+                                            children: "View Locked Tickets"
+                                        }, void 0, false, {
+                                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                            lineNumber: 1549,
+                                            columnNumber: 19
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                        lineNumber: 1548,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                        asChild: true,
+                                        variant: "outline",
+                                        size: "sm",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                            href: "/dashboard/flights/group-requests",
+                                            children: "Manage Group Requests"
+                                        }, void 0, false, {
+                                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                            lineNumber: 1553,
+                                            columnNumber: 17
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                        lineNumber: 1552,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1264,
+                                lineNumber: 1546,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1262,
+                        lineNumber: 1544,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$booking$2f$flight$2d$search$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FlightSearch"], {
@@ -5575,13 +5905,13 @@ function FlightsPage() {
                         errors: searchErrors
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1268,
+                        lineNumber: 1557,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1261,
+                lineNumber: 1543,
                 columnNumber: 9
             }, this),
             getCurrentStageIndex() > 1 && selectedFlight && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5594,7 +5924,7 @@ function FlightsPage() {
                                 className: "w-4 h-4 text-muted-foreground"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1308,
+                                lineNumber: 1597,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5608,7 +5938,7 @@ function FlightsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1310,
+                                        lineNumber: 1599,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5620,19 +5950,19 @@ function FlightsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1313,
+                                        lineNumber: 1602,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1309,
+                                lineNumber: 1598,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1307,
+                        lineNumber: 1596,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -5642,13 +5972,13 @@ function FlightsPage() {
                         children: "Selected"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1318,
+                        lineNumber: 1607,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1306,
+                lineNumber: 1595,
                 columnNumber: 9
             }, this),
             currentStage === "Fare Review" && selectedFlight && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5656,18 +5986,136 @@ function FlightsPage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center gap-2",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                            className: "text-2xl font-bold",
-                            children: "Fare Review"
-                        }, void 0, false, {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                className: "text-2xl font-bold",
+                                children: "Fare Review"
+                            }, void 0, false, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1617,
+                                columnNumber: 13
+                            }, this),
+                            isFromLock && currentLock && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
+                                className: "bg-blue-500 text-white",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__["Lock"], {
+                                        className: "h-3 w-3 mr-1"
+                                    }, void 0, false, {
+                                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                        lineNumber: 1620,
+                                        columnNumber: 17
+                                    }, this),
+                                    "Price Locked"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1619,
+                                columnNumber: 15
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                        lineNumber: 1616,
+                        columnNumber: 11
+                    }, this),
+                    isFromLock && currentLock && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-950/10 border-2 border-blue-300 dark:border-blue-800 rounded-xl p-4",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex items-start gap-3",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__["Lock"], {
+                                    className: "h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5"
+                                }, void 0, false, {
+                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                    lineNumber: 1629,
+                                    columnNumber: 17
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex-1",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "font-semibold text-blue-800 dark:text-blue-200 mb-1",
+                                            children: "Locked Ticket - Price Protected"
+                                        }, void 0, false, {
+                                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                            lineNumber: 1631,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "text-sm text-blue-700 dark:text-blue-300 space-y-1",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                    children: [
+                                                        "Lock ID: ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "font-mono",
+                                                            children: currentLock.lockId
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                                            lineNumber: 1635,
+                                                            columnNumber: 33
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                                    lineNumber: 1635,
+                                                    columnNumber: 21
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                    children: [
+                                                        "Locked Price: ₹",
+                                                        lockedPricePerTicket?.toLocaleString("en-IN"),
+                                                        " per ticket (protected for 48 hours)"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                                    lineNumber: 1636,
+                                                    columnNumber: 21
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                    children: [
+                                                        "Time Remaining: ",
+                                                        (()=>{
+                                                            try {
+                                                                const expires = new Date(currentLock.expiresAt);
+                                                                const now = new Date();
+                                                                if (expires <= now) return "Expired";
+                                                                const diffMs = expires.getTime() - now.getTime();
+                                                                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                                const diffMinutes = Math.floor(diffMs % (1000 * 60 * 60) / (1000 * 60));
+                                                                return `${diffHours}h ${diffMinutes}m`;
+                                                            } catch  {
+                                                                return "Invalid";
+                                                            }
+                                                        })()
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                                    lineNumber: 1637,
+                                                    columnNumber: 21
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                            lineNumber: 1634,
+                                            columnNumber: 19
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                    lineNumber: 1630,
+                                    columnNumber: 17
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1328,
-                            columnNumber: 13
+                            lineNumber: 1628,
+                            columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1327,
-                        columnNumber: 11
+                        lineNumber: 1627,
+                        columnNumber: 13
                     }, this),
                     policyCheckResult && !policyCheckResult.compliant && (currentUser.role === "AGENT" || currentUser.role === "SUB_AGENT") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-950/20 dark:to-yellow-950/10 border-2 border-yellow-300 dark:border-yellow-800 rounded-xl p-5 space-y-3 shadow-sm",
@@ -5679,7 +6127,7 @@ function FlightsPage() {
                                         className: "h-5 w-5"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1337,
+                                        lineNumber: 1662,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5687,13 +6135,13 @@ function FlightsPage() {
                                         children: "Out of Policy - Approval Required"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1338,
+                                        lineNumber: 1663,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1336,
+                                lineNumber: 1661,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -5703,18 +6151,18 @@ function FlightsPage() {
                                         children: violation
                                     }, idx, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1342,
+                                        lineNumber: 1667,
                                         columnNumber: 21
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1340,
+                                lineNumber: 1665,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1335,
+                        lineNumber: 1660,
                         columnNumber: 15
                     }, this),
                     (()=>{
@@ -5735,7 +6183,7 @@ function FlightsPage() {
                                                 children: "Base Fare"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1362,
+                                                lineNumber: 1687,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5747,13 +6195,13 @@ function FlightsPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1363,
+                                                lineNumber: 1688,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1361,
+                                        lineNumber: 1686,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5764,7 +6212,7 @@ function FlightsPage() {
                                                 children: "Taxes & Fees"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1368,
+                                                lineNumber: 1693,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5775,13 +6223,13 @@ function FlightsPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1369,
+                                                lineNumber: 1694,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1367,
+                                        lineNumber: 1692,
                                         columnNumber: 19
                                     }, this),
                                     ancillariesTotal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -5794,7 +6242,7 @@ function FlightsPage() {
                                                         children: "Ancillaries"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1374,
+                                                        lineNumber: 1699,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5805,20 +6253,20 @@ function FlightsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1375,
+                                                        lineNumber: 1700,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1373,
+                                                lineNumber: 1698,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "space-y-1"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1377,
+                                                lineNumber: 1702,
                                                 columnNumber: 23
                                             }, this)
                                         ]
@@ -5827,7 +6275,7 @@ function FlightsPage() {
                                         className: "col-span-2 my-2"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1380,
+                                        lineNumber: 1705,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5838,7 +6286,7 @@ function FlightsPage() {
                                                 children: "Total Amount"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1382,
+                                                lineNumber: 1707,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5849,19 +6297,19 @@ function FlightsPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1383,
+                                                lineNumber: 1708,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1381,
+                                        lineNumber: 1706,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1360,
+                                lineNumber: 1685,
                                 columnNumber: 17
                             }, this);
                         }
@@ -5881,7 +6329,7 @@ function FlightsPage() {
                                             children: "Base Fare"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1404,
+                                            lineNumber: 1729,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5893,13 +6341,13 @@ function FlightsPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1405,
+                                            lineNumber: 1730,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1403,
+                                    lineNumber: 1728,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5910,7 +6358,7 @@ function FlightsPage() {
                                             children: "Taxes & Fees"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1410,
+                                            lineNumber: 1735,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5921,13 +6369,13 @@ function FlightsPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1411,
+                                            lineNumber: 1736,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1409,
+                                    lineNumber: 1734,
                                     columnNumber: 17
                                 }, this),
                                 showMarkup && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -5943,7 +6391,7 @@ function FlightsPage() {
                                                             children: "Convenience fees"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 1417,
+                                                            lineNumber: 1742,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5954,13 +6402,13 @@ function FlightsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 1418,
+                                                            lineNumber: 1743,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1416,
+                                                    lineNumber: 1741,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5971,7 +6419,7 @@ function FlightsPage() {
                                                             children: "Adjust convenience fees (₹)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 1421,
+                                                            lineNumber: 1746,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -5985,26 +6433,26 @@ function FlightsPage() {
                                                             min: 0
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 1422,
+                                                            lineNumber: 1747,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1420,
+                                                    lineNumber: 1745,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1415,
+                                            lineNumber: 1740,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "space-y-1"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1436,
+                                            lineNumber: 1761,
                                             columnNumber: 21
                                         }, this)
                                     ]
@@ -6019,7 +6467,7 @@ function FlightsPage() {
                                                     children: "Ancillaries"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1442,
+                                                    lineNumber: 1767,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6030,20 +6478,20 @@ function FlightsPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1443,
+                                                    lineNumber: 1768,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1441,
+                                            lineNumber: 1766,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "space-y-1"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1445,
+                                            lineNumber: 1770,
                                             columnNumber: 21
                                         }, this)
                                     ]
@@ -6052,7 +6500,7 @@ function FlightsPage() {
                                     className: "col-span-2 my-2"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1448,
+                                    lineNumber: 1773,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6063,7 +6511,7 @@ function FlightsPage() {
                                             children: "Total Amount"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1450,
+                                            lineNumber: 1775,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6074,23 +6522,23 @@ function FlightsPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1451,
+                                            lineNumber: 1776,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1449,
+                                    lineNumber: 1774,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1402,
+                            lineNumber: 1727,
                             columnNumber: 15
                         }, this);
                     })(),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    !isFromLock && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-start gap-2 pt-2",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -6101,8 +6549,8 @@ function FlightsPage() {
                                 className: "mt-1 rounded border-gray-300"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1461,
-                                columnNumber: 13
+                                lineNumber: 1787,
+                                columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
                                 htmlFor: "fareAccepted",
@@ -6115,52 +6563,103 @@ function FlightsPage() {
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1470,
-                                        columnNumber: 15
+                                        lineNumber: 1796,
+                                        columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1468,
+                                lineNumber: 1794,
+                                columnNumber: 15
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                        lineNumber: 1786,
+                        columnNumber: 13
+                    }, this),
+                    isFromLock && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-start gap-2 pt-2",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {
+                                className: "h-5 w-5 text-green-500 mt-0.5"
+                            }, void 0, false, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1802,
+                                columnNumber: 15
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
+                                className: "text-sm text-green-700 dark:text-green-300",
+                                children: [
+                                    "Fare rules accepted (price locked at ₹",
+                                    lockedPricePerTicket?.toLocaleString("en-IN"),
+                                    " per ticket)"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1803,
+                                columnNumber: 15
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                        lineNumber: 1801,
+                        columnNumber: 13
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex justify-end gap-3 pt-2",
+                        children: [
+                            canLockTickets && !isFromLock && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                onClick: handleLockTicket,
+                                variant: "outline",
+                                size: "lg",
+                                className: "min-w-[200px] font-semibold",
+                                disabled: !fareAccepted,
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__["Clock"], {
+                                        className: "w-4 h-4 mr-2"
+                                    }, void 0, false, {
+                                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                        lineNumber: 1818,
+                                        columnNumber: 17
+                                    }, this),
+                                    "Lock Ticket (48hrs)"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1811,
+                                columnNumber: 15
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                onClick: handleNextStage,
+                                disabled: !isFromLock && !fareAccepted,
+                                size: "lg",
+                                className: "min-w-[200px] font-semibold",
+                                children: [
+                                    "Continue to Passenger Details ",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
+                                        className: "w-4 h-4 ml-2"
+                                    }, void 0, false, {
+                                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                        lineNumber: 1828,
+                                        columnNumber: 45
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
+                                lineNumber: 1822,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1460,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex justify-end pt-2",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                            onClick: handleNextStage,
-                            disabled: !fareAccepted,
-                            size: "lg",
-                            className: "min-w-[200px] font-semibold",
-                            children: [
-                                "Continue to Passenger Details ",
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
-                                    className: "w-4 h-4 ml-2"
-                                }, void 0, false, {
-                                    fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1476,
-                                    columnNumber: 45
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1475,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1474,
+                        lineNumber: 1809,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1326,
+                lineNumber: 1615,
                 columnNumber: 9
             }, this),
             currentStage === "Passenger Details" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6173,12 +6672,12 @@ function FlightsPage() {
                             children: "Passenger Details"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1486,
+                            lineNumber: 1838,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1485,
+                        lineNumber: 1837,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6189,7 +6688,7 @@ function FlightsPage() {
                                 children: "Number of Passengers"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1491,
+                                lineNumber: 1843,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6208,13 +6707,13 @@ function FlightsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1495,
+                                                        lineNumber: 1847,
                                                         columnNumber: 36
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1494,
+                                                lineNumber: 1846,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6232,7 +6731,7 @@ function FlightsPage() {
                                                         children: "-"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1498,
+                                                        lineNumber: 1850,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6251,7 +6750,7 @@ function FlightsPage() {
                                                         className: "text-center"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1507,
+                                                        lineNumber: 1859,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -6266,13 +6765,13 @@ function FlightsPage() {
                                                         children: "+"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1519,
+                                                        lineNumber: 1871,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1497,
+                                                lineNumber: 1849,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6280,13 +6779,13 @@ function FlightsPage() {
                                                 children: "Minimum 1 adult required"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1529,
+                                                lineNumber: 1881,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1493,
+                                        lineNumber: 1845,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6298,7 +6797,7 @@ function FlightsPage() {
                                                 children: "Children (2-11 years)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1533,
+                                                lineNumber: 1885,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6316,7 +6815,7 @@ function FlightsPage() {
                                                         children: "-"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1537,
+                                                        lineNumber: 1889,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6335,7 +6834,7 @@ function FlightsPage() {
                                                         className: "text-center"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1546,
+                                                        lineNumber: 1898,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -6350,13 +6849,13 @@ function FlightsPage() {
                                                         children: "+"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1558,
+                                                        lineNumber: 1910,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1536,
+                                                lineNumber: 1888,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6364,13 +6863,13 @@ function FlightsPage() {
                                                 children: "Maximum 19 children"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1568,
+                                                lineNumber: 1920,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1532,
+                                        lineNumber: 1884,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6382,7 +6881,7 @@ function FlightsPage() {
                                                 children: "Infants (Under 2 years)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1572,
+                                                lineNumber: 1924,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6400,7 +6899,7 @@ function FlightsPage() {
                                                         children: "-"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1576,
+                                                        lineNumber: 1928,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6419,7 +6918,7 @@ function FlightsPage() {
                                                         className: "text-center"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1585,
+                                                        lineNumber: 1937,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -6434,13 +6933,13 @@ function FlightsPage() {
                                                         children: "+"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1597,
+                                                        lineNumber: 1949,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1575,
+                                                lineNumber: 1927,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6454,19 +6953,19 @@ function FlightsPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1607,
+                                                lineNumber: 1959,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1571,
+                                        lineNumber: 1923,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1492,
+                                lineNumber: 1844,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6478,7 +6977,7 @@ function FlightsPage() {
                                             children: "Total Passengers:"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1614,
+                                            lineNumber: 1966,
                                             columnNumber: 15
                                         }, this),
                                         " ",
@@ -6494,18 +6993,18 @@ function FlightsPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1613,
+                                    lineNumber: 1965,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1612,
+                                lineNumber: 1964,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1490,
+                        lineNumber: 1842,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6523,13 +7022,13 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1625,
+                                                lineNumber: 1977,
                                                 columnNumber: 26
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1624,
+                                        lineNumber: 1976,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6542,7 +7041,7 @@ function FlightsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.firstName && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1627,
+                                        lineNumber: 1979,
                                         columnNumber: 13
                                     }, this),
                                     errors.firstName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6550,13 +7049,13 @@ function FlightsPage() {
                                         children: errors.firstName
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1633,
+                                        lineNumber: 1985,
                                         columnNumber: 34
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1623,
+                                lineNumber: 1975,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6567,7 +7066,7 @@ function FlightsPage() {
                                         children: "Last Name"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1637,
+                                        lineNumber: 1989,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6580,7 +7079,7 @@ function FlightsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.lastName && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1640,
+                                        lineNumber: 1992,
                                         columnNumber: 13
                                     }, this),
                                     errors.lastName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6588,13 +7087,13 @@ function FlightsPage() {
                                         children: errors.lastName
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1646,
+                                        lineNumber: 1998,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1636,
+                                lineNumber: 1988,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6609,13 +7108,13 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1651,
+                                                lineNumber: 2003,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1650,
+                                        lineNumber: 2002,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6630,7 +7129,7 @@ function FlightsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.dob && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1653,
+                                        lineNumber: 2005,
                                         columnNumber: 13
                                     }, this),
                                     errors.dob && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6638,7 +7137,7 @@ function FlightsPage() {
                                         children: errors.dob
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1661,
+                                        lineNumber: 2013,
                                         columnNumber: 28
                                     }, this),
                                     passengerDetails.dob && !errors.dob && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6651,13 +7150,13 @@ function FlightsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1663,
+                                        lineNumber: 2015,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1649,
+                                lineNumber: 2001,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6672,13 +7171,13 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1676,
+                                                lineNumber: 2028,
                                                 columnNumber: 22
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1675,
+                                        lineNumber: 2027,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -6695,7 +7194,7 @@ function FlightsPage() {
                                                 children: "Select Gender"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1687,
+                                                lineNumber: 2039,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6703,7 +7202,7 @@ function FlightsPage() {
                                                 children: "Male"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1688,
+                                                lineNumber: 2040,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6711,7 +7210,7 @@ function FlightsPage() {
                                                 children: "Female"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1689,
+                                                lineNumber: 2041,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -6719,13 +7218,13 @@ function FlightsPage() {
                                                 children: "Other"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1690,
+                                                lineNumber: 2042,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1678,
+                                        lineNumber: 2030,
                                         columnNumber: 13
                                     }, this),
                                     errors.gender && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6733,13 +7232,13 @@ function FlightsPage() {
                                         children: errors.gender
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1692,
+                                        lineNumber: 2044,
                                         columnNumber: 31
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1674,
+                                lineNumber: 2026,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6754,13 +7253,13 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1697,
+                                                lineNumber: 2049,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1696,
+                                        lineNumber: 2048,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6773,7 +7272,7 @@ function FlightsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.mobile && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1699,
+                                        lineNumber: 2051,
                                         columnNumber: 13
                                     }, this),
                                     errors.mobile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6781,13 +7280,13 @@ function FlightsPage() {
                                         children: errors.mobile
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1705,
+                                        lineNumber: 2057,
                                         columnNumber: 31
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1695,
+                                lineNumber: 2047,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6802,13 +7301,13 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1710,
+                                                lineNumber: 2062,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1709,
+                                        lineNumber: 2061,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6822,7 +7321,7 @@ function FlightsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.email && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1712,
+                                        lineNumber: 2064,
                                         columnNumber: 13
                                     }, this),
                                     errors.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6830,13 +7329,13 @@ function FlightsPage() {
                                         children: errors.email
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1719,
+                                        lineNumber: 2071,
                                         columnNumber: 30
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1708,
+                                lineNumber: 2060,
                                 columnNumber: 11
                             }, this),
                             isInternational && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6854,13 +7353,13 @@ function FlightsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1727,
+                                                        lineNumber: 2079,
                                                         columnNumber: 35
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1726,
+                                                lineNumber: 2078,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6875,7 +7374,7 @@ function FlightsPage() {
                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.passport && "border-red-500")
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1729,
+                                                lineNumber: 2081,
                                                 columnNumber: 17
                                             }, this),
                                             errors.passport && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6883,7 +7382,7 @@ function FlightsPage() {
                                                 children: errors.passport
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1739,
+                                                lineNumber: 2091,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6891,13 +7390,13 @@ function FlightsPage() {
                                                 children: "Format: 1 letter followed by 7 digits (e.g., A1234567)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1740,
+                                                lineNumber: 2092,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1725,
+                                        lineNumber: 2077,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6912,13 +7411,13 @@ function FlightsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1746,
+                                                        lineNumber: 2098,
                                                         columnNumber: 40
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1745,
+                                                lineNumber: 2097,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -6932,7 +7431,7 @@ function FlightsPage() {
                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(errors.passportExpiry && "border-red-500")
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1748,
+                                                lineNumber: 2100,
                                                 columnNumber: 17
                                             }, this),
                                             errors.passportExpiry && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6940,25 +7439,25 @@ function FlightsPage() {
                                                 children: errors.passportExpiry
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1757,
+                                                lineNumber: 2109,
                                                 columnNumber: 43
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1744,
+                                        lineNumber: 2096,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1724,
+                                lineNumber: 2076,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1622,
+                        lineNumber: 1974,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6973,24 +7472,24 @@ function FlightsPage() {
                                     className: "w-4 h-4 ml-2"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1765,
+                                    lineNumber: 2117,
                                     columnNumber: 42
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1764,
+                            lineNumber: 2116,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1763,
+                        lineNumber: 2115,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1484,
+                lineNumber: 1836,
                 columnNumber: 9
             }, this),
             currentStage === "Ancillaries" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7004,7 +7503,7 @@ function FlightsPage() {
                                 children: "Ancillaries"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1775,
+                                lineNumber: 2127,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7012,13 +7511,13 @@ function FlightsPage() {
                                 children: "(Optional)"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1776,
+                                lineNumber: 2128,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1774,
+                        lineNumber: 2126,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7039,7 +7538,7 @@ function FlightsPage() {
                                                 children: "Extra Baggage"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1791,
+                                                lineNumber: 2143,
                                                 columnNumber: 17
                                             }, this),
                                             ancillaries.extraBaggage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7048,18 +7547,18 @@ function FlightsPage() {
                                                     className: "h-4 w-4 text-primary-foreground"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1794,
+                                                    lineNumber: 2146,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1793,
+                                                lineNumber: 2145,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1790,
+                                        lineNumber: 2142,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7067,7 +7566,7 @@ function FlightsPage() {
                                         children: "Additional 15kg baggage allowance"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1798,
+                                        lineNumber: 2150,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7078,7 +7577,7 @@ function FlightsPage() {
                                                 children: "+ ₹1,500"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1800,
+                                                lineNumber: 2152,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7095,19 +7594,19 @@ function FlightsPage() {
                                                 children: ancillaries.extraBaggage ? "Remove" : "Add"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1801,
+                                                lineNumber: 2153,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1799,
+                                        lineNumber: 2151,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1779,
+                                lineNumber: 2131,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7125,7 +7624,7 @@ function FlightsPage() {
                                                 children: "Meal Selection"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1826,
+                                                lineNumber: 2178,
                                                 columnNumber: 17
                                             }, this),
                                             ancillaries.mealSelection && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7134,18 +7633,18 @@ function FlightsPage() {
                                                     className: "h-4 w-4 text-primary-foreground"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1829,
+                                                    lineNumber: 2181,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1828,
+                                                lineNumber: 2180,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1825,
+                                        lineNumber: 2177,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7153,7 +7652,7 @@ function FlightsPage() {
                                         children: "Pre-book your meal preference"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1833,
+                                        lineNumber: 2185,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7164,7 +7663,7 @@ function FlightsPage() {
                                                 children: "+ ₹1,200"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1835,
+                                                lineNumber: 2187,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7181,19 +7680,19 @@ function FlightsPage() {
                                                 children: ancillaries.mealSelection ? "Remove" : "Select"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1836,
+                                                lineNumber: 2188,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1834,
+                                        lineNumber: 2186,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1814,
+                                lineNumber: 2166,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7211,7 +7710,7 @@ function FlightsPage() {
                                                 children: "Seat Selection"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1861,
+                                                lineNumber: 2213,
                                                 columnNumber: 17
                                             }, this),
                                             ancillaries.seatSelection && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7220,18 +7719,18 @@ function FlightsPage() {
                                                     className: "h-4 w-4 text-primary-foreground"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1864,
+                                                    lineNumber: 2216,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1863,
+                                                lineNumber: 2215,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1860,
+                                        lineNumber: 2212,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7239,7 +7738,7 @@ function FlightsPage() {
                                         children: "Choose your preferred seat"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1868,
+                                        lineNumber: 2220,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7250,7 +7749,7 @@ function FlightsPage() {
                                                 children: "+ ₹800"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1870,
+                                                lineNumber: 2222,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7267,25 +7766,25 @@ function FlightsPage() {
                                                 children: ancillaries.seatSelection ? "Remove" : "Choose"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1871,
+                                                lineNumber: 2223,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1869,
+                                        lineNumber: 2221,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1849,
+                                lineNumber: 2201,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1778,
+                        lineNumber: 2130,
                         columnNumber: 11
                     }, this),
                     currentStage === "Ancillaries" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7299,7 +7798,7 @@ function FlightsPage() {
                                         children: "Selected Ancillaries:"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1888,
+                                        lineNumber: 2240,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7310,13 +7809,13 @@ function FlightsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1889,
+                                        lineNumber: 2241,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1887,
+                                lineNumber: 2239,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7328,13 +7827,13 @@ function FlightsPage() {
                                 ].filter(Boolean).join(", ")
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1896,
+                                lineNumber: 2248,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1886,
+                        lineNumber: 2238,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7349,24 +7848,24 @@ function FlightsPage() {
                                     className: "w-4 h-4 ml-2"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 1911,
+                                    lineNumber: 2263,
                                     columnNumber: 35
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 1910,
+                            lineNumber: 2262,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1909,
+                        lineNumber: 2261,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1773,
+                lineNumber: 2125,
                 columnNumber: 9
             }, this),
             currentStage === "Seat Selection" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7380,7 +7879,7 @@ function FlightsPage() {
                                 children: "Seat Selection"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1921,
+                                lineNumber: 2273,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -7388,13 +7887,13 @@ function FlightsPage() {
                                 children: "Mandatory"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1922,
+                                lineNumber: 2274,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1920,
+                        lineNumber: 2272,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7406,7 +7905,7 @@ function FlightsPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1924,
+                        lineNumber: 2276,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7420,7 +7919,7 @@ function FlightsPage() {
                                         children: "Passengers"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1930,
+                                        lineNumber: 2282,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7430,7 +7929,7 @@ function FlightsPage() {
                                             children: "Add passengers to continue."
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1933,
+                                            lineNumber: 2285,
                                             columnNumber: 19
                                         }, this) : passengerLabels.map((label, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "flex items-center justify-between rounded-md border p-2",
@@ -7440,7 +7939,7 @@ function FlightsPage() {
                                                         children: label
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1937,
+                                                        lineNumber: 2289,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7448,24 +7947,24 @@ function FlightsPage() {
                                                         children: seatSelections[idx] ? `Seat ${seatSelections[idx]}` : "No seat selected"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1938,
+                                                        lineNumber: 2290,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, label, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 1936,
+                                                lineNumber: 2288,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1931,
+                                        lineNumber: 2283,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1929,
+                                lineNumber: 2281,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7476,7 +7975,7 @@ function FlightsPage() {
                                         children: "Flight layout"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1948,
+                                        lineNumber: 2300,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7489,7 +7988,7 @@ function FlightsPage() {
                                                     children: "A B C    |    D E F"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 1951,
+                                                    lineNumber: 2303,
                                                     columnNumber: 19
                                                 }, this),
                                                 Array.from({
@@ -7512,7 +8011,7 @@ function FlightsPage() {
                                                                 children: rowNumber
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                lineNumber: 1959,
+                                                                lineNumber: 2311,
                                                                 columnNumber: 25
                                                             }, this),
                                                             seatsInRow.map((seat, seatIdx)=>{
@@ -7521,7 +8020,7 @@ function FlightsPage() {
                                                                 const isAisle = seatIdx === 3;
                                                                 return isAisle ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {}, `${seatId}-aisle`, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 1965,
+                                                                    lineNumber: 2317,
                                                                     columnNumber: 29
                                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                                                     variant: isSelected ? "default" : "outline",
@@ -7546,38 +8045,38 @@ function FlightsPage() {
                                                                     children: seatId
                                                                 }, seatId, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 1967,
+                                                                    lineNumber: 2319,
                                                                     columnNumber: 29
                                                                 }, this);
                                                             })
                                                         ]
                                                     }, rowNumber, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 1958,
+                                                        lineNumber: 2310,
                                                         columnNumber: 23
                                                     }, this);
                                                 })
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 1950,
+                                            lineNumber: 2302,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 1949,
+                                        lineNumber: 2301,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1947,
+                                lineNumber: 2299,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1928,
+                        lineNumber: 2280,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7589,7 +8088,7 @@ function FlightsPage() {
                                 children: "Back to Passenger Details"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 1999,
+                                lineNumber: 2351,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7602,25 +8101,25 @@ function FlightsPage() {
                                         className: "w-4 h-4 ml-2"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2003,
+                                        lineNumber: 2355,
                                         columnNumber: 39
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2002,
+                                lineNumber: 2354,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 1998,
+                        lineNumber: 2350,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 1919,
+                lineNumber: 2271,
                 columnNumber: 9
             }, this),
             currentStage === "Payment Pending" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7634,7 +8133,7 @@ function FlightsPage() {
                                 children: "Payment Pending"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2013,
+                                lineNumber: 2365,
                                 columnNumber: 13
                             }, this),
                             paymentTimeout !== null && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -7646,13 +8145,13 @@ function FlightsPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2015,
+                                lineNumber: 2367,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2012,
+                        lineNumber: 2364,
                         columnNumber: 11
                     }, this),
                     (()=>{
@@ -7678,7 +8177,7 @@ function FlightsPage() {
                                                             children: "Net Price (API Fare)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2041,
+                                                            lineNumber: 2393,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7689,7 +8188,7 @@ function FlightsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2042,
+                                                            lineNumber: 2394,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7697,13 +8196,13 @@ function FlightsPage() {
                                                             children: "Base fare + taxes shown to agents"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2045,
+                                                            lineNumber: 2397,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2040,
+                                                    lineNumber: 2392,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7714,7 +8213,7 @@ function FlightsPage() {
                                                             children: "Customer Payable"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2048,
+                                                            lineNumber: 2400,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7725,7 +8224,7 @@ function FlightsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2049,
+                                                            lineNumber: 2401,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7733,19 +8232,19 @@ function FlightsPage() {
                                                             children: "Includes markup and ancillaries (toggle below to remove markup)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2052,
+                                                            lineNumber: 2404,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2047,
+                                                    lineNumber: 2399,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2039,
+                                            lineNumber: 2391,
                                             columnNumber: 19
                                         }, this),
                                         paymentTimeout !== null && paymentTimeout < 5 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7755,7 +8254,7 @@ function FlightsPage() {
                                                     className: "h-4 w-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2059,
+                                                    lineNumber: 2411,
                                                     columnNumber: 23
                                                 }, this),
                                                 "Payment session expires in ",
@@ -7765,13 +8264,13 @@ function FlightsPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2058,
+                                            lineNumber: 2410,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 2038,
+                                    lineNumber: 2390,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7793,7 +8292,7 @@ function FlightsPage() {
                                                                     }))
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2069,
+                                                            lineNumber: 2421,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7804,7 +8303,7 @@ function FlightsPage() {
                                                                     children: "Add markup before payment"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2078,
+                                                                    lineNumber: 2430,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7812,19 +8311,19 @@ function FlightsPage() {
                                                                     children: "Defaulted on with preset ₹500. Toggle off to send without markup."
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2081,
+                                                                    lineNumber: 2433,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2077,
+                                                            lineNumber: 2429,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2068,
+                                                    lineNumber: 2420,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7837,7 +8336,7 @@ function FlightsPage() {
                                                                     children: "Super Admin markup (₹)"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2090,
+                                                                    lineNumber: 2442,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7845,13 +8344,13 @@ function FlightsPage() {
                                                                     readOnly: true
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2091,
+                                                                    lineNumber: 2443,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2089,
+                                                            lineNumber: 2441,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7861,7 +8360,7 @@ function FlightsPage() {
                                                                     children: "Agent markup (₹)"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2095,
+                                                                    lineNumber: 2447,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7875,7 +8374,7 @@ function FlightsPage() {
                                                                     min: 0
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2096,
+                                                                    lineNumber: 2448,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 !resolvedMarkup.allowAgentOverride && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7883,25 +8382,25 @@ function FlightsPage() {
                                                                     children: "Locked by Agent Admin"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2113,
+                                                                    lineNumber: 2465,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2094,
+                                                            lineNumber: 2446,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2087,
+                                                    lineNumber: 2439,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2067,
+                                            lineNumber: 2419,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7918,7 +8417,7 @@ function FlightsPage() {
                                                             children: "Price Breakdown"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2128,
+                                                            lineNumber: 2480,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7928,7 +8427,7 @@ function FlightsPage() {
                                                                     children: "Base fare"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2130,
+                                                                    lineNumber: 2482,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7939,13 +8438,13 @@ function FlightsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2131,
+                                                                    lineNumber: 2483,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2129,
+                                                            lineNumber: 2481,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7955,7 +8454,7 @@ function FlightsPage() {
                                                                     children: "Taxes"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2134,
+                                                                    lineNumber: 2486,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7966,13 +8465,13 @@ function FlightsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2135,
+                                                                    lineNumber: 2487,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2133,
+                                                            lineNumber: 2485,
                                                             columnNumber: 27
                                                         }, this),
                                                         convenienceFees > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7982,7 +8481,7 @@ function FlightsPage() {
                                                                     children: "Convenience fees"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2139,
+                                                                    lineNumber: 2491,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7993,13 +8492,13 @@ function FlightsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2140,
+                                                                    lineNumber: 2492,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2138,
+                                                            lineNumber: 2490,
                                                             columnNumber: 29
                                                         }, this),
                                                         ancillariesTotal > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8009,7 +8508,7 @@ function FlightsPage() {
                                                                     children: "Ancillaries"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2147,
+                                                                    lineNumber: 2499,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8020,18 +8519,18 @@ function FlightsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2148,
+                                                                    lineNumber: 2500,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2146,
+                                                            lineNumber: 2498,
                                                             columnNumber: 29
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2153,
+                                                            lineNumber: 2505,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8042,7 +8541,7 @@ function FlightsPage() {
                                                                     children: "Total"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2155,
+                                                                    lineNumber: 2507,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8053,13 +8552,13 @@ function FlightsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                                    lineNumber: 2156,
+                                                                    lineNumber: 2508,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                            lineNumber: 2154,
+                                                            lineNumber: 2506,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
@@ -8067,19 +8566,19 @@ function FlightsPage() {
                                             })()
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2120,
+                                            lineNumber: 2472,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 2065,
+                                    lineNumber: 2417,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 2037,
+                            lineNumber: 2389,
                             columnNumber: 15
                         }, this);
                     })(),
@@ -8094,7 +8593,7 @@ function FlightsPage() {
                                         children: "Wallet Balance:"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2173,
+                                        lineNumber: 2525,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8105,13 +8604,13 @@ function FlightsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2174,
+                                        lineNumber: 2526,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2172,
+                                lineNumber: 2524,
                                 columnNumber: 15
                             }, this),
                             selectedFlight && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8134,7 +8633,7 @@ function FlightsPage() {
                                                 children: "(Insufficient balance)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2199,
+                                                lineNumber: 2551,
                                                 columnNumber: 27
                                             }, this)
                                         ]
@@ -8142,13 +8641,13 @@ function FlightsPage() {
                                 })()
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2179,
+                                lineNumber: 2531,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2171,
+                        lineNumber: 2523,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8161,7 +8660,7 @@ function FlightsPage() {
                                         children: "Payment Method"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2213,
+                                        lineNumber: 2565,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -8178,7 +8677,7 @@ function FlightsPage() {
                                                 children: "Select payment method"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2225,
+                                                lineNumber: 2577,
                                                 columnNumber: 17
                                             }, this),
                                             canUseWallet && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -8186,7 +8685,7 @@ function FlightsPage() {
                                                 children: "Wallet"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2226,
+                                                lineNumber: 2578,
                                                 columnNumber: 34
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -8194,7 +8693,7 @@ function FlightsPage() {
                                                 children: "Credit/Debit Card"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2227,
+                                                lineNumber: 2579,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -8202,19 +8701,19 @@ function FlightsPage() {
                                                 children: "Net Banking"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2228,
+                                                lineNumber: 2580,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2214,
+                                        lineNumber: 2566,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2212,
+                                lineNumber: 2564,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8230,7 +8729,7 @@ function FlightsPage() {
                                             })
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2232,
+                                        lineNumber: 2584,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
@@ -8243,25 +8742,25 @@ function FlightsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2239,
+                                                lineNumber: 2591,
                                                 columnNumber: 51
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2238,
+                                        lineNumber: 2590,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2231,
+                                lineNumber: 2583,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2211,
+                        lineNumber: 2563,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8273,18 +8772,18 @@ function FlightsPage() {
                             children: "Pay & Confirm"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 2244,
+                            lineNumber: 2596,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2243,
+                        lineNumber: 2595,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 2011,
+                lineNumber: 2363,
                 columnNumber: 9
             }, this),
             currentStage === "Booking Confirmed" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8298,17 +8797,17 @@ function FlightsPage() {
                                 className: "h-10 w-10 text-green-600"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2256,
+                                lineNumber: 2608,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                            lineNumber: 2255,
+                            lineNumber: 2607,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2254,
+                        lineNumber: 2606,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -8316,7 +8815,7 @@ function FlightsPage() {
                         children: "Booking Confirmed!"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2259,
+                        lineNumber: 2611,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8324,7 +8823,7 @@ function FlightsPage() {
                         children: "Your flight has been successfully booked and ticketed."
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2260,
+                        lineNumber: 2612,
                         columnNumber: 11
                     }, this),
                     bookingId && pnr && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8338,7 +8837,7 @@ function FlightsPage() {
                                         children: "Booking ID:"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2264,
+                                        lineNumber: 2616,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8346,13 +8845,13 @@ function FlightsPage() {
                                         children: bookingId
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2265,
+                                        lineNumber: 2617,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2263,
+                                lineNumber: 2615,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8363,7 +8862,7 @@ function FlightsPage() {
                                         children: "PNR:"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2268,
+                                        lineNumber: 2620,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8371,19 +8870,19 @@ function FlightsPage() {
                                         children: pnr
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                        lineNumber: 2269,
+                                        lineNumber: 2621,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2267,
+                                lineNumber: 2619,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2262,
+                        lineNumber: 2614,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8403,7 +8902,7 @@ function FlightsPage() {
                                 children: "Download Ticket"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2274,
+                                lineNumber: 2626,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -8417,20 +8916,20 @@ function FlightsPage() {
                                                     children: "Download Ticket"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2292,
+                                                    lineNumber: 2644,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                                     children: "Choose whether to include convenience fees in the ticket. Super admin markup is always included in the base fare."
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2293,
+                                                    lineNumber: 2645,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2291,
+                                            lineNumber: 2643,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8443,25 +8942,25 @@ function FlightsPage() {
                                                         children: "Super admin markup is automatically included in the base fare and will always be shown."
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 2299,
+                                                        lineNumber: 2651,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         children: "You can choose to include or exclude agent markup (convenience fees) from the ticket."
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                        lineNumber: 2300,
+                                                        lineNumber: 2652,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                lineNumber: 2298,
+                                                lineNumber: 2650,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2297,
+                                            lineNumber: 2649,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -8475,7 +8974,7 @@ function FlightsPage() {
                                                     children: "Without Convenience Fees"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2304,
+                                                    lineNumber: 2656,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -8486,24 +8985,24 @@ function FlightsPage() {
                                                     children: "With Convenience Fees"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                                    lineNumber: 2313,
+                                                    lineNumber: 2665,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                            lineNumber: 2303,
+                                            lineNumber: 2655,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                    lineNumber: 2290,
+                                    lineNumber: 2642,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2289,
+                                lineNumber: 2641,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -8511,29 +9010,29 @@ function FlightsPage() {
                                 children: "Return to Dashboard"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                                lineNumber: 2324,
+                                lineNumber: 2676,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                        lineNumber: 2273,
+                        lineNumber: 2625,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-                lineNumber: 2253,
+                lineNumber: 2605,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/flights/page.tsx",
-        lineNumber: 1215,
+        lineNumber: 1497,
         columnNumber: 5
     }, this);
 }
-_s(FlightsPage, "y6AKrxhmIXwiwaznAaHibDyK+Og=", false, function() {
+_s(FlightsPage, "WUfqolRqZIWNbaVUZv96WjEfFFk=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"],

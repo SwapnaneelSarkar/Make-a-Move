@@ -15,6 +15,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils"
 import { useAppStore } from "@/lib/store"
 import { toast } from "sonner"
+import { getAgentAccess } from "@/lib/agent-access"
+import { ticketLocksDB } from "@/lib/local-db"
+import { audit } from "@/lib/audit-utils"
+import { Clock, Lock } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { calculatePricingBreakdown } from "@/lib/pricing-utils"
+import { resolveAgentMarkup } from "@/lib/markup-settings"
 
 const CITY_LOOKUP: Record<string, string> = {
   DEL: "New Delhi",
@@ -117,6 +124,15 @@ export default function FlightListingPage() {
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
   const totalTravellers = parseInt(travellers || "0") || 0
   const isGroupBooking = totalTravellers > 9
+  
+  // Lock ticket state
+  const [lockDialogOpen, setLockDialogOpen] = useState(false)
+  const [flightToLock, setFlightToLock] = useState<Flight | null>(null)
+  const [ticketsToLock, setTicketsToLock] = useState(1)
+  
+  // Check if user can lock tickets
+  const agentAccess = getAgentAccess(currentUser.id, currentUser.role)
+  const canLockTickets = agentAccess.flights.lockTickets && !isGroupBooking
 
   // Filter state
   const [baggageFilter, setBaggageFilter] = useState<string[]>([])
@@ -267,6 +283,114 @@ export default function FlightListingPage() {
     const params = new URLSearchParams(searchParams.toString())
     params.set("selectedFlight", flight.id)
     router.push(`/dashboard/flights?${params.toString()}`)
+  }
+
+  const handleLockTicket = (flight: Flight) => {
+    if (!canLockTickets) {
+      toast.error("Cannot lock tickets", {
+        description: isGroupBooking 
+          ? "Group bookings cannot be locked. Use group enquiry instead."
+          : "You don't have permission to lock tickets.",
+      })
+      return
+    }
+
+    if (totalTravellers > 9) {
+      toast.error("Group bookings cannot be locked", {
+        description: "Lock tickets feature is only available for bookings with 9 or fewer passengers.",
+      })
+      return
+    }
+
+    setFlightToLock(flight)
+    setTicketsToLock(Math.min(9, Math.max(1, totalTravellers)))
+    setLockDialogOpen(true)
+  }
+
+  const handleConfirmLock = async () => {
+    if (!flightToLock) return
+
+    if (ticketsToLock < 1 || ticketsToLock > 9) {
+      toast.error("Invalid ticket count", {
+        description: "You can lock between 1 and 9 tickets.",
+      })
+      return
+    }
+
+    try {
+      // Calculate locked price per ticket
+      const resolvedMarkup = resolveAgentMarkup(currentUser.id, currentUser.role)
+      const breakdown = calculatePricingBreakdown(
+        flightToLock.price,
+        3750,
+        "flights",
+        isInternational ? "International" : "Domestic",
+        "Regular",
+        flightToLock.currency || "INR",
+        {
+          superAdminMarkup: resolvedMarkup.superAdminMarkup,
+          agentMarkup: resolvedMarkup.agentMarkup,
+          applyMarkup: true,
+        }
+      )
+
+      const pricePerTicket = breakdown.totalAmount
+      const totalLockedPrice = pricePerTicket * ticketsToLock
+
+      // Create a lock entry with quantity
+      const ticketLock = await ticketLocksDB.create({
+        flightId: flightToLock.id,
+        flightDetails: flightToLock,
+        lockedPrice: totalLockedPrice, // Total price for all tickets
+        pricePerTicket: pricePerTicket, // Price per individual ticket
+        quantity: ticketsToLock, // Number of tickets locked
+        agentId: currentUser.id,
+        agentName: currentUser.name,
+        searchData: {
+          origin,
+          destination,
+          departureDate,
+          returnDate: returnDate || "",
+          travellers: ticketsToLock.toString(),
+          class: classType,
+          tripType,
+          isInternational,
+        },
+        passengerCount: {
+          adults: ticketsToLock,
+          children: 0,
+          infants: 0,
+        },
+      })
+
+      await audit.create("ticket_locks", ticketLock.id, {
+        action: "LOCK_CREATED_FROM_LISTING",
+        flightId: flightToLock.id,
+        lockedPrice: totalLockedPrice,
+        ticketsCount: ticketsToLock,
+        pricePerTicket: pricePerTicket,
+        agentId: currentUser.id,
+      })
+
+      toast.success("Tickets locked successfully!", {
+        description: `${ticketsToLock} ticket${ticketsToLock > 1 ? "s" : ""} locked for 48 hours at ₹${pricePerTicket.toLocaleString("en-IN")} per ticket. Total: ₹${totalLockedPrice.toLocaleString("en-IN")}. Lock ID: ${ticketLock.lockId}`,
+        action: {
+          label: "View Locks",
+          onClick: () => {
+            router.push("/dashboard/flights/locked-tickets")
+          },
+        },
+      })
+
+      setLockDialogOpen(false)
+      setFlightToLock(null)
+      setTicketsToLock(1)
+    } catch (error) {
+      console.error("Failed to lock tickets:", error)
+      toast.error("Failed to lock tickets", {
+        description: "An error occurred while locking the tickets. Please try again.",
+      })
+    }
   }
 
   return (
@@ -449,12 +573,121 @@ export default function FlightListingPage() {
           ) : (
             <div className="space-y-4">
               {flightsToDisplay.map((flight) => (
-                <FlightCard key={flight.id} flight={flight} onBook={handleBook} userRole={currentUser.role} />
+                <FlightCard 
+                  key={flight.id} 
+                  flight={flight} 
+                  onBook={handleBook} 
+                  onLock={canLockTickets ? handleLockTicket : undefined}
+                  userRole={currentUser.role}
+                  canLockTickets={canLockTickets}
+                />
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {/* Lock Ticket Dialog */}
+      <Dialog open={lockDialogOpen} onOpenChange={setLockDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5" />
+              Lock Tickets
+            </DialogTitle>
+            <DialogDescription>
+              Hold tickets at the current price for 48 hours. Price will remain locked even if it increases later.
+            </DialogDescription>
+          </DialogHeader>
+          {flightToLock && (
+            <div className="space-y-4 py-4">
+              <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Flight:</span>
+                  <span className="font-medium">
+                    {flightToLock.airline} - {flightToLock.flightNumber}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Route:</span>
+                  <span className="font-medium">
+                    {flightToLock.departure.city} → {flightToLock.arrival.city}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Current Price:</span>
+                  <span className="font-bold">
+                    {flightToLock.currency} {flightToLock.price.toLocaleString("en-IN")} per ticket
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ticketsToLock">Number of Tickets to Lock (1-9) *</Label>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTicketsToLock(Math.max(1, ticketsToLock - 1))}
+                    disabled={ticketsToLock <= 1}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="ticketsToLock"
+                    type="number"
+                    min={1}
+                    max={9}
+                    value={ticketsToLock}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 1
+                      setTicketsToLock(Math.min(9, Math.max(1, value)))
+                    }}
+                    className="text-center"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTicketsToLock(Math.min(9, ticketsToLock + 1))}
+                    disabled={ticketsToLock >= 9}
+                  >
+                    +
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  You can lock up to 9 tickets. Group bookings (10+ tickets) cannot be locked.
+                </p>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
+                  <div className="text-sm text-blue-800 dark:text-blue-200">
+                    <p className="font-semibold mb-1">Lock Details:</p>
+                    <ul className="list-disc list-inside space-y-1 text-xs">
+                      <li>Tickets will be held for 48 hours at the current price</li>
+                      <li>Price protection: Even if prices increase, your locked price remains</li>
+                      <li>You can convert locked tickets to confirmed bookings anytime</li>
+                      <li>Lock expires automatically after 48 hours</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLockDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmLock} className="gap-2">
+              <Lock className="h-4 w-4" />
+              Lock {ticketsToLock} Ticket{ticketsToLock > 1 ? "s" : ""}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

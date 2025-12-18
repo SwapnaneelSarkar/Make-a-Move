@@ -5,16 +5,18 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Flight } from "@/lib/mock-data"
 import type { Role } from "@/lib/mock-data"
-import { AlertCircle, Plane, Clock, MapPin } from "lucide-react"
+import { AlertCircle, Plane, Clock, MapPin, Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface FlightCardProps {
   flight: Flight
   onBook: (flight: Flight) => void
+  onLock?: (flight: Flight) => void
   userRole?: Role
+  canLockTickets?: boolean
 }
 
-export function FlightCard({ flight, onBook, userRole }: FlightCardProps) {
+export function FlightCard({ flight, onBook, onLock, userRole, canLockTickets }: FlightCardProps) {
   // Only show policy warnings to AGENT and SUB_AGENT
   const showPolicyWarning = userRole === "AGENT" || userRole === "SUB_AGENT"
   const bookingDisabled = userRole === "SUPER_ADMIN"
@@ -99,6 +101,17 @@ export function FlightCard({ flight, onBook, userRole }: FlightCardProps) {
                   <AlertCircle className="mr-1 h-3 w-3" />
                   Out of Policy
                 </Badge>
+              )}
+              {canLockTickets && onLock && (
+                <Button
+                  onClick={() => onLock(flight)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full border-primary/50 text-primary hover:bg-primary/10 hover:border-primary font-medium"
+                >
+                  <Lock className="mr-2 h-4 w-4" />
+                  Lock Ticket (48hrs)
+                </Button>
               )}
               <Button
                 onClick={() => onBook(flight)}

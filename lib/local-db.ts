@@ -1,7 +1,7 @@
 // IndexedDB setup and CRUD operations for all tables
 
 const DB_NAME = "TravelBookingDB"
-const DB_VERSION = 3
+const DB_VERSION = 4
 
 // Table names
 export const TABLES = {
@@ -18,6 +18,7 @@ export const TABLES = {
   WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
   AGENT_STATUS: "agent_status",
   GROUP_BOOKINGS: "group_bookings",
+  TICKET_LOCKS: "ticket_locks",
 } as const
 
 // Types
@@ -216,6 +217,37 @@ export interface GroupBookingRequest {
   updatedAt: string
 }
 
+export interface TicketLock {
+  id: string
+  lockId: string
+  flightId: string
+  flightDetails: any // Store full flight object
+  lockedPrice: number // Total price for all tickets
+  pricePerTicket: number // Price per individual ticket
+  quantity: number // Number of tickets locked (1-9)
+  lockedAt: string
+  expiresAt: string // 48 hours from lockedAt
+  status: "LOCKED" | "EXPIRED" | "CONVERTED" | "CANCELLED"
+  agentId: string
+  agentName: string
+  searchData: {
+    origin: string
+    destination: string
+    departureDate: string
+    returnDate?: string
+    travellers: string
+    class: string
+    tripType: string
+    isInternational: boolean
+  }
+  passengerDetails?: any
+  passengerCount?: any
+  ancillaries?: any
+  seatSelections?: string[]
+  createdAt: string
+  updatedAt: string
+}
+
 // Database initialization
 let dbInstance: IDBDatabase | null = null
 
@@ -320,6 +352,15 @@ export async function initDB(): Promise<IDBDatabase> {
         groupStore.createIndex("reference", "reference", { unique: true })
         groupStore.createIndex("status", "status")
         groupStore.createIndex("createdAt", "createdAt")
+      }
+
+      if (!db.objectStoreNames.contains(TABLES.TICKET_LOCKS)) {
+        const locksStore = db.createObjectStore(TABLES.TICKET_LOCKS, { keyPath: "id" })
+        locksStore.createIndex("lockId", "lockId", { unique: true })
+        locksStore.createIndex("agentId", "agentId")
+        locksStore.createIndex("status", "status")
+        locksStore.createIndex("expiresAt", "expiresAt")
+        locksStore.createIndex("flightId", "flightId")
       }
     }
   })
@@ -729,5 +770,51 @@ export const groupBookingsDB = {
   delete: (id: string) => remove(TABLES.GROUP_BOOKINGS, id),
   search: (query: (item: GroupBookingRequest) => boolean) => search<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, query),
   filter: (filters: Record<string, any>) => filter<GroupBookingRequest>(TABLES.GROUP_BOOKINGS, filters),
+}
+
+// Ticket Locks CRUD
+export const ticketLocksDB = {
+  create: async (
+    data: Omit<TicketLock, "id" | "lockId" | "lockedAt" | "expiresAt" | "status" | "createdAt" | "updatedAt">,
+  ): Promise<TicketLock> => {
+    const now = new Date().toISOString()
+    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() // 48 hours from now
+    const lockId = `LOCK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random()
+      .toString(36)
+      .substr(2, 4)
+      .toUpperCase()}`
+    
+    // Calculate defaults for quantity and pricePerTicket if not provided
+    const quantity = data.quantity || 1
+    const pricePerTicket = data.pricePerTicket || (data.lockedPrice / quantity)
+    
+    return create<TicketLock>(TABLES.TICKET_LOCKS, {
+      ...data,
+      quantity,
+      pricePerTicket,
+      lockId,
+      lockedAt: now,
+      expiresAt,
+      status: "LOCKED",
+      createdAt: now,
+      updatedAt: now,
+    })
+  },
+  read: (id: string) => read<TicketLock>(TABLES.TICKET_LOCKS, id),
+  readAll: () => readAll<TicketLock>(TABLES.TICKET_LOCKS),
+  update: (id: string, data: Partial<TicketLock>) =>
+    update<TicketLock>(TABLES.TICKET_LOCKS, id, { ...data, updatedAt: new Date().toISOString() }),
+  delete: (id: string) => remove(TABLES.TICKET_LOCKS, id),
+  search: (query: (item: TicketLock) => boolean) => search<TicketLock>(TABLES.TICKET_LOCKS, query),
+  filter: (filters: Record<string, any>) => filter<TicketLock>(TABLES.TICKET_LOCKS, filters),
+  readByAgentId: async (agentId: string): Promise<TicketLock[]> => {
+    const all = await readAll<TicketLock>(TABLES.TICKET_LOCKS)
+    return all.filter((lock) => lock.agentId === agentId && lock.status === "LOCKED")
+  },
+  readActive: async (): Promise<TicketLock[]> => {
+    const all = await readAll<TicketLock>(TABLES.TICKET_LOCKS)
+    const now = new Date().toISOString()
+    return all.filter((lock) => lock.status === "LOCKED" && lock.expiresAt > now)
+  },
 }
 
