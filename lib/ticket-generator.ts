@@ -50,7 +50,7 @@ export interface TicketData {
   }
 }
 
-export function generateTicketHTML(data: TicketData, options?: { showMarkup?: boolean }): string {
+export function generateTicketHTML(data: TicketData, options?: { showMarkup?: boolean; hidePrices?: boolean }): string {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     return date.toLocaleDateString("en-IN", {
@@ -429,6 +429,7 @@ export function generateTicketHTML(data: TicketData, options?: { showMarkup?: bo
         ` : ""}
       </div>
       
+      ${!options?.hidePrices ? `
       <div class="price-breakdown">
         <div class="section-title">Price Breakdown</div>
         <div class="price-row">
@@ -456,6 +457,7 @@ export function generateTicketHTML(data: TicketData, options?: { showMarkup?: bo
           <span class="price-value">₹${data.totalAmount.toLocaleString("en-IN")}</span>
         </div>
       </div>
+      ` : ""}
     </div>
     
     <div class="ticket-footer">
@@ -474,7 +476,7 @@ export function generateTicketHTML(data: TicketData, options?: { showMarkup?: bo
   `
 }
 
-export function downloadTicket(data: TicketData, options?: { showMarkup?: boolean }) {
+export function downloadTicket(data: TicketData, options?: { showMarkup?: boolean; hidePrices?: boolean }) {
   const html = generateTicketHTML(data, options)
   const blob = new Blob([html], { type: "text/html" })
   const url = URL.createObjectURL(blob)

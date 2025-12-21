@@ -686,6 +686,8 @@ __turbopack_context__.s([
     ()=>bookingsDB,
     "disputesDB",
     ()=>disputesDB,
+    "groupBookingsDB",
+    ()=>groupBookingsDB,
     "initDB",
     ()=>initDB,
     "kycDB",
@@ -700,13 +702,15 @@ __turbopack_context__.s([
     ()=>refundsDB,
     "scheduledReportsDB",
     ()=>scheduledReportsDB,
+    "ticketLocksDB",
+    ()=>ticketLocksDB,
     "transactionsDB",
     ()=>transactionsDB,
     "walletDepositRequestsDB",
     ()=>walletDepositRequestsDB
 ]);
 const DB_NAME = "TravelBookingDB";
-const DB_VERSION = 2;
+const DB_VERSION = 4;
 const TABLES = {
     BOOKINGS: "bookings",
     TRANSACTIONS: "transactions",
@@ -719,7 +723,9 @@ const TABLES = {
     SCHEDULED_REPORTS: "scheduled_reports",
     PROMOTIONAL_BANNERS: "promotional_banners",
     WALLET_DEPOSIT_REQUESTS: "wallet_deposit_requests",
-    AGENT_STATUS: "agent_status"
+    AGENT_STATUS: "agent_status",
+    GROUP_BOOKINGS: "group_bookings",
+    TICKET_LOCKS: "ticket_locks"
 };
 // Database initialization
 let dbInstance = null;
@@ -838,6 +844,28 @@ async function initDB() {
                     unique: true
                 });
                 statusStore.createIndex("status", "status");
+            }
+            if (!db.objectStoreNames.contains(TABLES.GROUP_BOOKINGS)) {
+                const groupStore = db.createObjectStore(TABLES.GROUP_BOOKINGS, {
+                    keyPath: "id"
+                });
+                groupStore.createIndex("reference", "reference", {
+                    unique: true
+                });
+                groupStore.createIndex("status", "status");
+                groupStore.createIndex("createdAt", "createdAt");
+            }
+            if (!db.objectStoreNames.contains(TABLES.TICKET_LOCKS)) {
+                const locksStore = db.createObjectStore(TABLES.TICKET_LOCKS, {
+                    keyPath: "id"
+                });
+                locksStore.createIndex("lockId", "lockId", {
+                    unique: true
+                });
+                locksStore.createIndex("agentId", "agentId");
+                locksStore.createIndex("status", "status");
+                locksStore.createIndex("expiresAt", "expiresAt");
+                locksStore.createIndex("flightId", "flightId");
             }
         };
     });
@@ -1204,6 +1232,67 @@ const agentStatusDB = {
     delete: (id)=>remove(TABLES.AGENT_STATUS, id),
     search: (query)=>search(TABLES.AGENT_STATUS, query),
     filter: (filters)=>filter(TABLES.AGENT_STATUS, filters)
+};
+const groupBookingsDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        const reference = `GRP-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        return create(TABLES.GROUP_BOOKINGS, {
+            ...data,
+            reference,
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.GROUP_BOOKINGS, id),
+    readAll: ()=>readAll(TABLES.GROUP_BOOKINGS),
+    update: (id, data)=>update(TABLES.GROUP_BOOKINGS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    delete: (id)=>remove(TABLES.GROUP_BOOKINGS, id),
+    search: (query)=>search(TABLES.GROUP_BOOKINGS, query),
+    filter: (filters)=>filter(TABLES.GROUP_BOOKINGS, filters)
+};
+const ticketLocksDB = {
+    create: async (data)=>{
+        const now = new Date().toISOString();
+        const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() // 48 hours from now
+        ;
+        const lockId = `LOCK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        // Calculate defaults for quantity and pricePerTicket if not provided
+        const quantity = data.quantity || 1;
+        const pricePerTicket = data.pricePerTicket || data.lockedPrice / quantity;
+        return create(TABLES.TICKET_LOCKS, {
+            ...data,
+            quantity,
+            pricePerTicket,
+            lockId,
+            lockedAt: now,
+            expiresAt,
+            status: "LOCKED",
+            createdAt: now,
+            updatedAt: now
+        });
+    },
+    read: (id)=>read(TABLES.TICKET_LOCKS, id),
+    readAll: ()=>readAll(TABLES.TICKET_LOCKS),
+    update: (id, data)=>update(TABLES.TICKET_LOCKS, id, {
+            ...data,
+            updatedAt: new Date().toISOString()
+        }),
+    delete: (id)=>remove(TABLES.TICKET_LOCKS, id),
+    search: (query)=>search(TABLES.TICKET_LOCKS, query),
+    filter: (filters)=>filter(TABLES.TICKET_LOCKS, filters),
+    readByAgentId: async (agentId)=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        return all.filter((lock)=>lock.agentId === agentId && lock.status === "LOCKED");
+    },
+    readActive: async ()=>{
+        const all = await readAll(TABLES.TICKET_LOCKS);
+        const now = new Date().toISOString();
+        return all.filter((lock)=>lock.status === "LOCKED" && lock.expiresAt > now);
+    }
 };
 }),
 "[project]/Downloads/travel-booking-platform/lib/audit-utils.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -2250,6 +2339,7 @@ function HotelsPage() {
     const [selectedRooms, setSelectedRooms] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [errors, setErrors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
     const [paymentTimeout, setPaymentTimeout] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isInternational, setIsInternational] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     // Search Data
     const [searchData, setSearchData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         location: "",
@@ -2270,6 +2360,8 @@ function HotelsPage() {
         specialRequests: "",
         acceptPolicies: false
     });
+    // Passport details for each occupant (for international bookings)
+    const [occupantPassports, setOccupantPassports] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     // Add-ons
     const [addOns, setAddOns] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         extraBed: false,
@@ -2307,6 +2399,39 @@ function HotelsPage() {
     }, [
         currentUser.id,
         currentUser.role
+    ]);
+    // Initialize passport details when occupants change or when switching to international
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (isInternational) {
+            const totalOccupants = searchData.adults + searchData.children;
+            const currentPassports = occupantPassports.length;
+            if (currentPassports < totalOccupants) {
+                // Add new passport entries for new occupants
+                const newPassports = [];
+                for(let i = 0; i < totalOccupants; i++){
+                    if (i < currentPassports) {
+                        newPassports.push(occupantPassports[i]);
+                    } else {
+                        newPassports.push({
+                            name: "",
+                            passport: "",
+                            passportExpiry: ""
+                        });
+                    }
+                }
+                setOccupantPassports(newPassports);
+            } else if (currentPassports > totalOccupants) {
+                // Remove excess passport entries
+                setOccupantPassports(occupantPassports.slice(0, totalOccupants));
+            }
+        } else {
+            // Clear passport details for national bookings
+            setOccupantPassports([]);
+        }
+    }, [
+        isInternational,
+        searchData.adults,
+        searchData.children
     ]);
     // Stage 1: Search Validation
     const validateSearch = ()=>{
@@ -2407,6 +2532,38 @@ function HotelsPage() {
         const totalGuests = searchData.adults + searchData.children;
         if (totalGuests < 1) {
             newErrors.numberOfGuests = "At least one guest is required";
+        }
+        // Passport validation for international bookings
+        if (isInternational) {
+            const totalOccupants = searchData.adults + searchData.children;
+            if (occupantPassports.length !== totalOccupants) {
+                newErrors.passport = "Passport details are required for all occupants";
+            } else {
+                occupantPassports.forEach((passport, index)=>{
+                    if (!passport.name.trim()) {
+                        newErrors[`passport_name_${index}`] = `Name is required for occupant ${index + 1}`;
+                    } else if (!(0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$policy$2d$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["validateName"])(passport.name)) {
+                        newErrors[`passport_name_${index}`] = `Name must contain only alphabets for occupant ${index + 1}`;
+                    }
+                    if (!passport.passport.trim()) {
+                        newErrors[`passport_${index}`] = `Passport number is required for occupant ${index + 1}`;
+                    } else if (!/^[A-Z]{1}[0-9]{7}$/.test(passport.passport.toUpperCase())) {
+                        newErrors[`passport_${index}`] = `Passport number must be 1 letter followed by 7 digits (e.g., A1234567) for occupant ${index + 1}`;
+                    }
+                    if (!passport.passportExpiry) {
+                        newErrors[`passport_expiry_${index}`] = `Passport expiry date is required for occupant ${index + 1}`;
+                    } else {
+                        const expiryDate = new Date(passport.passportExpiry);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (isNaN(expiryDate.getTime())) {
+                            newErrors[`passport_expiry_${index}`] = `Please enter a valid expiry date for occupant ${index + 1}`;
+                        } else if (expiryDate <= today) {
+                            newErrors[`passport_expiry_${index}`] = `Passport expiry date must be in the future for occupant ${index + 1}`;
+                        }
+                    }
+                });
+            }
         }
         // Policy acceptance
         if (!guestDetails.acceptPolicies) {
@@ -2723,37 +2880,37 @@ function HotelsPage() {
                                     className: "h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 667,
+                                    lineNumber: 747,
                                     columnNumber: 15
                                 }, this),
                                 "Booking access restricted"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 666,
+                            lineNumber: 746,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
                             children: "Super Admins oversee agencies and cannot initiate hotel bookings from this workspace. Switch to an agency-facing role to access hotel search and booking flows."
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 670,
+                            lineNumber: 750,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                    lineNumber: 665,
+                    lineNumber: 745,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 664,
+                lineNumber: 744,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-            lineNumber: 663,
+            lineNumber: 743,
             columnNumber: 7
         }, this);
     }
@@ -2768,7 +2925,7 @@ function HotelsPage() {
                         children: "Hotel Booking"
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 683,
+                        lineNumber: 763,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2776,13 +2933,13 @@ function HotelsPage() {
                         children: "Find comfortable and compliant stays for your business trip."
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 686,
+                        lineNumber: 766,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 682,
+                lineNumber: 762,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2799,44 +2956,44 @@ function HotelsPage() {
                                             className: "w-4 h-4"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 705,
+                                            lineNumber: 785,
                                             columnNumber: 19
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("w-5 h-5 rounded-full flex items-center justify-center text-xs", index === currentStage && "bg-primary-foreground/20"),
                                             children: index + 1
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 707,
+                                            lineNumber: 787,
                                             columnNumber: 19
                                         }, this),
                                         stage.label
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 694,
+                                    lineNumber: 774,
                                     columnNumber: 15
                                 }, this),
                                 index < BOOKING_STAGES.length - 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("w-12 h-0.5 mx-2 transition-colors", index < currentStage ? "bg-primary" : "bg-border")
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 714,
+                                    lineNumber: 794,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, stage.id, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 693,
+                            lineNumber: 773,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                    lineNumber: 691,
+                    lineNumber: 771,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 690,
+                lineNumber: 770,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -2851,7 +3008,7 @@ function HotelsPage() {
                                         className: "w-5 h-5 text-muted-foreground"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 730,
+                                        lineNumber: 810,
                                         columnNumber: 34
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2859,13 +3016,13 @@ function HotelsPage() {
                                         children: "Search Criteria"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 731,
+                                        lineNumber: 811,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 729,
+                                lineNumber: 809,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -2873,13 +3030,13 @@ function HotelsPage() {
                                 children: "Enter your hotel search requirements"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 733,
+                                lineNumber: 813,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 728,
+                        lineNumber: 808,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2899,13 +3056,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 739,
+                                                        lineNumber: 819,
                                                         columnNumber: 26
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 738,
+                                                lineNumber: 818,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2915,7 +3072,7 @@ function HotelsPage() {
                                                         className: "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 742,
+                                                        lineNumber: 822,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2929,13 +3086,13 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 743,
+                                                        lineNumber: 823,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 741,
+                                                lineNumber: 821,
                                                 columnNumber: 15
                                             }, this),
                                             errors.location && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2943,13 +3100,13 @@ function HotelsPage() {
                                                 children: errors.location
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 751,
+                                                lineNumber: 831,
                                                 columnNumber: 35
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 737,
+                                        lineNumber: 817,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2964,13 +3121,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 756,
+                                                        lineNumber: 836,
                                                         columnNumber: 31
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 755,
+                                                lineNumber: 835,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Popover"], {
@@ -2985,19 +3142,19 @@ function HotelsPage() {
                                                                     className: "mr-2 h-4 w-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 768,
+                                                                    lineNumber: 848,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 searchData.checkIn ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$date$2d$fns$2f$format$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(searchData.checkIn, "PPP") : "Pick a date"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 760,
+                                                            lineNumber: 840,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 759,
+                                                        lineNumber: 839,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PopoverContent"], {
@@ -3013,18 +3170,18 @@ function HotelsPage() {
                                                             initialFocus: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 773,
+                                                            lineNumber: 853,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 772,
+                                                        lineNumber: 852,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 758,
+                                                lineNumber: 838,
                                                 columnNumber: 15
                                             }, this),
                                             errors.checkIn && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3032,13 +3189,13 @@ function HotelsPage() {
                                                 children: errors.checkIn
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 782,
+                                                lineNumber: 862,
                                                 columnNumber: 34
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 754,
+                                        lineNumber: 834,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3053,13 +3210,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 787,
+                                                        lineNumber: 867,
                                                         columnNumber: 32
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 786,
+                                                lineNumber: 866,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Popover"], {
@@ -3074,19 +3231,19 @@ function HotelsPage() {
                                                                     className: "mr-2 h-4 w-4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 799,
+                                                                    lineNumber: 879,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 searchData.checkOut ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$date$2d$fns$2f$format$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(searchData.checkOut, "PPP") : "Pick a date"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 791,
+                                                            lineNumber: 871,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 790,
+                                                        lineNumber: 870,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PopoverContent"], {
@@ -3116,18 +3273,18 @@ function HotelsPage() {
                                                             initialFocus: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 804,
+                                                            lineNumber: 884,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 803,
+                                                        lineNumber: 883,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 789,
+                                                lineNumber: 869,
                                                 columnNumber: 15
                                             }, this),
                                             errors.checkOut && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3135,13 +3292,13 @@ function HotelsPage() {
                                                 children: errors.checkOut
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 827,
+                                                lineNumber: 907,
                                                 columnNumber: 35
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 785,
+                                        lineNumber: 865,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3151,7 +3308,7 @@ function HotelsPage() {
                                                 children: "Rooms & Guests"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 831,
+                                                lineNumber: 911,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3165,7 +3322,7 @@ function HotelsPage() {
                                                                 children: "Rooms"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 834,
+                                                                lineNumber: 914,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3180,13 +3337,13 @@ function HotelsPage() {
                                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])(errors.rooms && "border-red-500")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 837,
+                                                                lineNumber: 917,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 833,
+                                                        lineNumber: 913,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3197,7 +3354,7 @@ function HotelsPage() {
                                                                 children: "Adults"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 847,
+                                                                lineNumber: 927,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3212,13 +3369,13 @@ function HotelsPage() {
                                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])(errors.adults && "border-red-500")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 850,
+                                                                lineNumber: 930,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 846,
+                                                        lineNumber: 926,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3229,7 +3386,7 @@ function HotelsPage() {
                                                                 children: "Children"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 860,
+                                                                lineNumber: 940,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3243,19 +3400,19 @@ function HotelsPage() {
                                                                     })
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 863,
+                                                                lineNumber: 943,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 859,
+                                                        lineNumber: 939,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 832,
+                                                lineNumber: 912,
                                                 columnNumber: 15
                                             }, this),
                                             (errors.rooms || errors.adults || errors.guests) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3263,13 +3420,13 @@ function HotelsPage() {
                                                 children: errors.rooms || errors.adults || errors.guests
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 873,
+                                                lineNumber: 953,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 830,
+                                        lineNumber: 910,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3280,7 +3437,7 @@ function HotelsPage() {
                                                 children: "Purpose of Stay"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 878,
+                                                lineNumber: 958,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3296,12 +3453,12 @@ function HotelsPage() {
                                                             placeholder: "Select purpose"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 886,
+                                                            lineNumber: 966,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 885,
+                                                        lineNumber: 965,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3311,7 +3468,7 @@ function HotelsPage() {
                                                                 children: "Business"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 889,
+                                                                lineNumber: 969,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3319,25 +3476,25 @@ function HotelsPage() {
                                                                 children: "Leisure"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 890,
+                                                                lineNumber: 970,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 888,
+                                                        lineNumber: 968,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 879,
+                                                lineNumber: 959,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 877,
+                                        lineNumber: 957,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3348,7 +3505,7 @@ function HotelsPage() {
                                                 children: "Star Rating (Optional)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 896,
+                                                lineNumber: 976,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3364,12 +3521,12 @@ function HotelsPage() {
                                                             placeholder: "Any rating"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 904,
+                                                            lineNumber: 984,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 903,
+                                                        lineNumber: 983,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3379,7 +3536,7 @@ function HotelsPage() {
                                                                 children: "5 Stars"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 907,
+                                                                lineNumber: 987,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3387,7 +3544,7 @@ function HotelsPage() {
                                                                 children: "4 Stars"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 908,
+                                                                lineNumber: 988,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3395,31 +3552,31 @@ function HotelsPage() {
                                                                 children: "3 Stars"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 909,
+                                                                lineNumber: 989,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 906,
+                                                        lineNumber: 986,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 897,
+                                                lineNumber: 977,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 895,
+                                        lineNumber: 975,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 736,
+                                lineNumber: 816,
                                 columnNumber: 11
                             }, this),
                             currentStage === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3433,31 +3590,31 @@ function HotelsPage() {
                                             className: "mr-2 h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 922,
+                                            lineNumber: 1002,
                                             columnNumber: 17
                                         }, this),
                                         "Search Hotels"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 917,
+                                    lineNumber: 997,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 916,
+                                lineNumber: 996,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 735,
+                        lineNumber: 815,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 722,
+                lineNumber: 802,
                 columnNumber: 7
             }, this),
             currentStage >= 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -3475,7 +3632,7 @@ function HotelsPage() {
                                                 className: "w-5 h-5 text-muted-foreground"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 936,
+                                                lineNumber: 1016,
                                                 columnNumber: 38
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -3483,13 +3640,13 @@ function HotelsPage() {
                                                 children: "Available Hotels"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 937,
+                                                lineNumber: 1017,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 935,
+                                        lineNumber: 1015,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3501,20 +3658,20 @@ function HotelsPage() {
                                                 className: "mr-2 h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 940,
+                                                lineNumber: 1020,
                                                 columnNumber: 17
                                             }, this),
                                             " Filters"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 939,
+                                        lineNumber: 1019,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 934,
+                                lineNumber: 1014,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -3528,13 +3685,13 @@ function HotelsPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 943,
+                                lineNumber: 1023,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 933,
+                        lineNumber: 1013,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3546,23 +3703,23 @@ function HotelsPage() {
                                     userRole: currentUser.role
                                 }, hotel.id, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 951,
+                                    lineNumber: 1031,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 949,
+                            lineNumber: 1029,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 948,
+                        lineNumber: 1028,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 932,
+                lineNumber: 1012,
                 columnNumber: 9
             }, this),
             currentStage > 1 && selectedHotel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -3579,7 +3736,7 @@ function HotelsPage() {
                                         className: "w-4 h-4 text-muted-foreground"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 969,
+                                        lineNumber: 1049,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3589,7 +3746,7 @@ function HotelsPage() {
                                                 children: selectedHotel.name
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 971,
+                                                lineNumber: 1051,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3597,19 +3754,19 @@ function HotelsPage() {
                                                 children: selectedHotel.location
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 972,
+                                                lineNumber: 1052,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 970,
+                                        lineNumber: 1050,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 968,
+                                lineNumber: 1048,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3617,23 +3774,23 @@ function HotelsPage() {
                                 children: "Selected"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 975,
+                                lineNumber: 1055,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 967,
+                        lineNumber: 1047,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                    lineNumber: 966,
+                    lineNumber: 1046,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 965,
+                lineNumber: 1045,
                 columnNumber: 9
             }, this),
             currentStage === 2 && selectedHotel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -3646,7 +3803,7 @@ function HotelsPage() {
                                 children: "Room Selection"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 985,
+                                lineNumber: 1065,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -3654,13 +3811,13 @@ function HotelsPage() {
                                 children: "Select room type and board basis"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 986,
+                                lineNumber: 1066,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 984,
+                        lineNumber: 1064,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3688,7 +3845,7 @@ function HotelsPage() {
                                                                             children: room.type
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 998,
+                                                                            lineNumber: 1078,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         !room.available && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3697,13 +3854,13 @@ function HotelsPage() {
                                                                             children: "Sold Out"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1000,
+                                                                            lineNumber: 1080,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 997,
+                                                                    lineNumber: 1077,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3711,7 +3868,7 @@ function HotelsPage() {
                                                                     children: room.description
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1005,
+                                                                    lineNumber: 1085,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3724,7 +3881,7 @@ function HotelsPage() {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                                    lineNumber: 1008,
+                                                                                    lineNumber: 1088,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 "Max ",
@@ -3733,7 +3890,7 @@ function HotelsPage() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1007,
+                                                                            lineNumber: 1087,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3743,20 +3900,20 @@ function HotelsPage() {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                                    lineNumber: 1012,
+                                                                                    lineNumber: 1092,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 room.type
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1011,
+                                                                            lineNumber: 1091,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1006,
+                                                                    lineNumber: 1086,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3767,7 +3924,7 @@ function HotelsPage() {
                                                                             children: "Inclusions:"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1017,
+                                                                            lineNumber: 1097,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3778,18 +3935,18 @@ function HotelsPage() {
                                                                                     children: inc
                                                                                 }, idx, false, {
                                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                                    lineNumber: 1020,
+                                                                                    lineNumber: 1100,
                                                                                     columnNumber: 33
                                                                                 }, this))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1018,
+                                                                            lineNumber: 1098,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1016,
+                                                                    lineNumber: 1096,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3800,7 +3957,7 @@ function HotelsPage() {
                                                                             children: "Cancellation Policy:"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1027,
+                                                                            lineNumber: 1107,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3808,19 +3965,19 @@ function HotelsPage() {
                                                                             children: room.cancellationPolicy
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1028,
+                                                                            lineNumber: 1108,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1026,
+                                                                    lineNumber: 1106,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 996,
+                                                            lineNumber: 1076,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3835,7 +3992,7 @@ function HotelsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1032,
+                                                                    lineNumber: 1112,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3843,19 +4000,19 @@ function HotelsPage() {
                                                                     children: "per night"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1035,
+                                                                    lineNumber: 1115,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1031,
+                                                            lineNumber: 1111,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                    lineNumber: 995,
+                                                    lineNumber: 1075,
                                                     columnNumber: 23
                                                 }, this),
                                                 room.available && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3869,13 +4026,13 @@ function HotelsPage() {
                                                                     children: "*"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1041,
+                                                                    lineNumber: 1121,
                                                                     columnNumber: 46
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1041,
+                                                            lineNumber: 1121,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$radio$2d$group$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["RadioGroup"], {
@@ -3889,7 +4046,7 @@ function HotelsPage() {
                                                                             id: `${room.id}-${bb.id}`
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1048,
+                                                                            lineNumber: 1128,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -3900,7 +4057,7 @@ function HotelsPage() {
                                                                                     children: bb.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                                    lineNumber: 1053,
+                                                                                    lineNumber: 1133,
                                                                                     columnNumber: 35
                                                                                 }, this),
                                                                                 bb.price > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3912,24 +4069,24 @@ function HotelsPage() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                                    lineNumber: 1055,
+                                                                                    lineNumber: 1135,
                                                                                     columnNumber: 37
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                            lineNumber: 1049,
+                                                                            lineNumber: 1129,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     ]
                                                                 }, bb.id, true, {
                                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                    lineNumber: 1047,
+                                                                    lineNumber: 1127,
                                                                     columnNumber: 31
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1042,
+                                                            lineNumber: 1122,
                                                             columnNumber: 27
                                                         }, this),
                                                         errors[`boardBasis_${selectedRooms.findIndex((r)=>r.roomId === room.id)}`] && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3937,24 +4094,24 @@ function HotelsPage() {
                                                             children: errors[`boardBasis_${selectedRooms.findIndex((r)=>r.roomId === room.id)}`]
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1062,
+                                                            lineNumber: 1142,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                    lineNumber: 1040,
+                                                    lineNumber: 1120,
                                                     columnNumber: 25
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 994,
+                                            lineNumber: 1074,
                                             columnNumber: 21
                                         }, this)
                                     }, room.id, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 993,
+                                        lineNumber: 1073,
                                         columnNumber: 19
                                     }, this);
                                 }),
@@ -3963,7 +4120,7 @@ function HotelsPage() {
                                     children: errors.rooms
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1073,
+                                    lineNumber: 1153,
                                     columnNumber: 32
                                 }, this),
                                 errors.occupancy && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Alert"], {
@@ -3973,20 +4130,20 @@ function HotelsPage() {
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 1076,
+                                            lineNumber: 1156,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
                                             children: errors.occupancy
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 1077,
+                                            lineNumber: 1157,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1075,
+                                    lineNumber: 1155,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4002,35 +4159,35 @@ function HotelsPage() {
                                                 className: "w-4 h-4 ml-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1083,
+                                                lineNumber: 1163,
                                                 columnNumber: 45
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1082,
+                                        lineNumber: 1162,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1081,
+                                    lineNumber: 1161,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 989,
+                            lineNumber: 1069,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 988,
+                        lineNumber: 1068,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 983,
+                lineNumber: 1063,
                 columnNumber: 9
             }, this),
             currentStage === 3 && selectedHotel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -4043,7 +4200,7 @@ function HotelsPage() {
                                 children: "Guest Details + Add-ons"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1095,
+                                lineNumber: 1175,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -4051,13 +4208,13 @@ function HotelsPage() {
                                 children: "Enter guest information and select add-ons"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1096,
+                                lineNumber: 1176,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 1094,
+                        lineNumber: 1174,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4078,13 +4235,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1102,
+                                                        lineNumber: 1182,
                                                         columnNumber: 38
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1101,
+                                                lineNumber: 1181,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4098,7 +4255,7 @@ function HotelsPage() {
                                                 placeholder: "Alphabets only"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1104,
+                                                lineNumber: 1184,
                                                 columnNumber: 17
                                             }, this),
                                             errors.name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4106,13 +4263,13 @@ function HotelsPage() {
                                                 children: errors.name
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1111,
+                                                lineNumber: 1191,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1100,
+                                        lineNumber: 1180,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4127,13 +4284,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1116,
+                                                        lineNumber: 1196,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1115,
+                                                lineNumber: 1195,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4148,7 +4305,7 @@ function HotelsPage() {
                                                 maxLength: 10
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1118,
+                                                lineNumber: 1198,
                                                 columnNumber: 17
                                             }, this),
                                             errors.mobile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4156,13 +4313,13 @@ function HotelsPage() {
                                                 children: errors.mobile
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1126,
+                                                lineNumber: 1206,
                                                 columnNumber: 35
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1114,
+                                        lineNumber: 1194,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4173,7 +4330,7 @@ function HotelsPage() {
                                                 children: "Check-in Date"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1130,
+                                                lineNumber: 1210,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4183,13 +4340,13 @@ function HotelsPage() {
                                                 className: "bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1131,
+                                                lineNumber: 1211,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1129,
+                                        lineNumber: 1209,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4200,7 +4357,7 @@ function HotelsPage() {
                                                 children: "Check-out Date"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1140,
+                                                lineNumber: 1220,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4210,13 +4367,13 @@ function HotelsPage() {
                                                 className: "bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1141,
+                                                lineNumber: 1221,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1139,
+                                        lineNumber: 1219,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4227,7 +4384,7 @@ function HotelsPage() {
                                                 children: "Number of Guests"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1150,
+                                                lineNumber: 1230,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4237,13 +4394,13 @@ function HotelsPage() {
                                                 className: "bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1151,
+                                                lineNumber: 1231,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1149,
+                                        lineNumber: 1229,
                                         columnNumber: 15
                                     }, this),
                                     selectedHotel.requiresNationality && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4258,13 +4415,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1164,
+                                                        lineNumber: 1244,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1163,
+                                                lineNumber: 1243,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4277,7 +4434,7 @@ function HotelsPage() {
                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])(errors.nationality && "border-red-500")
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1166,
+                                                lineNumber: 1246,
                                                 columnNumber: 19
                                             }, this),
                                             errors.nationality && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4285,13 +4442,13 @@ function HotelsPage() {
                                                 children: errors.nationality
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1172,
+                                                lineNumber: 1252,
                                                 columnNumber: 42
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1162,
+                                        lineNumber: 1242,
                                         columnNumber: 17
                                     }, this),
                                     searchData.purposeOfStay === "Business" && selectedHotel.requiresGST && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4306,13 +4463,13 @@ function HotelsPage() {
                                                         children: "*"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1179,
+                                                        lineNumber: 1259,
                                                         columnNumber: 27
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1178,
+                                                lineNumber: 1258,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4327,7 +4484,7 @@ function HotelsPage() {
                                                 maxLength: 15
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1181,
+                                                lineNumber: 1261,
                                                 columnNumber: 19
                                             }, this),
                                             errors.gstin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4335,13 +4492,13 @@ function HotelsPage() {
                                                 children: errors.gstin
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1189,
+                                                lineNumber: 1269,
                                                 columnNumber: 36
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1177,
+                                        lineNumber: 1257,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4352,7 +4509,7 @@ function HotelsPage() {
                                                 children: "Special Requests (Optional)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1194,
+                                                lineNumber: 1274,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -4366,24 +4523,24 @@ function HotelsPage() {
                                                 rows: 3
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1195,
+                                                lineNumber: 1275,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1193,
+                                        lineNumber: 1273,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1099,
+                                lineNumber: 1179,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1205,
+                                lineNumber: 1285,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4393,7 +4550,7 @@ function HotelsPage() {
                                         children: "Add-ons (Optional)"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1208,
+                                        lineNumber: 1288,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4411,7 +4568,7 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1211,
+                                                        lineNumber: 1291,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4420,13 +4577,13 @@ function HotelsPage() {
                                                         children: "Extra Bed - ₹2,000/night"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1216,
+                                                        lineNumber: 1296,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1210,
+                                                lineNumber: 1290,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4441,7 +4598,7 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1221,
+                                                        lineNumber: 1301,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4450,13 +4607,13 @@ function HotelsPage() {
                                                         children: "Airport Transfer - ₹1,500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1228,
+                                                        lineNumber: 1308,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1220,
+                                                lineNumber: 1300,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4471,7 +4628,7 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1233,
+                                                        lineNumber: 1313,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4480,13 +4637,13 @@ function HotelsPage() {
                                                         children: "Additional Meals - ₹1,000/night"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1238,
+                                                        lineNumber: 1318,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1232,
+                                                lineNumber: 1312,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4501,7 +4658,7 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1243,
+                                                        lineNumber: 1323,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4510,30 +4667,30 @@ function HotelsPage() {
                                                         children: "Travel Insurance - ₹500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1248,
+                                                        lineNumber: 1328,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1242,
+                                                lineNumber: 1322,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1209,
+                                        lineNumber: 1289,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1207,
+                                lineNumber: 1287,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1255,
+                                lineNumber: 1335,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4549,7 +4706,7 @@ function HotelsPage() {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])(errors.acceptPolicies && "border-red-500")
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1258,
+                                        lineNumber: 1338,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4562,19 +4719,19 @@ function HotelsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1267,
+                                                lineNumber: 1347,
                                                 columnNumber: 68
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1266,
+                                        lineNumber: 1346,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1257,
+                                lineNumber: 1337,
                                 columnNumber: 13
                             }, this),
                             errors.acceptPolicies && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4582,7 +4739,7 @@ function HotelsPage() {
                                 children: errors.acceptPolicies
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1270,
+                                lineNumber: 1350,
                                 columnNumber: 39
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4597,30 +4754,30 @@ function HotelsPage() {
                                             className: "w-4 h-4 ml-2"
                                         }, void 0, false, {
                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                            lineNumber: 1274,
+                                            lineNumber: 1354,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1273,
+                                    lineNumber: 1353,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1272,
+                                lineNumber: 1352,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 1098,
+                        lineNumber: 1178,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 1093,
+                lineNumber: 1173,
                 columnNumber: 9
             }, this),
             currentStage === 4 && selectedHotel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -4633,7 +4790,7 @@ function HotelsPage() {
                                 children: "Payment"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1285,
+                                lineNumber: 1365,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -4641,13 +4798,13 @@ function HotelsPage() {
                                 children: "Select payment method and review fare breakdown"
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1286,
+                                lineNumber: 1366,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 1284,
+                        lineNumber: 1364,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -4659,7 +4816,7 @@ function HotelsPage() {
                                         className: "h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1291,
+                                        lineNumber: 1371,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
@@ -4671,13 +4828,13 @@ function HotelsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1292,
+                                        lineNumber: 1372,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1290,
+                                lineNumber: 1370,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4692,13 +4849,13 @@ function HotelsPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1302,
+                                                lineNumber: 1382,
                                                 columnNumber: 30
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1301,
+                                        lineNumber: 1381,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -4715,12 +4872,12 @@ function HotelsPage() {
                                                     placeholder: "Select payment mode"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                    lineNumber: 1311,
+                                                    lineNumber: 1391,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1310,
+                                                lineNumber: 1390,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -4730,7 +4887,7 @@ function HotelsPage() {
                                                         children: "Pay at Property"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1314,
+                                                        lineNumber: 1394,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -4738,7 +4895,7 @@ function HotelsPage() {
                                                         children: "Prepay via Wallet"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1315,
+                                                        lineNumber: 1395,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -4746,19 +4903,19 @@ function HotelsPage() {
                                                         children: "Prepay via Card"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1316,
+                                                        lineNumber: 1396,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1313,
+                                                lineNumber: 1393,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1304,
+                                        lineNumber: 1384,
                                         columnNumber: 15
                                     }, this),
                                     errors.paymentMode && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4766,13 +4923,13 @@ function HotelsPage() {
                                         children: errors.paymentMode
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1319,
+                                        lineNumber: 1399,
                                         columnNumber: 38
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1300,
+                                lineNumber: 1380,
                                 columnNumber: 13
                             }, this),
                             (paymentData.paymentMode === "Prepay via Wallet" || paymentData.paymentMode === "Prepay via Card") && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4786,7 +4943,7 @@ function HotelsPage() {
                                                 children: "Coupon/Corporate Deal Code (Optional)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1325,
+                                                lineNumber: 1405,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4802,7 +4959,7 @@ function HotelsPage() {
                                                         placeholder: "Enter coupon code"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1327,
+                                                        lineNumber: 1407,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -4811,19 +4968,19 @@ function HotelsPage() {
                                                         children: "Apply"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1333,
+                                                        lineNumber: 1413,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1326,
+                                                lineNumber: 1406,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1324,
+                                        lineNumber: 1404,
                                         columnNumber: 17
                                     }, this),
                                     paymentData.paymentMode === "Prepay via Wallet" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4834,7 +4991,7 @@ function HotelsPage() {
                                                 children: "Use Wallet Balance (Optional)"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1341,
+                                                lineNumber: 1421,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4849,7 +5006,7 @@ function HotelsPage() {
                                                             })
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1343,
+                                                        lineNumber: 1423,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -4861,13 +5018,13 @@ function HotelsPage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1350,
+                                                        lineNumber: 1430,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1342,
+                                                lineNumber: 1422,
                                                 columnNumber: 21
                                             }, this),
                                             paymentData.walletUsage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4882,7 +5039,7 @@ function HotelsPage() {
                                                 min: 0
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1355,
+                                                lineNumber: 1435,
                                                 columnNumber: 23
                                             }, this),
                                             errors.wallet && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Alert"], {
@@ -4892,32 +5049,32 @@ function HotelsPage() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1368,
+                                                        lineNumber: 1448,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDescription"], {
                                                         children: errors.wallet
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1369,
+                                                        lineNumber: 1449,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1367,
+                                                lineNumber: 1447,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1340,
+                                        lineNumber: 1420,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1323,
+                                lineNumber: 1403,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4938,7 +5095,7 @@ function HotelsPage() {
                                                                 }))
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1380,
+                                                        lineNumber: 1460,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4949,7 +5106,7 @@ function HotelsPage() {
                                                                 children: "Add convenience fees before final confirmation"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1388,
+                                                                lineNumber: 1468,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4957,19 +5114,19 @@ function HotelsPage() {
                                                                 children: "Convenience fees for booking"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1391,
+                                                                lineNumber: 1471,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1387,
+                                                        lineNumber: 1467,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1379,
+                                                lineNumber: 1459,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4982,7 +5139,7 @@ function HotelsPage() {
                                                                 children: "Super Admin markup (₹)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1399,
+                                                                lineNumber: 1479,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -4990,13 +5147,13 @@ function HotelsPage() {
                                                                 readOnly: true
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1400,
+                                                                lineNumber: 1480,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1398,
+                                                        lineNumber: 1478,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5006,7 +5163,7 @@ function HotelsPage() {
                                                                 children: "Convenience fees (₹)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1404,
+                                                                lineNumber: 1484,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -5020,7 +5177,7 @@ function HotelsPage() {
                                                                 min: 0
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1405,
+                                                                lineNumber: 1485,
                                                                 columnNumber: 21
                                                             }, this),
                                                             !resolvedMarkup.allowAgentOverride && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5028,25 +5185,25 @@ function HotelsPage() {
                                                                 children: "Locked by Agent Admin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1418,
+                                                                lineNumber: 1498,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1403,
+                                                        lineNumber: 1483,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1396,
+                                                lineNumber: 1476,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1378,
+                                        lineNumber: 1458,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5065,7 +5222,7 @@ function HotelsPage() {
                                                                 children: "Base fare"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1433,
+                                                                lineNumber: 1513,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5076,13 +5233,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1434,
+                                                                lineNumber: 1514,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1432,
+                                                        lineNumber: 1512,
                                                         columnNumber: 23
                                                     }, this),
                                                     breakdown.taxes > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5092,7 +5249,7 @@ function HotelsPage() {
                                                                 children: "Taxes & Fees"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1438,
+                                                                lineNumber: 1518,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5103,13 +5260,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1439,
+                                                                lineNumber: 1519,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1437,
+                                                        lineNumber: 1517,
                                                         columnNumber: 25
                                                     }, this),
                                                     convenienceFees > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5119,7 +5276,7 @@ function HotelsPage() {
                                                                 children: "Convenience fees"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1444,
+                                                                lineNumber: 1524,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5130,20 +5287,20 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1445,
+                                                                lineNumber: 1525,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1443,
+                                                        lineNumber: 1523,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {
                                                         className: "my-1"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1450,
+                                                        lineNumber: 1530,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5153,7 +5310,7 @@ function HotelsPage() {
                                                                 children: "Customer payable (pre-discount)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1452,
+                                                                lineNumber: 1532,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5163,13 +5320,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1453,
+                                                                lineNumber: 1533,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1451,
+                                                        lineNumber: 1531,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
@@ -5177,18 +5334,18 @@ function HotelsPage() {
                                         })()
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1424,
+                                        lineNumber: 1504,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1377,
+                                lineNumber: 1457,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1461,
+                                lineNumber: 1541,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5198,7 +5355,7 @@ function HotelsPage() {
                                         children: "Fare Breakdown"
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1464,
+                                        lineNumber: 1544,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5217,7 +5374,7 @@ function HotelsPage() {
                                                                 children: "Base Fare"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1474,
+                                                                lineNumber: 1554,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5227,13 +5384,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1475,
+                                                                lineNumber: 1555,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1473,
+                                                        lineNumber: 1553,
                                                         columnNumber: 23
                                                     }, this),
                                                     breakdown.taxes > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5244,7 +5401,7 @@ function HotelsPage() {
                                                                 children: "Taxes & Fees"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1479,
+                                                                lineNumber: 1559,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5254,13 +5411,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1480,
+                                                                lineNumber: 1560,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1478,
+                                                        lineNumber: 1558,
                                                         columnNumber: 25
                                                     }, this),
                                                     showMarkup && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5271,7 +5428,7 @@ function HotelsPage() {
                                                                 children: "Convenience fees"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1485,
+                                                                lineNumber: 1565,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5281,13 +5438,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1486,
+                                                                lineNumber: 1566,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1484,
+                                                        lineNumber: 1564,
                                                         columnNumber: 25
                                                     }, this),
                                                     paymentData.couponCode && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5297,7 +5454,7 @@ function HotelsPage() {
                                                                 children: "Discount (Coupon)"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1491,
+                                                                lineNumber: 1571,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5307,13 +5464,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1492,
+                                                                lineNumber: 1572,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1490,
+                                                        lineNumber: 1570,
                                                         columnNumber: 25
                                                     }, this),
                                                     paymentData.walletUsage && paymentData.walletAmount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5323,7 +5480,7 @@ function HotelsPage() {
                                                                 children: "Wallet Payment"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1497,
+                                                                lineNumber: 1577,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5333,18 +5490,18 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1498,
+                                                                lineNumber: 1578,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1496,
+                                                        lineNumber: 1576,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1501,
+                                                        lineNumber: 1581,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5354,7 +5511,7 @@ function HotelsPage() {
                                                                 children: "Final Amount"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1503,
+                                                                lineNumber: 1583,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5364,13 +5521,13 @@ function HotelsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                                lineNumber: 1504,
+                                                                lineNumber: 1584,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1502,
+                                                        lineNumber: 1582,
                                                         columnNumber: 23
                                                     }, this),
                                                     errors.finalAmount && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5378,7 +5535,7 @@ function HotelsPage() {
                                                         children: errors.finalAmount
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1506,
+                                                        lineNumber: 1586,
                                                         columnNumber: 46
                                                     }, this)
                                                 ]
@@ -5386,13 +5543,13 @@ function HotelsPage() {
                                         })()
                                     }, void 0, false, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1465,
+                                        lineNumber: 1545,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1463,
+                                lineNumber: 1543,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5404,24 +5561,24 @@ function HotelsPage() {
                                     children: "Pay & Confirm"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1514,
+                                    lineNumber: 1594,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1513,
+                                lineNumber: 1593,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                        lineNumber: 1288,
+                        lineNumber: 1368,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 1283,
+                lineNumber: 1363,
                 columnNumber: 9
             }, this),
             currentStage === 5 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -5437,17 +5594,17 @@ function HotelsPage() {
                                     className: "h-10 w-10 text-green-600"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1528,
+                                    lineNumber: 1608,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1527,
+                                lineNumber: 1607,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 1526,
+                            lineNumber: 1606,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -5455,7 +5612,7 @@ function HotelsPage() {
                             children: "Booking Confirmed!"
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 1531,
+                            lineNumber: 1611,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5463,7 +5620,7 @@ function HotelsPage() {
                             children: "Your hotel stay has been successfully reserved."
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 1532,
+                            lineNumber: 1612,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5479,7 +5636,7 @@ function HotelsPage() {
                                                 children: "Booking ID:"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1537,
+                                                lineNumber: 1617,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5487,13 +5644,13 @@ function HotelsPage() {
                                                 children: bookingId
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1538,
+                                                lineNumber: 1618,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1536,
+                                        lineNumber: 1616,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5504,7 +5661,7 @@ function HotelsPage() {
                                                 children: "Voucher Number:"
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1541,
+                                                lineNumber: 1621,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5512,13 +5669,13 @@ function HotelsPage() {
                                                 children: voucherNumber
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1542,
+                                                lineNumber: 1622,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1540,
+                                        lineNumber: 1620,
                                         columnNumber: 17
                                     }, this),
                                     selectedHotel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -5531,20 +5688,20 @@ function HotelsPage() {
                                                         children: "Hotel:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1547,
+                                                        lineNumber: 1627,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: selectedHotel.name
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1548,
+                                                        lineNumber: 1628,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1546,
+                                                lineNumber: 1626,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5555,20 +5712,20 @@ function HotelsPage() {
                                                         children: "Location:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1551,
+                                                        lineNumber: 1631,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: selectedHotel.location
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1552,
+                                                        lineNumber: 1632,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1550,
+                                                lineNumber: 1630,
                                                 columnNumber: 21
                                             }, this)
                                         ]
@@ -5576,12 +5733,12 @@ function HotelsPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                lineNumber: 1535,
+                                lineNumber: 1615,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 1534,
+                            lineNumber: 1614,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5599,7 +5756,7 @@ function HotelsPage() {
                                     children: "Download Voucher (PDF)"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1560,
+                                    lineNumber: 1640,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -5613,20 +5770,20 @@ function HotelsPage() {
                                                         children: "Download Voucher"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1576,
+                                                        lineNumber: 1656,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                                         children: "Choose whether to include convenience fees in the voucher. Super admin markup is always included in the base fare."
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1577,
+                                                        lineNumber: 1657,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1575,
+                                                lineNumber: 1655,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5639,25 +5796,25 @@ function HotelsPage() {
                                                             children: "Super admin markup is automatically included in the base fare and will always be shown."
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1583,
+                                                            lineNumber: 1663,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                             children: "You can choose to include or exclude agent markup (convenience fees) from the voucher."
                                                         }, void 0, false, {
                                                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                            lineNumber: 1584,
+                                                            lineNumber: 1664,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                    lineNumber: 1582,
+                                                    lineNumber: 1662,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1581,
+                                                lineNumber: 1661,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -5671,7 +5828,7 @@ function HotelsPage() {
                                                         children: "Without Convenience Fees"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1588,
+                                                        lineNumber: 1668,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -5682,24 +5839,24 @@ function HotelsPage() {
                                                         children: "With Convenience Fees"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                        lineNumber: 1597,
+                                                        lineNumber: 1677,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                                lineNumber: 1587,
+                                                lineNumber: 1667,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                        lineNumber: 1574,
+                                        lineNumber: 1654,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1573,
+                                    lineNumber: 1653,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Downloads$2f$travel$2d$booking$2d$platform$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -5707,30 +5864,30 @@ function HotelsPage() {
                                     children: "Return to Dashboard"
                                 }, void 0, false, {
                                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                                    lineNumber: 1608,
+                                    lineNumber: 1688,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                            lineNumber: 1559,
+                            lineNumber: 1639,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                    lineNumber: 1525,
+                    lineNumber: 1605,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-                lineNumber: 1524,
+                lineNumber: 1604,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Downloads/travel-booking-platform/app/dashboard/hotels/page.tsx",
-        lineNumber: 681,
+        lineNumber: 761,
         columnNumber: 5
     }, this);
 }

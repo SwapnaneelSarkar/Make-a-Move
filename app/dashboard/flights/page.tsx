@@ -239,6 +239,7 @@ export default function FlightsPage() {
     includeAgentMarkupInDocs: true, // agent markup visibility + amount on documents
   })
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
+  const [selectedDownloadOption, setSelectedDownloadOption] = useState<"without-markup" | "with-markup" | "no-prices" | null>(null)
   const [resolvedMarkup, setResolvedMarkup] = useState(() =>
     resolveAgentMarkup(currentUser.id, currentUser.role)
   )
@@ -1082,7 +1083,7 @@ export default function FlightsPage() {
     }
   }
 
-  const handleDownloadTicket = (includeAgentMarkup: boolean) => {
+  const handleDownloadTicket = (downloadType: "with-markup" | "without-markup" | "no-prices") => {
     if (!selectedFlight || !bookingId || !pnr) {
       toast.error("Ticket data not available", {
         description: "Please complete the booking to download the ticket.",
@@ -1116,6 +1117,9 @@ export default function FlightsPage() {
     const totalAmount = finalPricingBreakdown 
       ? finalPricingBreakdown.totalAmount + ancillariesTotal
       : selectedFlight.price + 3750 + ancillariesTotal
+    
+    const includeAgentMarkup = downloadType === "with-markup"
+    const hidePrices = downloadType === "no-prices"
     
     const ticketData: TicketData = {
       bookingId,
@@ -1170,11 +1174,19 @@ export default function FlightsPage() {
             }
           : undefined,
       },
-      { showMarkup: includeAgentMarkup && agentMarkupAmount > 0 }
+      { 
+        showMarkup: includeAgentMarkup && agentMarkupAmount > 0,
+        hidePrices: hidePrices,
+      }
     )
-    toast.success("Ticket downloaded", {
-      description: `Your flight ticket has been downloaded ${includeAgentMarkup ? "with" : "without"} convenience fees.`,
-    })
+    
+    const description = hidePrices 
+      ? "Your flight ticket has been downloaded without any pricing information."
+      : includeAgentMarkup 
+        ? "Your flight ticket has been downloaded with convenience fees."
+        : "Your flight ticket has been downloaded without convenience fees."
+    
+    toast.success("Ticket downloaded", { description })
   }
 
   const handleNextStage = async () => {
@@ -2638,18 +2650,97 @@ export default function FlightsPage() {
               Download Ticket
             </Button>
             
-            <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
-              <DialogContent>
+            <Dialog 
+              open={downloadDialogOpen} 
+              onOpenChange={(open) => {
+                setDownloadDialogOpen(open)
+                if (!open) {
+                  setSelectedDownloadOption(null)
+                }
+              }}
+            >
+              <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
                   <DialogTitle>Download Ticket</DialogTitle>
                   <DialogDescription>
-                    Choose whether to include convenience fees in the ticket. Super admin markup is always included in the base fare.
+                    Choose how you want to download the ticket
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">Super admin markup is automatically included in the base fare and will always be shown.</p>
-                    <p>You can choose to include or exclude agent markup (convenience fees) from the ticket.</p>
+                <div className="space-y-3 py-4">
+                  <div
+                    className={cn(
+                      "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                      selectedDownloadOption === "without-markup" 
+                        ? "border-primary bg-primary/5" 
+                        : "hover:border-primary hover:bg-primary/5"
+                    )}
+                    onClick={() => setSelectedDownloadOption("without-markup")}
+                  >
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                          {selectedDownloadOption === "without-markup" && (
+                            <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <Label className="text-base font-semibold cursor-pointer">
+                          Without Convenience Fees
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground ml-7">
+                        Shows base fare and taxes only. Convenience fees are excluded.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={cn(
+                      "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                      selectedDownloadOption === "with-markup" 
+                        ? "border-primary bg-primary/5" 
+                        : "hover:border-primary hover:bg-primary/5"
+                    )}
+                    onClick={() => setSelectedDownloadOption("with-markup")}
+                  >
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                          {selectedDownloadOption === "with-markup" && (
+                            <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <Label className="text-base font-semibold cursor-pointer">
+                          With Convenience Fees
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground ml-7">
+                        Includes all pricing details including convenience fees.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={cn(
+                      "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                      selectedDownloadOption === "no-prices" 
+                        ? "border-primary bg-primary/5" 
+                        : "hover:border-primary hover:bg-primary/5"
+                    )}
+                    onClick={() => setSelectedDownloadOption("no-prices")}
+                  >
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                          {selectedDownloadOption === "no-prices" && (
+                            <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <Label className="text-base font-semibold cursor-pointer">
+                          Without Any Prices
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground ml-7">
+                        Shows booking details only. No pricing information included.
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <DialogFooter>
@@ -2657,18 +2748,22 @@ export default function FlightsPage() {
                     variant="outline"
                     onClick={() => {
                       setDownloadDialogOpen(false)
-                      handleDownloadTicket(false) // Without agent markup
+                      setSelectedDownloadOption(null)
                     }}
                   >
-                    Without Convenience Fees
+                    Cancel
                   </Button>
                   <Button
                     onClick={() => {
-                      setDownloadDialogOpen(false)
-                      handleDownloadTicket(true) // With agent markup
+                      if (selectedDownloadOption) {
+                        setDownloadDialogOpen(false)
+                        handleDownloadTicket(selectedDownloadOption)
+                        setSelectedDownloadOption(null)
+                      }
                     }}
+                    disabled={!selectedDownloadOption}
                   >
-                    With Convenience Fees
+                    Download
                   </Button>
                 </DialogFooter>
               </DialogContent>

@@ -47,7 +47,7 @@ export interface HotelVoucherData {
   }
 }
 
-export function generateHotelVoucherPDF(data: HotelVoucherData, options?: { showMarkup?: boolean }) {
+export function generateHotelVoucherPDF(data: HotelVoucherData, options?: { showMarkup?: boolean; hidePrices?: boolean }) {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -244,67 +244,69 @@ export function generateHotelVoucherPDF(data: HotelVoucherData, options?: { show
     yPos += splitText.length * 6 + 5
   }
 
-  // Price Breakdown
-  if (yPos > pageHeight - 80) {
-    doc.addPage()
-    yPos = 20
-  }
+  // Price Breakdown - Only show if not hiding prices
+  if (!options?.hidePrices) {
+    if (yPos > pageHeight - 80) {
+      doc.addPage()
+      yPos = 20
+    }
 
-  const baseAmount = data.pricingBreakdown?.baseFare ?? data.totalAmount
-  const taxes = data.pricingBreakdown?.taxes ?? 0
-  const markup = data.pricingBreakdown?.markup ?? 0
-  const showMarkup = (options?.showMarkup ?? getMarkupVisibility()) && markup > 0
+    const baseAmount = data.pricingBreakdown?.baseFare ?? data.totalAmount
+    const taxes = data.pricingBreakdown?.taxes ?? 0
+    const markup = data.pricingBreakdown?.markup ?? 0
+    const showMarkup = (options?.showMarkup ?? getMarkupVisibility()) && markup > 0
 
-  doc.setDrawColor(200, 200, 200)
-  doc.rect(14, yPos, pageWidth - 28, showMarkup ? 65 : 50, "S")
-  yPos += 8
+    doc.setDrawColor(200, 200, 200)
+    doc.rect(14, yPos, pageWidth - 28, showMarkup ? 65 : 50, "S")
+    yPos += 8
 
-  doc.setFontSize(16)
-  doc.setFont("helvetica", "bold")
-  doc.text("Price Breakdown", 20, yPos)
-  yPos += 10
+    doc.setFontSize(16)
+    doc.setFont("helvetica", "bold")
+    doc.text("Price Breakdown", 20, yPos)
+    yPos += 10
 
-  doc.setFontSize(10)
-  doc.setFont("helvetica", "normal")
-  doc.text(`Base Amount:`, 20, yPos)
-  doc.text(`₹${baseAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
-  yPos += 7
-
-  if (taxes > 0) {
-    doc.text(`Taxes & Fees:`, 20, yPos)
-    doc.text(`₹${taxes.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "normal")
+    doc.text(`Base Amount:`, 20, yPos)
+    doc.text(`₹${baseAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
     yPos += 7
-  }
 
-  if (showMarkup) {
-    doc.text(`Convenience fees:`, 20, yPos)
-    doc.text(`₹${markup.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+    if (taxes > 0) {
+      doc.text(`Taxes & Fees:`, 20, yPos)
+      doc.text(`₹${taxes.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+      yPos += 7
+    }
+
+    if (showMarkup) {
+      doc.text(`Convenience fees:`, 20, yPos)
+      doc.text(`₹${markup.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+      yPos += 7
+    }
+
+    if (data.totalAmount !== data.finalAmount) {
+      const discount = data.totalAmount - data.finalAmount
+      doc.text(`Discount:`, 20, yPos)
+      doc.setTextColor(0, 150, 0)
+      doc.text(`-₹${discount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+      doc.setTextColor(0, 0, 0)
+      yPos += 7
+    }
+
+    doc.setDrawColor(200, 200, 200)
+    doc.line(20, yPos, pageWidth - 20, yPos)
     yPos += 7
+
+    doc.setFontSize(14)
+    doc.setFont("helvetica", "bold")
+    doc.text(`Final Payable Amount:`, 20, yPos)
+    doc.text(`₹${data.finalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
+    yPos += 8
+
+    doc.setFontSize(9)
+    doc.setFont("helvetica", "normal")
+    doc.setTextColor(100, 100, 100)
+    doc.text(`Payment Mode: ${data.paymentMode}`, 20, yPos)
   }
-
-  if (data.totalAmount !== data.finalAmount) {
-    const discount = data.totalAmount - data.finalAmount
-    doc.text(`Discount:`, 20, yPos)
-    doc.setTextColor(0, 150, 0)
-    doc.text(`-₹${discount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
-    doc.setTextColor(0, 0, 0)
-    yPos += 7
-  }
-
-  doc.setDrawColor(200, 200, 200)
-  doc.line(20, yPos, pageWidth - 20, yPos)
-  yPos += 7
-
-  doc.setFontSize(14)
-  doc.setFont("helvetica", "bold")
-  doc.text(`Final Payable Amount:`, 20, yPos)
-  doc.text(`₹${data.finalAmount.toLocaleString("en-IN")}`, pageWidth - 20, yPos, { align: "right" })
-  yPos += 8
-
-  doc.setFontSize(9)
-  doc.setFont("helvetica", "normal")
-  doc.setTextColor(100, 100, 100)
-  doc.text(`Payment Mode: ${data.paymentMode}`, 20, yPos)
 
   // Footer
   yPos = pageHeight - 30

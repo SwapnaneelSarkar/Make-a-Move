@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,6 +20,7 @@ import {
   Bed,
   AlertCircle,
   X,
+  Globe,
 } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
@@ -45,6 +47,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
@@ -57,6 +60,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { ALL_CITIES, getCitiesByType, type City } from "@/lib/hotel-cities"
 
 const BOOKING_STAGES = [
   { id: "search", label: "Search" },
@@ -97,6 +102,12 @@ interface GuestDetails {
   acceptPolicies: boolean
 }
 
+interface OccupantPassportDetails {
+  name: string
+  passport: string
+  passportExpiry: string
+}
+
 interface AddOns {
   extraBed: boolean
   airportTransfer: boolean
@@ -112,13 +123,20 @@ interface PaymentData {
 }
 
 export default function HotelsPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const { currentUser } = useAppStore()
   const isSuperAdmin = currentUser.role === "SUPER_ADMIN"
+  
+  // Check if coming from listing page with selected hotel
+  const selectedHotelId = searchParams.get("selectedHotel")
+  
   const [currentStage, setCurrentStage] = useState(0)
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null)
   const [selectedRooms, setSelectedRooms] = useState<RoomSelection[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [paymentTimeout, setPaymentTimeout] = useState<number | null>(null)
+  const [isInternational, setIsInternational] = useState(false)
 
   // Search Data
   const [searchData, setSearchData] = useState<SearchData>({
@@ -141,6 +159,9 @@ export default function HotelsPage() {
     specialRequests: "",
     acceptPolicies: false,
   })
+
+  // Passport details for each occupant (for international bookings)
+  const [occupantPassports, setOccupantPassports] = useState<OccupantPassportDetails[]>([])
 
   // Add-ons
   const [addOns, setAddOns] = useState<AddOns>({
@@ -166,6 +187,7 @@ export default function HotelsPage() {
     resolveAgentMarkup(currentUser.id, currentUser.role)
   )
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
+  const [selectedDownloadOption, setSelectedDownloadOption] = useState<"without-markup" | "with-markup" | "no-prices" | null>(null)
 
   // Booking confirmation data
   const [bookingId, setBookingId] = useState<string>("")
@@ -182,6 +204,97 @@ export default function HotelsPage() {
       includeAgentMarkupInDocs: true,
     }))
   }, [currentUser.id, currentUser.role])
+
+  // Handle hotel selection from listing page
+  useEffect(() => {
+    if (selectedHotelId && !selectedHotel) {
+      const hotel = MOCK_HOTELS.find((h) => h.id === selectedHotelId)
+      if (hotel) {
+        setSelectedHotel(hotel)
+        
+        // Restore search params from URL
+        const location = searchParams.get("location")
+        const checkIn = searchParams.get("checkIn")
+        const checkOut = searchParams.get("checkOut")
+        const rooms = searchParams.get("rooms")
+        const adults = searchParams.get("adults")
+        const children = searchParams.get("children")
+        const purposeOfStay = searchParams.get("purposeOfStay")
+        const starRating = searchParams.get("starRating")
+        const isIntl = searchParams.get("isInternational") === "true"
+        
+        if (location) setSearchData((prev) => ({ ...prev, location }))
+        if (checkIn) {
+          const checkInDate = new Date(checkIn)
+          if (!isNaN(checkInDate.getTime())) {
+            setSearchData((prev) => ({ ...prev, checkIn: checkInDate }))
+          }
+        }
+        if (checkOut) {
+          const checkOutDate = new Date(checkOut)
+          if (!isNaN(checkOutDate.getTime())) {
+            setSearchData((prev) => ({ ...prev, checkOut: checkOutDate }))
+          }
+        }
+        if (rooms) setSearchData((prev) => ({ ...prev, rooms: parseInt(rooms) }))
+        if (adults) setSearchData((prev) => ({ ...prev, adults: parseInt(adults) }))
+        if (children) setSearchData((prev) => ({ ...prev, children: parseInt(children) }))
+        if (purposeOfStay) setSearchData((prev) => ({ ...prev, purposeOfStay: purposeOfStay as "Business" | "Leisure" }))
+        if (starRating) setSearchData((prev) => ({ ...prev, starRating: parseInt(starRating) }))
+        setIsInternational(isIntl)
+        
+        // Move to room selection stage
+        setCurrentStage(2)
+        
+        // Clear selectedHotel from URL after a short delay to ensure state is set
+        setTimeout(() => {
+          const newParams = new URLSearchParams(searchParams.toString())
+          newParams.delete("selectedHotel")
+          router.replace(`/dashboard/hotels?${newParams.toString()}`, { scroll: false })
+        }, 100)
+      } else {
+        toast.error("Hotel not found", {
+          description: "The selected hotel could not be found. Please try selecting again.",
+        })
+        router.push("/dashboard/hotels")
+      }
+    }
+  }, [selectedHotelId, selectedHotel, router])
+
+  // Initialize passport details when occupants change or when switching to international
+  useEffect(() => {
+    if (isInternational) {
+      const totalOccupants = searchData.adults + searchData.children
+      
+      setOccupantPassports((prev) => {
+        const currentPassports = prev.length
+        
+        if (currentPassports < totalOccupants) {
+          // Add new passport entries for new occupants
+          const newPassports: OccupantPassportDetails[] = []
+          for (let i = 0; i < totalOccupants; i++) {
+            if (i < currentPassports) {
+              newPassports.push(prev[i])
+            } else {
+              newPassports.push({
+                name: "",
+                passport: "",
+                passportExpiry: "",
+              })
+            }
+          }
+          return newPassports
+        } else if (currentPassports > totalOccupants) {
+          // Remove excess passport entries
+          return prev.slice(0, totalOccupants)
+        }
+        return prev
+      })
+    } else {
+      // Clear passport details for national bookings
+      setOccupantPassports([])
+    }
+  }, [isInternational, searchData.adults, searchData.children])
 
   // Stage 1: Search Validation
   const validateSearch = (): boolean => {
@@ -305,6 +418,43 @@ export default function HotelsPage() {
       newErrors.numberOfGuests = "At least one guest is required"
     }
 
+    // Passport validation for international bookings
+    if (isInternational) {
+      const totalOccupants = searchData.adults + searchData.children
+      
+      if (occupantPassports.length !== totalOccupants) {
+        newErrors.passport = "Passport details are required for all occupants"
+      } else {
+        occupantPassports.forEach((passport, index) => {
+          if (!passport.name.trim()) {
+            newErrors[`passport_name_${index}`] = `Name is required for occupant ${index + 1}`
+          } else if (!validateName(passport.name)) {
+            newErrors[`passport_name_${index}`] = `Name must contain only alphabets for occupant ${index + 1}`
+          }
+
+          if (!passport.passport.trim()) {
+            newErrors[`passport_${index}`] = `Passport number is required for occupant ${index + 1}`
+          } else if (!/^[A-Z]{1}[0-9]{7}$/.test(passport.passport.toUpperCase())) {
+            newErrors[`passport_${index}`] = `Passport number must be 1 letter followed by 7 digits (e.g., A1234567) for occupant ${index + 1}`
+          }
+
+          if (!passport.passportExpiry) {
+            newErrors[`passport_expiry_${index}`] = `Passport expiry date is required for occupant ${index + 1}`
+          } else {
+            const expiryDate = new Date(passport.passportExpiry)
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+            
+            if (isNaN(expiryDate.getTime())) {
+              newErrors[`passport_expiry_${index}`] = `Please enter a valid expiry date for occupant ${index + 1}`
+            } else if (expiryDate <= today) {
+              newErrors[`passport_expiry_${index}`] = `Passport expiry date must be in the future for occupant ${index + 1}`
+            }
+          }
+        })
+      }
+    }
+
     // Policy acceptance
     if (!guestDetails.acceptPolicies) {
       newErrors.acceptPolicies = "You must accept the hotel policies to proceed"
@@ -383,7 +533,7 @@ export default function HotelsPage() {
       baseAmount,
       0,
       "hotels",
-      "Domestic",
+      isInternational ? "International" : "Domestic",
       "Regular",
       "INR",
       {
@@ -402,11 +552,23 @@ export default function HotelsPage() {
     return breakdown.totalAmount - discount - paymentData.walletAmount
   }
 
-  // Handle search
+  // Handle search - navigate to listing page
   const handleSearch = () => {
     if (validateSearch()) {
-      setCurrentStage(1)
-      setErrors({})
+      const params = new URLSearchParams({
+        location: searchData.location,
+        checkIn: searchData.checkIn ? format(searchData.checkIn, "yyyy-MM-dd") : "",
+        checkOut: searchData.checkOut ? format(searchData.checkOut, "yyyy-MM-dd") : "",
+        rooms: searchData.rooms.toString(),
+        adults: searchData.adults.toString(),
+        children: searchData.children.toString(),
+        purposeOfStay: searchData.purposeOfStay || "",
+        isInternational: isInternational.toString(),
+      })
+      if (searchData.starRating) {
+        params.set("starRating", searchData.starRating.toString())
+      }
+      router.push(`/dashboard/hotels/listing?${params.toString()}`)
     }
   }
 
@@ -446,7 +608,7 @@ export default function HotelsPage() {
     }
   }
 
-  const handleDownloadVoucher = (includeAgentMarkup: boolean) => {
+  const handleDownloadVoucher = (downloadType: "with-markup" | "without-markup" | "no-prices") => {
     if (!selectedHotel || !bookingId || !voucherNumber || !searchData.checkIn || !searchData.checkOut) {
       toast.error("Voucher data not available")
       return
@@ -461,6 +623,8 @@ export default function HotelsPage() {
       const breakdown = calculatePricingWithMarkup(baseAmount)
       
       // Calculate totals: base fare includes super admin markup, agent markup is optional
+      const includeAgentMarkup = downloadType === "with-markup"
+      const hidePrices = downloadType === "no-prices"
       const agentMarkupAmount = includeAgentMarkup ? breakdown.markup : 0
       const totalForDocs = breakdown.baseFare + breakdown.taxes + agentMarkupAmount
 
@@ -493,10 +657,18 @@ export default function HotelsPage() {
           markup: agentMarkupAmount,
           markupPercent: breakdown.markupPercent,
         },
-      }, { showMarkup: includeAgentMarkup && agentMarkupAmount > 0 })
-      toast.success("Voucher downloaded", {
-        description: `Your hotel voucher has been downloaded ${includeAgentMarkup ? "with" : "without"} convenience fees.`,
+      }, { 
+        showMarkup: includeAgentMarkup && agentMarkupAmount > 0,
+        hidePrices: hidePrices,
       })
+      
+      const description = hidePrices 
+        ? "Your hotel voucher has been downloaded without any pricing information."
+        : includeAgentMarkup 
+          ? "Your hotel voucher has been downloaded with convenience fees."
+          : "Your hotel voucher has been downloaded without convenience fees."
+      
+      toast.success("Voucher downloaded", { description })
     })
   }
 
@@ -582,6 +754,8 @@ export default function HotelsPage() {
           voucherNumber: newVoucherNumber,
           policyCompliant: policyCheck.compliant,
           policyViolations: policyCheck.violations,
+          isInternational,
+          occupantPassports: isInternational ? occupantPassports : undefined,
           markup: {
             applied: markupControls.applyMarkup,
             superAdminMarkup: breakdown.superAdminMarkup ?? 0,
@@ -647,16 +821,6 @@ export default function HotelsPage() {
     }
   }, [paymentTimeout])
 
-  // Filter hotels based on search criteria
-  const filteredHotels = MOCK_HOTELS.filter((hotel) => {
-    if (searchData.location && !hotel.location.toLowerCase().includes(searchData.location.toLowerCase())) {
-      return false
-    }
-    if (searchData.starRating && hotel.rating < searchData.starRating) {
-      return false
-    }
-    return true
-  })
 
   if (isSuperAdmin) {
     return (
@@ -686,10 +850,11 @@ export default function HotelsPage() {
         <p className="text-lg text-muted-foreground">Find comfortable and compliant stays for your business trip.</p>
       </div>
 
-      {/* Progress Indicator */}
-      <div className="w-full overflow-x-auto pb-4">
-        <div className="flex items-center min-w-max gap-2">
-          {BOOKING_STAGES.map((stage, index) => (
+      {/* Progress Indicator - Only show when hotel is selected */}
+      {selectedHotel && (
+        <div className="w-full overflow-x-auto pb-4">
+          <div className="flex items-center min-w-max gap-2">
+            {BOOKING_STAGES.map((stage, index) => (
             <div key={stage.id} className="flex items-center">
               <div
                 className={cn(
@@ -715,16 +880,18 @@ export default function HotelsPage() {
               )}
             </div>
           ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Stage 1: Search */}
-      <Card
-        className={cn(
-          "border-2 shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/5",
-          currentStage !== 0 && "opacity-50 pointer-events-none grayscale",
-        )}
-      >
+      {/* Stage 1: Search - Only show when no hotel is selected */}
+      {!selectedHotel && (
+        <Card
+          className={cn(
+            "border-2 shadow-lg transition-all duration-300 bg-gradient-to-br from-background via-background to-primary/5",
+            currentStage !== 0 && "opacity-50 pointer-events-none grayscale",
+          )}
+        >
         <CardHeader>
           <div className="flex items-center gap-2">
             {currentStage > 0 && <Lock className="w-5 h-5 text-muted-foreground" />}
@@ -733,21 +900,92 @@ export default function HotelsPage() {
           <CardDescription className="text-base">Enter your hotel search requirements</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="mb-4 space-y-2">
+            <Label>Booking Type</Label>
+            <ToggleGroup 
+              type="single" 
+              value={isInternational ? "international" : "national"} 
+              onValueChange={(value) => {
+                if (value === "international" || value === "national") {
+                  setIsInternational(value === "international")
+                }
+              }} 
+              className="border-2"
+            >
+              <ToggleGroupItem 
+                value="national" 
+                aria-label="National" 
+                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <MapPin className="mr-2 h-4 w-4" />
+                National
+              </ToggleGroupItem>
+              <ToggleGroupItem 
+                value="international" 
+                aria-label="International" 
+                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <Globe className="mr-2 h-4 w-4" />
+                International
+              </ToggleGroupItem>
+            </ToggleGroup>
+            <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border bg-muted/60 px-4 py-2.5 text-sm">
+              <Badge variant="secondary" className="uppercase tracking-wide">
+                {isInternational ? "International Booking" : "National Booking"}
+              </Badge>
+              <span className="text-muted-foreground">
+                {isInternational
+                  ? "Passport details required for all occupants."
+                  : "Standard booking process for domestic hotels."}
+              </span>
+            </div>
+          </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
               <Label htmlFor="location">
                 Location <span className="text-red-500">*</span>
               </Label>
-              <div className="relative">
-                <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="location"
-                  placeholder="City, area, or property"
-                  className={cn("pl-9", errors.location && "border-red-500")}
-                  value={searchData.location}
-                  onChange={(e) => setSearchData({ ...searchData, location: e.target.value })}
-                />
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !searchData.location && "text-muted-foreground",
+                      errors.location && "border-red-500",
+                    )}
+                  >
+                    <MapPin className="mr-2 h-4 w-4 shrink-0" />
+                    {searchData.location
+                      ? ALL_CITIES.find((city) => city.value === searchData.location)?.label || searchData.location
+                      : "Search city..."}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[400px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search cities..." />
+                    <CommandList>
+                      <CommandEmpty>No city found.</CommandEmpty>
+                      <CommandGroup heading={isInternational ? "International Cities" : "National Cities"}>
+                        {getCitiesByType(isInternational ? "international" : "national").map((city) => (
+                          <CommandItem
+                            key={city.value}
+                            value={`${city.label} ${city.country}`}
+                            onSelect={() => {
+                              setSearchData({ ...searchData, location: city.value })
+                            }}
+                          >
+                            <MapPin className="mr-2 h-4 w-4" />
+                            <span>{city.label}</span>
+                            <span className="ml-auto text-xs text-muted-foreground">{city.country}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               {errors.location && <p className="text-xs text-red-500">{errors.location}</p>}
             </div>
 
@@ -926,38 +1164,6 @@ export default function HotelsPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Stage 2: Hotel Listing */}
-      {currentStage >= 1 && (
-        <Card className={cn("border-2 shadow-lg", currentStage > 1 && "opacity-50 pointer-events-none grayscale")}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {currentStage > 1 && <Lock className="w-5 h-5 text-muted-foreground" />}
-                <CardTitle className="text-2xl font-bold">Available Hotels</CardTitle>
-              </div>
-              <Button variant="outline" size="sm" className="lg:hidden">
-                <Filter className="mr-2 h-4 w-4" /> Filters
-              </Button>
-            </div>
-            <CardDescription className="text-base">
-              {filteredHotels.length} hotel{filteredHotels.length !== 1 ? "s" : ""} found
-              {searchData.location && ` in ${searchData.location}`}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {filteredHotels.map((hotel) => (
-                <HotelCard
-                  key={hotel.id}
-                  hotel={hotel}
-                  onBook={handleHotelSelect}
-                  userRole={currentUser.role}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       )}
 
       {/* Selected Hotel Summary */}
@@ -1201,6 +1407,107 @@ export default function HotelsPage() {
                 />
               </div>
             </div>
+
+            {/* Passport details for international bookings */}
+            {isInternational && (
+              <>
+                <Separator />
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Passport Details for All Occupants</h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Please provide passport details for each person staying at the hotel (adults and children).
+                    </p>
+                  </div>
+                  <div className="space-y-6">
+                    {Array.from({ length: searchData.adults + searchData.children }).map((_, index) => {
+                      const occupantType = index < searchData.adults ? "Adult" : "Child"
+                      const occupantNumber = index < searchData.adults 
+                        ? index + 1 
+                        : index - searchData.adults + 1
+                      const passport = occupantPassports[index] || { name: "", passport: "", passportExpiry: "" }
+                      
+                      return (
+                        <Card key={index} className="border-2">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg">
+                              {occupantType} {occupantNumber} Passport Details
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`passport_name_${index}`}>
+                                  Full Name <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                  id={`passport_name_${index}`}
+                                  value={passport.name}
+                                  onChange={(e) => {
+                                    const updated = [...occupantPassports]
+                                    updated[index] = { ...passport, name: e.target.value }
+                                    setOccupantPassports(updated)
+                                  }}
+                                  className={cn(errors[`passport_name_${index}`] && "border-red-500")}
+                                  placeholder="As per passport"
+                                />
+                                {errors[`passport_name_${index}`] && (
+                                  <p className="text-xs text-red-500">{errors[`passport_name_${index}`]}</p>
+                                )}
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label htmlFor={`passport_${index}`}>
+                                  Passport Number <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                  id={`passport_${index}`}
+                                  value={passport.passport}
+                                  onChange={(e) => {
+                                    const updated = [...occupantPassports]
+                                    updated[index] = { ...passport, passport: e.target.value.toUpperCase() }
+                                    setOccupantPassports(updated)
+                                  }}
+                                  placeholder="A1234567"
+                                  maxLength={8}
+                                  className={cn(errors[`passport_${index}`] && "border-red-500")}
+                                />
+                                {errors[`passport_${index}`] && (
+                                  <p className="text-xs text-red-500">{errors[`passport_${index}`]}</p>
+                                )}
+                                <p className="text-xs text-muted-foreground">
+                                  Format: 1 letter followed by 7 digits (e.g., A1234567)
+                                </p>
+                              </div>
+
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`passport_expiry_${index}`}>
+                                  Passport Expiry Date <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                  id={`passport_expiry_${index}`}
+                                  type="date"
+                                  value={passport.passportExpiry}
+                                  onChange={(e) => {
+                                    const updated = [...occupantPassports]
+                                    updated[index] = { ...passport, passportExpiry: e.target.value }
+                                    setOccupantPassports(updated)
+                                  }}
+                                  className={cn(errors[`passport_expiry_${index}`] && "border-red-500")}
+                                />
+                                {errors[`passport_expiry_${index}`] && (
+                                  <p className="text-xs text-red-500">{errors[`passport_expiry_${index}`]}</p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
 
             <Separator />
 
@@ -1570,18 +1877,97 @@ export default function HotelsPage() {
                 Download Voucher (PDF)
               </Button>
               
-              <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
-                <DialogContent>
+              <Dialog 
+                open={downloadDialogOpen} 
+                onOpenChange={(open) => {
+                  setDownloadDialogOpen(open)
+                  if (!open) {
+                    setSelectedDownloadOption(null)
+                  }
+                }}
+              >
+                <DialogContent className="sm:max-w-[550px]">
                   <DialogHeader>
                     <DialogTitle>Download Voucher</DialogTitle>
                     <DialogDescription>
-                      Choose whether to include convenience fees in the voucher. Super admin markup is always included in the base fare.
+                      Choose how you want to download the voucher
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="text-sm text-muted-foreground">
-                      <p className="mb-2">Super admin markup is automatically included in the base fare and will always be shown.</p>
-                      <p>You can choose to include or exclude agent markup (convenience fees) from the voucher.</p>
+                  <div className="space-y-3 py-4">
+                    <div
+                      className={cn(
+                        "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                        selectedDownloadOption === "without-markup" 
+                          ? "border-primary bg-primary/5" 
+                          : "hover:border-primary hover:bg-primary/5"
+                      )}
+                      onClick={() => setSelectedDownloadOption("without-markup")}
+                    >
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                            {selectedDownloadOption === "without-markup" && (
+                              <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                            )}
+                          </div>
+                          <Label className="text-base font-semibold cursor-pointer">
+                            Without Convenience Fees
+                          </Label>
+                        </div>
+                        <p className="text-sm text-muted-foreground ml-7">
+                          Shows base fare and taxes only. Convenience fees are excluded.
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      className={cn(
+                        "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                        selectedDownloadOption === "with-markup" 
+                          ? "border-primary bg-primary/5" 
+                          : "hover:border-primary hover:bg-primary/5"
+                      )}
+                      onClick={() => setSelectedDownloadOption("with-markup")}
+                    >
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                            {selectedDownloadOption === "with-markup" && (
+                              <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                            )}
+                          </div>
+                          <Label className="text-base font-semibold cursor-pointer">
+                            With Convenience Fees
+                          </Label>
+                        </div>
+                        <p className="text-sm text-muted-foreground ml-7">
+                          Includes all pricing details including convenience fees.
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      className={cn(
+                        "flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all",
+                        selectedDownloadOption === "no-prices" 
+                          ? "border-primary bg-primary/5" 
+                          : "hover:border-primary hover:bg-primary/5"
+                      )}
+                      onClick={() => setSelectedDownloadOption("no-prices")}
+                    >
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center">
+                            {selectedDownloadOption === "no-prices" && (
+                              <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                            )}
+                          </div>
+                          <Label className="text-base font-semibold cursor-pointer">
+                            Without Any Prices
+                          </Label>
+                        </div>
+                        <p className="text-sm text-muted-foreground ml-7">
+                          Shows booking details only. No pricing information included.
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <DialogFooter>
@@ -1589,18 +1975,22 @@ export default function HotelsPage() {
                       variant="outline"
                       onClick={() => {
                         setDownloadDialogOpen(false)
-                        handleDownloadVoucher(false) // Without agent markup
+                        setSelectedDownloadOption(null)
                       }}
                     >
-                      Without Convenience Fees
+                      Cancel
                     </Button>
                     <Button
                       onClick={() => {
-                        setDownloadDialogOpen(false)
-                        handleDownloadVoucher(true) // With agent markup
+                        if (selectedDownloadOption) {
+                          setDownloadDialogOpen(false)
+                          handleDownloadVoucher(selectedDownloadOption)
+                          setSelectedDownloadOption(null)
+                        }
                       }}
+                      disabled={!selectedDownloadOption}
                     >
-                      With Convenience Fees
+                      Download
                     </Button>
                   </DialogFooter>
                 </DialogContent>

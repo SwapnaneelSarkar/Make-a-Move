@@ -1157,8 +1157,13 @@ const ticketLocksDB = {
         const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString() // 48 hours from now
         ;
         const lockId = `LOCK-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+        // Calculate defaults for quantity and pricePerTicket if not provided
+        const quantity = data.quantity || 1;
+        const pricePerTicket = data.pricePerTicket || data.lockedPrice / quantity;
         return create(TABLES.TICKET_LOCKS, {
             ...data,
+            quantity,
+            pricePerTicket,
             lockId,
             lockedAt: now,
             expiresAt,

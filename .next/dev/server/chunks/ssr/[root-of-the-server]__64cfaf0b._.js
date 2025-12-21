@@ -159,11 +159,12 @@ const MOCK_USERS = [
     }
 ];
 const MOCK_HOTELS = [
+    // Mumbai Hotels
     {
         id: "h1",
         name: "Grand Hyatt Mumbai",
-        location: "Mumbai, India",
-        rating: 4.8,
+        location: "mumbai",
+        rating: 5,
         pricePerNight: 15000,
         currency: "INR",
         image: "/luxury-hotel-room.png",
@@ -259,10 +260,241 @@ const MOCK_HOTELS = [
         ]
     },
     {
+        id: "h1-2",
+        name: "Taj Lands End Mumbai",
+        location: "mumbai",
+        rating: 5,
+        pricePerNight: 18000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Beach Access"
+        ],
+        description: "Seaside luxury hotel with stunning views of the Arabian Sea.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r1-2",
+                type: "Sea View Room",
+                description: "King bed, Sea view, Balcony, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Balcony"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h1-3",
+        name: "The Leela Mumbai",
+        location: "mumbai",
+        rating: 5,
+        pricePerNight: 16500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Gym",
+            "Business Center"
+        ],
+        description: "Luxury business hotel in the financial district.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r1-3",
+                type: "Executive Room",
+                description: "King bed, City view, Workspace, 38 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 16500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2200
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Workspace"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h1-4",
+        name: "Novotel Mumbai Juhu Beach",
+        location: "mumbai",
+        rating: 4,
+        pricePerNight: 8500,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Restaurant",
+            "Beach Access"
+        ],
+        description: "Modern beachfront hotel perfect for leisure travelers.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r1-4",
+                type: "Standard Room",
+                description: "King or Twin beds, Beach view, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 8500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h1-5",
+        name: "ITC Maratha Mumbai",
+        location: "mumbai",
+        rating: 5,
+        pricePerNight: 19500,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Multiple Restaurants",
+            "Airport Shuttle"
+        ],
+        description: "Luxury hotel near Mumbai airport with traditional Indian hospitality.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r1-5",
+                type: "Tower Room",
+                description: "King bed, Airport view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 19500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2800
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 72 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Airport Shuttle"
+                ]
+            }
+        ]
+    },
+    // Bangalore Hotels
+    {
         id: "h2",
         name: "Ibis Styles Bangalore",
-        location: "Bangalore, India",
-        rating: 4.2,
+        location: "bangalore",
+        rating: 4,
         pricePerNight: 7000,
         currency: "INR",
         image: "/modern-hotel-room.png",
@@ -332,10 +564,233 @@ const MOCK_HOTELS = [
         ]
     },
     {
+        id: "h2-2",
+        name: "The Ritz-Carlton Bangalore",
+        location: "bangalore",
+        rating: 5,
+        pricePerNight: 22000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Rooftop Bar"
+        ],
+        description: "Ultra-luxury hotel in the heart of Bangalore's business district.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r2-2",
+                type: "Deluxe Room",
+                description: "King bed, City view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 22000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 7000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h2-3",
+        name: "Taj West End Bangalore",
+        location: "bangalore",
+        rating: 5,
+        pricePerNight: 18500,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Gardens",
+            "Heritage Building"
+        ],
+        description: "Heritage luxury hotel set in 20 acres of landscaped gardens.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r2-3",
+                type: "Garden View Room",
+                description: "King bed, Garden view, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2700
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h2-4",
+        name: "Radisson Blu Bangalore",
+        location: "bangalore",
+        rating: 4,
+        pricePerNight: 12000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant",
+            "Business Center"
+        ],
+        description: "Modern business hotel with excellent connectivity.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: true,
+        rooms: [
+            {
+                id: "r2-4",
+                type: "Superior Room",
+                description: "King bed, City view, 32 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 12000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1800
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3200
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h2-5",
+        name: "Lemon Tree Premier Bangalore",
+        location: "bangalore",
+        rating: 4,
+        pricePerNight: 9500,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Value-for-money hotel with modern amenities.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r2-5",
+                type: "Premier Room",
+                description: "King bed, City view, 28 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 9500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // New Delhi Hotels
+    {
         id: "h3",
         name: "The Oberoi New Delhi",
-        location: "New Delhi, India",
-        rating: 4.9,
+        location: "delhi",
+        rating: 5,
         pricePerNight: 21000,
         currency: "INR",
         image: "/luxury-lobby.jpg",
@@ -388,6 +843,3597 @@ const MOCK_HOTELS = [
                     "TV",
                     "Mini Bar",
                     "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h3-2",
+        name: "The Taj Mahal Hotel New Delhi",
+        location: "delhi",
+        rating: 5,
+        pricePerNight: 24000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Historic Building"
+        ],
+        description: "Historic luxury hotel in the heart of New Delhi.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r3-2",
+                type: "Heritage Room",
+                description: "King bed, Historic charm, 48 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 24000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 8000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h3-3",
+        name: "ITC Maurya New Delhi",
+        location: "delhi",
+        rating: 5,
+        pricePerNight: 19500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Multiple Restaurants",
+            "Diplomatic Area"
+        ],
+        description: "Luxury hotel in the diplomatic enclave.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r3-3",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 19500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2800
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h3-4",
+        name: "The Leela Palace New Delhi",
+        location: "delhi",
+        rating: 5,
+        pricePerNight: 22500,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Palace Architecture"
+        ],
+        description: "Palatial luxury hotel with traditional Indian architecture.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r3-4",
+                type: "Palace Room",
+                description: "King bed, Palace view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 22500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3200
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5200
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 7500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h3-5",
+        name: "Holiday Inn New Delhi",
+        location: "delhi",
+        rating: 4,
+        pricePerNight: 11000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant",
+            "Airport Shuttle"
+        ],
+        description: "Comfortable hotel near airport with modern amenities.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r3-5",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 11000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1800
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Chennai Hotels
+    {
+        id: "h4",
+        name: "The Leela Palace Chennai",
+        location: "chennai",
+        rating: 5,
+        pricePerNight: 17500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Fine Dining"
+        ],
+        description: "Luxury beachfront hotel with stunning sea views.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r4-1",
+                type: "Sea View Room",
+                description: "King bed, Sea view, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 17500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h4-2",
+        name: "ITC Grand Chola Chennai",
+        location: "chennai",
+        rating: 5,
+        pricePerNight: 19000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Multiple Restaurants",
+            "Business Center"
+        ],
+        description: "Grand luxury hotel inspired by Chola dynasty architecture.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r4-2",
+                type: "Grand Room",
+                description: "King bed, City view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 19000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2700
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h4-3",
+        name: "Taj Coromandel Chennai",
+        location: "chennai",
+        rating: 5,
+        pricePerNight: 16500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Heritage"
+        ],
+        description: "Heritage luxury hotel in the heart of Chennai.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r4-3",
+                type: "Heritage Room",
+                description: "King bed, Heritage charm, 38 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 16500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2300
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h4-4",
+        name: "Radisson Blu Chennai",
+        location: "chennai",
+        rating: 4,
+        pricePerNight: 10500,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Modern business hotel with excellent facilities.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: true,
+        rooms: [
+            {
+                id: "r4-4",
+                type: "Superior Room",
+                description: "King bed, City view, 32 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 10500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1700
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Hyderabad Hotels
+    {
+        id: "h5",
+        name: "Taj Falaknuma Palace Hyderabad",
+        location: "hyderabad",
+        rating: 5,
+        pricePerNight: 35000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Palace Tours",
+            "Fine Dining"
+        ],
+        description: "Historic palace hotel, once the residence of the Nizam of Hyderabad.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r5-1",
+                type: "Palace Room",
+                description: "King bed, Palace view, 55 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 35000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service",
+                    "Palace Tour"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h5-2",
+        name: "ITC Kohenur Hyderabad",
+        location: "hyderabad",
+        rating: 5,
+        pricePerNight: 18500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury business hotel in HITEC City.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r5-2",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2700
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h5-3",
+        name: "Park Hyatt Hyderabad",
+        location: "hyderabad",
+        rating: 5,
+        pricePerNight: 20000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Rooftop Bar"
+        ],
+        description: "Ultra-luxury hotel with contemporary design.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r5-3",
+                type: "Park Room",
+                description: "King bed, Park view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 20000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2900
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 7000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h5-4",
+        name: "Novotel Hyderabad",
+        location: "hyderabad",
+        rating: 4,
+        pricePerNight: 9500,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Modern hotel perfect for business travelers.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r5-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 9500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Kolkata Hotels
+    {
+        id: "h6",
+        name: "The Oberoi Grand Kolkata",
+        location: "kolkata",
+        rating: 5,
+        pricePerNight: 16000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Heritage Building",
+            "Fine Dining"
+        ],
+        description: "Historic luxury hotel in the heart of Kolkata.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r6-1",
+                type: "Heritage Room",
+                description: "King bed, Heritage charm, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 16000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2300
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h6-2",
+        name: "ITC Sonar Kolkata",
+        location: "kolkata",
+        rating: 5,
+        pricePerNight: 17000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury hotel with modern amenities and traditional hospitality.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r6-2",
+                type: "Executive Room",
+                description: "King bed, City view, 38 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 17000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2400
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5800
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h6-3",
+        name: "Taj Bengal Kolkata",
+        location: "kolkata",
+        rating: 5,
+        pricePerNight: 18000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Garden"
+        ],
+        description: "Luxury hotel set in beautiful gardens.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r6-3",
+                type: "Garden View Room",
+                description: "King bed, Garden view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2600
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4200
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    // Pune Hotels
+    {
+        id: "h7",
+        name: "Conrad Pune",
+        location: "pune",
+        rating: 5,
+        pricePerNight: 14000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Rooftop Bar"
+        ],
+        description: "Luxury hotel in the heart of Pune's business district.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r7-1",
+                type: "Deluxe Room",
+                description: "King bed, City view, 38 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 14000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h7-2",
+        name: "Hyatt Pune",
+        location: "pune",
+        rating: 5,
+        pricePerNight: 13500,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Modern luxury hotel with excellent facilities.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r7-2",
+                type: "Regency Room",
+                description: "King bed, 35 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 13500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1900
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3300
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 4800
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h7-3",
+        name: "Lemon Tree Premier Pune",
+        location: "pune",
+        rating: 4,
+        pricePerNight: 8000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Value-for-money hotel with modern amenities.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r7-3",
+                type: "Premier Room",
+                description: "King bed, 28 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 8000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1400
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Goa Hotels
+    {
+        id: "h8",
+        name: "Taj Exotica Goa",
+        location: "goa",
+        rating: 5,
+        pricePerNight: 22000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Water Sports"
+        ],
+        description: "Luxury beachfront resort with private beach access.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r8-1",
+                type: "Beach Villa",
+                description: "King bed, Beach view, Private pool, 60 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 22000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 7000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Private Pool"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h8-2",
+        name: "The Leela Goa",
+        location: "goa",
+        rating: 5,
+        pricePerNight: 19500,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury beachfront resort with lagoon views.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r8-2",
+                type: "Lagoon View Room",
+                description: "King bed, Lagoon view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 19500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2800
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h8-3",
+        name: "Novotel Goa",
+        location: "goa",
+        rating: 4,
+        pricePerNight: 12000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Beach Access",
+            "Restaurant"
+        ],
+        description: "Beachfront hotel perfect for leisure travelers.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r8-3",
+                type: "Beach View Room",
+                description: "King bed, Beach view, 32 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 12000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1800
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // International Hotels - Dubai
+    {
+        id: "h9",
+        name: "Burj Al Arab Dubai",
+        location: "dubai",
+        rating: 5,
+        pricePerNight: 45000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Helipad",
+            "Butler Service"
+        ],
+        description: "Iconic 7-star luxury hotel on its own island.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r9-1",
+                type: "Deluxe Suite",
+                description: "King bed, Sea view, 170 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 45000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 6000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 10000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 15000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service",
+                    "Helipad Access"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h9-2",
+        name: "Atlantis The Palm Dubai",
+        location: "dubai",
+        rating: 5,
+        pricePerNight: 35000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Aquarium",
+            "Water Park",
+            "Multiple Restaurants"
+        ],
+        description: "Iconic resort on Palm Jumeirah with underwater suites.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r9-2",
+                type: "Deluxe Room",
+                description: "King bed, Ocean view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 35000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Water Park Access"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h9-3",
+        name: "Jumeirah Emirates Towers Dubai",
+        location: "dubai",
+        rating: 5,
+        pricePerNight: 28000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Fine Dining"
+        ],
+        description: "Luxury business hotel in the heart of Dubai.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r9-3",
+                type: "Executive Room",
+                description: "King bed, City view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 28000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h9-4",
+        name: "Holiday Inn Dubai",
+        location: "dubai",
+        rating: 4,
+        pricePerNight: 15000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel with modern amenities.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r9-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 15000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Singapore Hotels
+    {
+        id: "h10",
+        name: "Marina Bay Sands Singapore",
+        location: "singapore",
+        rating: 5,
+        pricePerNight: 42000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Infinity Pool",
+            "Casino",
+            "Shopping Mall",
+            "SkyPark"
+        ],
+        description: "Iconic hotel with world's largest rooftop infinity pool.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r10-1",
+                type: "Deluxe Room",
+                description: "King bed, City view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 42000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 9000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 13000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "SkyPark Access"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h10-2",
+        name: "The Ritz-Carlton Singapore",
+        location: "singapore",
+        rating: 5,
+        pricePerNight: 38000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Fine Dining",
+            "Marina View"
+        ],
+        description: "Luxury hotel overlooking Marina Bay.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r10-2",
+                type: "Marina View Room",
+                description: "King bed, Marina view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 38000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h10-3",
+        name: "Shangri-La Singapore",
+        location: "singapore",
+        rating: 5,
+        pricePerNight: 32000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Gardens",
+            "Fine Dining"
+        ],
+        description: "Luxury hotel set in 15 acres of tropical gardens.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r10-3",
+                type: "Garden View Room",
+                description: "King bed, Garden view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 32000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 11000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h10-4",
+        name: "Holiday Inn Express Singapore",
+        location: "singapore",
+        rating: 4,
+        pricePerNight: 18000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Breakfast Included",
+            "City Center"
+        ],
+        description: "Comfortable hotel in the heart of Singapore.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r10-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 25 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 0
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Breakfast"
+                ]
+            }
+        ]
+    },
+    // London Hotels
+    {
+        id: "h11",
+        name: "The Savoy London",
+        location: "london",
+        rating: 5,
+        pricePerNight: 55000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Spa",
+            "Historic Building",
+            "Fine Dining",
+            "Thames View"
+        ],
+        description: "Iconic luxury hotel on the banks of the River Thames.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r11-1",
+                type: "Deluxe Room",
+                description: "King bed, Thames view, 35 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 55000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 7000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 12000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 18000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h11-2",
+        name: "The Ritz London",
+        location: "london",
+        rating: 5,
+        pricePerNight: 60000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Afternoon Tea",
+            "Historic Building",
+            "Fine Dining",
+            "Park View"
+        ],
+        description: "Legendary luxury hotel overlooking Green Park.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r11-2",
+                type: "Superior Room",
+                description: "King bed, Park view, 38 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 60000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 8000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 13000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 20000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Afternoon Tea"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h11-3",
+        name: "Premier Inn London",
+        location: "london",
+        rating: 4,
+        pricePerNight: 25000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Breakfast Available",
+            "City Center"
+        ],
+        description: "Comfortable hotel in central London.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r11-3",
+                type: "Standard Room",
+                description: "King or Twin beds, 20 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 25000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Bangkok Hotels
+    {
+        id: "h12",
+        name: "The Peninsula Bangkok",
+        location: "bangkok",
+        rating: 5,
+        pricePerNight: 28000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "River View",
+            "Fine Dining"
+        ],
+        description: "Luxury hotel on the banks of the Chao Phraya River.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r12-1",
+                type: "River View Room",
+                description: "King bed, River view, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 28000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h12-2",
+        name: "Mandarin Oriental Bangkok",
+        location: "bangkok",
+        rating: 5,
+        pricePerNight: 32000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "River View",
+            "Historic"
+        ],
+        description: "Historic luxury hotel with legendary service.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r12-2",
+                type: "Deluxe Room",
+                description: "King bed, River view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 32000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 10000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h12-3",
+        name: "Novotel Bangkok",
+        location: "bangkok",
+        rating: 4,
+        pricePerNight: 15000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Modern hotel in the heart of Bangkok.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r12-3",
+                type: "Superior Room",
+                description: "King bed, City view, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 15000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Jeddah Hotels
+    {
+        id: "h13",
+        name: "The Ritz-Carlton Jeddah",
+        location: "jeddah",
+        rating: 5,
+        pricePerNight: 32000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Fine Dining"
+        ],
+        description: "Luxury beachfront hotel with stunning Red Sea views.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r13-1",
+                type: "Sea View Room",
+                description: "King bed, Red Sea view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 32000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 11000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h13-2",
+        name: "Hilton Jeddah",
+        location: "jeddah",
+        rating: 5,
+        pricePerNight: 28000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury business hotel in the heart of Jeddah.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r13-2",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 28000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h13-3",
+        name: "Radisson Blu Jeddah",
+        location: "jeddah",
+        rating: 4,
+        pricePerNight: 18000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant",
+            "Business Center"
+        ],
+        description: "Modern hotel with excellent facilities and Red Sea proximity.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r13-3",
+                type: "Superior Room",
+                description: "King bed, City view, 35 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h13-4",
+        name: "Holiday Inn Jeddah",
+        location: "jeddah",
+        rating: 4,
+        pricePerNight: 15000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel perfect for business and leisure travelers.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r13-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 15000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Riyadh Hotels
+    {
+        id: "h14",
+        name: "The Ritz-Carlton Riyadh",
+        location: "riyadh",
+        rating: 5,
+        pricePerNight: 35000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Palace Architecture",
+            "Fine Dining"
+        ],
+        description: "Luxury palace hotel set in a former royal residence.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r14-1",
+                type: "Palace Room",
+                description: "King bed, Palace view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 35000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h14-2",
+        name: "Four Seasons Hotel Riyadh",
+        location: "riyadh",
+        rating: 5,
+        pricePerNight: 38000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Fine Dining"
+        ],
+        description: "Ultra-luxury hotel in the Kingdom Centre.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r14-2",
+                type: "Premier Room",
+                description: "King bed, City view, 48 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 38000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 9000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 13000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h14-3",
+        name: "Hilton Riyadh",
+        location: "riyadh",
+        rating: 5,
+        pricePerNight: 30000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury business hotel in the diplomatic quarter.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r14-3",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 30000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4200
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 10000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h14-4",
+        name: "Marriott Riyadh",
+        location: "riyadh",
+        rating: 4,
+        pricePerNight: 20000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant",
+            "Business Center"
+        ],
+        description: "Modern hotel with excellent business facilities.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r14-4",
+                type: "Superior Room",
+                description: "King bed, 35 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 20000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2800
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    // Doha Hotels
+    {
+        id: "h15",
+        name: "The Ritz-Carlton Doha",
+        location: "doha",
+        rating: 5,
+        pricePerNight: 33000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Fine Dining"
+        ],
+        description: "Luxury beachfront hotel with stunning Arabian Gulf views.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r15-1",
+                type: "Gulf View Room",
+                description: "King bed, Gulf view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 33000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4600
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7700
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 11000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h15-2",
+        name: "Four Seasons Hotel Doha",
+        location: "doha",
+        rating: 5,
+        pricePerNight: 36000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Multiple Restaurants"
+        ],
+        description: "Ultra-luxury hotel on the Corniche with private beach.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r15-2",
+                type: "Deluxe Room",
+                description: "King bed, Sea view, 48 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 36000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h15-3",
+        name: "Hilton Doha",
+        location: "doha",
+        rating: 5,
+        pricePerNight: 29000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Fine Dining"
+        ],
+        description: "Luxury hotel in West Bay with modern amenities.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r15-3",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 29000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4100
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9800
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h15-4",
+        name: "Holiday Inn Doha",
+        location: "doha",
+        rating: 4,
+        pricePerNight: 16000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel perfect for business travelers.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r15-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 16000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2200
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Abu Dhabi Hotels
+    {
+        id: "h16",
+        name: "Emirates Palace Abu Dhabi",
+        location: "abu-dhabi",
+        rating: 5,
+        pricePerNight: 40000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Private Beach",
+            "Palace Architecture"
+        ],
+        description: "Iconic palace hotel with gold-plated interiors and private beach.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r16-1",
+                type: "Palace Room",
+                description: "King bed, Sea view, 55 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 40000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 6000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 10000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 15000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service",
+                    "Beach Access"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h16-2",
+        name: "The St. Regis Abu Dhabi",
+        location: "abu-dhabi",
+        rating: 5,
+        pricePerNight: 37000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Fine Dining"
+        ],
+        description: "Luxury hotel on the Corniche with butler service.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r16-2",
+                type: "Deluxe Room",
+                description: "King bed, Gulf view, 48 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 37000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5200
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h16-3",
+        name: "Hilton Abu Dhabi",
+        location: "abu-dhabi",
+        rating: 5,
+        pricePerNight: 31000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury hotel in the heart of Abu Dhabi.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r16-3",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 31000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4400
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7300
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 10500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h16-4",
+        name: "Holiday Inn Abu Dhabi",
+        location: "abu-dhabi",
+        rating: 4,
+        pricePerNight: 17000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel with modern amenities.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r16-4",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 17000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2300
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Muscat Hotels
+    {
+        id: "h17",
+        name: "The Chedi Muscat",
+        location: "muscat",
+        rating: 5,
+        pricePerNight: 26000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Fine Dining"
+        ],
+        description: "Luxury beachfront resort with minimalist design.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r17-1",
+                type: "Beach Villa",
+                description: "King bed, Beach view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 26000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h17-2",
+        name: "Shangri-La Muscat",
+        location: "muscat",
+        rating: 5,
+        pricePerNight: 30000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Beach Access",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury resort with private beach and mountain views.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: false,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r17-2",
+                type: "Mountain View Room",
+                description: "King bed, Mountain view, 45 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 30000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4200
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 7000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 10000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h17-3",
+        name: "Holiday Inn Muscat",
+        location: "muscat",
+        rating: 4,
+        pricePerNight: 14000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel perfect for business travelers.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r17-3",
+                type: "Standard Room",
+                description: "King or Twin beds, 30 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 14000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1900
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // More National Cities - Jaipur
+    {
+        id: "h18",
+        name: "The Oberoi Rajvilas Jaipur",
+        location: "jaipur",
+        rating: 5,
+        pricePerNight: 25000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Palace Architecture",
+            "Gardens"
+        ],
+        description: "Luxury palace resort set in 32 acres of gardens.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r18-1",
+                type: "Villa with Private Pool",
+                description: "King bed, Garden view, Private pool, 80 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 25000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3500
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 8500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Private Pool"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h18-2",
+        name: "Taj Rambagh Palace Jaipur",
+        location: "jaipur",
+        rating: 5,
+        pricePerNight: 22000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Historic Palace",
+            "Fine Dining"
+        ],
+        description: "Former royal residence converted into luxury hotel.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r18-2",
+                type: "Palace Room",
+                description: "King bed, Palace view, 50 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 22000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 3000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 5000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 7000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h18-3",
+        name: "Holiday Inn Jaipur",
+        location: "jaipur",
+        rating: 4,
+        pricePerNight: 9000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel perfect for exploring the Pink City.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r18-3",
+                type: "Standard Room",
+                description: "King or Twin beds, 28 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 9000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Udaipur Hotels
+    {
+        id: "h19",
+        name: "The Oberoi Udaivilas Udaipur",
+        location: "udaipur",
+        rating: 5,
+        pricePerNight: 28000,
+        currency: "INR",
+        image: "/luxury-lobby.jpg",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Lake View",
+            "Palace Architecture"
+        ],
+        description: "Luxury palace hotel overlooking Lake Pichola.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r19-1",
+                type: "Lake View Suite",
+                description: "King bed, Lake view, 60 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 28000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 4000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 6500
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 9000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 7 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Butler Service"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h19-2",
+        name: "Taj Lake Palace Udaipur",
+        location: "udaipur",
+        rating: 5,
+        pricePerNight: 35000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Floating Palace",
+            "Boat Transfer"
+        ],
+        description: "Iconic floating palace hotel in the middle of Lake Pichola.",
+        policyCompliant: false,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r19-2",
+                type: "Palace Room",
+                description: "King bed, Lake view, 55 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 35000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 5000
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 8000
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 12000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 14 days before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar",
+                    "Boat Transfer"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h19-3",
+        name: "Radisson Blu Udaipur",
+        location: "udaipur",
+        rating: 4,
+        pricePerNight: 11000,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant",
+            "Lake View"
+        ],
+        description: "Modern hotel with views of the Aravalli Hills.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r19-3",
+                type: "Superior Room",
+                description: "King bed, Hill view, 32 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 11000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1700
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
+                ]
+            }
+        ]
+    },
+    // Kochi Hotels
+    {
+        id: "h20",
+        name: "Taj Malabar Kochi",
+        location: "kochi",
+        rating: 5,
+        pricePerNight: 16000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Harbor View",
+            "Heritage"
+        ],
+        description: "Luxury heritage hotel overlooking the harbor.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r20-1",
+                type: "Harbor View Room",
+                description: "King bed, Harbor view, 40 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 16000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2300
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 3800
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 5500
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h20-2",
+        name: "Grand Hyatt Kochi",
+        location: "kochi",
+        rating: 5,
+        pricePerNight: 18000,
+        currency: "INR",
+        image: "/luxury-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Spa",
+            "Business Center",
+            "Multiple Restaurants"
+        ],
+        description: "Luxury hotel in the heart of Kochi.",
+        policyCompliant: true,
+        requiresNationality: true,
+        requiresGST: true,
+        minAge: 18,
+        rooms: [
+            {
+                id: "r20-2",
+                type: "Executive Room",
+                description: "King bed, City view, 42 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 18000,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 2600
+                    },
+                    {
+                        id: "hb",
+                        name: "Half Board",
+                        price: 4200
+                    },
+                    {
+                        id: "fb",
+                        name: "Full Board",
+                        price: 6000
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 48 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV",
+                    "Mini Bar"
+                ]
+            }
+        ]
+    },
+    {
+        id: "h20-3",
+        name: "Holiday Inn Kochi",
+        location: "kochi",
+        rating: 4,
+        pricePerNight: 8500,
+        currency: "INR",
+        image: "/modern-hotel-room.png",
+        amenities: [
+            "WiFi",
+            "Pool",
+            "Gym",
+            "Restaurant"
+        ],
+        description: "Comfortable hotel perfect for business travelers.",
+        policyCompliant: true,
+        requiresNationality: false,
+        requiresGST: false,
+        rooms: [
+            {
+                id: "r20-3",
+                type: "Standard Room",
+                description: "King or Twin beds, 28 sqm",
+                maxOccupancy: 2,
+                pricePerNight: 8500,
+                available: true,
+                boardBasis: [
+                    {
+                        id: "ro",
+                        name: "Room Only",
+                        price: 0
+                    },
+                    {
+                        id: "bb",
+                        name: "Bed & Breakfast",
+                        price: 1400
+                    }
+                ],
+                cancellationPolicy: "Free cancellation until 24 hours before check-in",
+                inclusions: [
+                    "WiFi",
+                    "Air Conditioning",
+                    "TV"
                 ]
             }
         ]
